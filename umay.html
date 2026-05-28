@@ -463,50 +463,61 @@
     .subsystem-inner { max-width: 1200px; margin: 0 auto; }
     .subsystem-header { text-align: center; margin-bottom: 3.5rem; }
     .subsystem-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 1.75rem;
+        display: flex;
+        flex-wrap: wrap; 
+        justify-content: center;
+        gap: 1.5rem;
     }
     .subsystem-card {
-      background: rgba(28, 34, 48,0.7);
-      border: 1px solid rgba(255,255,255,0.07);
-      border-radius: 1rem;
-      padding: 2rem;
-      transition: all 0.35s ease;
-      position: relative;
-      overflow: hidden;
+        width: 260px;
+        flex-shrink: 0;
+        background: #1C2230;
+        border: 1px solid rgba(255,255,255,0.07);
+        border-radius: 1rem;
+        overflow: hidden;
+        transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
     }
-    .subsystem-card::before {
-      content: '';
-      position: absolute;
-      top: 0; left: 0; right: 0;
-      height: 2px;
-      background: var(--gradient-primary);
-      transform: scaleX(0);
-      transform-origin: left;
-      transition: transform 0.35s ease;
+    .subsystem-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 20px 40px rgba(45, 106, 63, 0.25);
+        border-color: rgba(45, 106, 63, 0.5);
     }
-    .subsystem-card:hover { border-color: rgba(45, 106, 63,0.3); transform: translateY(-4px); }
-    .subsystem-card:hover::before { transform: scaleX(1); }
+    .subsystem-card-img-wrap {
+        width: 100%;
+        height: 180px;
+        padding: 1.5rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(0, 0, 0, 0.2);
+        overflow: hidden;
+    }
     .subsystem-card-img {
-      width: 100%;
-      height: 180px;
-      object-fit: contain;
-      mix-blend-mode: screen;
-      filter: brightness(1.15) contrast(1.05);
-      margin-bottom: 1.25rem;
-      display: block;
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        transition: transform 0.4s ease;
+        filter: brightness(1.15) contrast(1.05);
+        margin: 0;
+        display: block;
+    }
+    .subsystem-card:hover .subsystem-card-img {
+        transform: scale(1.07);
+    }
+    .subsystem-card-body {
+        padding: 1.5rem;
+        text-align: center;
     }
     .subsystem-card-title {
-      font-size: 1.1rem;
-      font-weight: 700;
-      margin-bottom: 0.6rem;
-      color: var(--light);
+        font-weight: 700;
+        font-size: 1.1rem;
+        color: #E8E4DB;
+        margin-bottom: 0.75rem;
     }
     .subsystem-card-desc {
-      color: var(--gray);
-      font-size: 0.9rem;
-      line-height: 1.7;
+        font-size: 0.85rem;
+        color: #A5AFB8;
+        line-height: 1.6;
     }
 
     /* ── WEARABLES ROW ── */
@@ -769,6 +780,7 @@
   </section>
 
   <!-- ══ 1.1 KASK ALT SİSTEMLER ══ -->
+  <!-- ══ 1.1 KASK ALT SİSTEMLER ══ -->
   <section class="subsystem-section">
     <div class="subsystem-inner">
       <div class="subsystem-header" data-aos="fade-up">
@@ -779,34 +791,54 @@
 
         <!-- Kamera -->
         <div class="subsystem-card" data-aos="fade-up" data-aos-delay="0">
-          <img class="subsystem-card-img" src="gorseller/umay/kamera.png" alt="Kamera Modülü">
-          <div class="subsystem-card-title" data-i18n="sg.cam_title">Kamera Sistemi</div>
-          <p class="subsystem-card-desc">
-            <span data-i18n="sg.cam_desc">Çift lensli yüksek çözünürlüklü kamera dizisi, sürekli 360° çevresel görüntü akışı sağlar. Gerçek zamanlı video verisi onboard AI işlemcisine aktarılarak nesne tespiti, tehdit tanımlama ve sahne analizi otomatik olarak gerçekleştirilir.</span></p>
+          <div class="subsystem-card-img-wrap">
+            <img class="subsystem-card-img" src="gorseller/umay/kamera.png" alt="Kamera Modülü">
+          </div>
+          <div class="subsystem-card-body">
+            <div class="subsystem-card-title" data-i18n="sg.cam_title">Kamera Sistemi</div>
+            <div class="subsystem-card-desc">
+              <span data-i18n="sg.cam_desc">Çift lensli yüksek çözünürlüklü kamera dizisi, sürekli 360° çevresel görüntü akışı sağlar. Gerçek zamanlı video verisi onboard AI işlemcisine aktarılarak nesne tespiti, tehdit tanımlama ve sahne analizi otomatik olarak gerçekleştirilir.</span>
+            </div>
+          </div>
         </div>
 
         <!-- Projeksiyon / HUD -->
         <div class="subsystem-card" data-aos="fade-up" data-aos-delay="100">
-          <img class="subsystem-card-img" src="gorseller/umay/projeksiyon.png" alt="AR Projeksiyon HUD">
-          <div class="subsystem-card-title" data-i18n="sg.hud_title">AR Projeksiyon / HUD</div>
-          <p class="subsystem-card-desc">
-            <span data-i18n="sg.hud_desc">Yarı saydam mikro-display, operatörün görüş alanına navigasyon verisi, takım konumları, tehdit işaretçileri ve AI uyarılarını gerçek zamanlı olarak yansıtır. Sahadaki durumu kavramak için bakış yönünü değiştirmeye gerek kalmaz.</span></p>
+          <div class="subsystem-card-img-wrap">
+            <img class="subsystem-card-img" src="gorseller/umay/projeksiyon.png" alt="AR Projeksiyon HUD">
+          </div>
+          <div class="subsystem-card-body">
+            <div class="subsystem-card-title" data-i18n="sg.hud_title">AR Projeksiyon / HUD</div>
+            <div class="subsystem-card-desc">
+              <span data-i18n="sg.hud_desc">Yarı saydam mikro-display, operatörün görüş alanına navigasyon verisi, takım konumları, tehdit işaretçileri ve AI uyarılarını gerçek zamanlı olarak yansıtır. Sahadaki durumu kavramak için bakış yönünü değiştirmeye gerek kalmaz.</span>
+            </div>
+          </div>
         </div>
 
         <!-- Gece Görüşü -->
         <div class="subsystem-card" data-aos="fade-up" data-aos-delay="200">
-          <img class="subsystem-card-img" src="gorseller/umay/gece_gorusu.png" alt="Gece Görüşü">
-          <div class="subsystem-card-title" data-i18n="sg.nv_title">Gece Görüşü</div>
-          <p class="subsystem-card-desc">
-            <span data-i18n="sg.nv_desc">Aktif NIR (yakın kızılötesi) gece görüş modülü, sıfır ışık koşullarında net monokrom görüntü sağlar. HUD ile entegre çalışarak gece operasyonlarında tam durumsal farkındalık sunar.</span></p>
+          <div class="subsystem-card-img-wrap">
+            <img class="subsystem-card-img" src="gorseller/umay/gece_gorusu.png" alt="Gece Görüşü">
+          </div>
+          <div class="subsystem-card-body">
+            <div class="subsystem-card-title" data-i18n="sg.nv_title">Gece Görüşü</div>
+            <div class="subsystem-card-desc">
+              <span data-i18n="sg.nv_desc">Aktif NIR (yakın kızılötesi) gece görüş modülü, sıfır ışık koşullarında net monokrom görüntü sağlar. HUD ile entegre çalışarak gece operasyonlarında tam durumsal farkındalık sunar.</span>
+            </div>
+          </div>
         </div>
 
         <!-- Termal Görüş -->
         <div class="subsystem-card" data-aos="fade-up" data-aos-delay="300">
-          <img class="subsystem-card-img" src="gorseller/umay/termal_gorus.png" alt="Termal Görüş">
-          <div class="subsystem-card-title" data-i18n="sg.thermal_title">Termal Görüş</div>
-          <p class="subsystem-card-desc">
-            <span data-i18n="sg.thermal_desc">LWIR (uzun dalga kızılötesi) termal sensör, duman, toz ve düşük görüş koşullarında ısı imzalarını tespit eder. Karmaşık arazide gizlenmiş personel veya teçhizatın belirlenmesinde kritik avantaj sağlar.</span></p>
+          <div class="subsystem-card-img-wrap">
+            <img class="subsystem-card-img" src="gorseller/umay/termal_gorus.png" alt="Termal Görüş">
+          </div>
+          <div class="subsystem-card-body">
+            <div class="subsystem-card-title" data-i18n="sg.thermal_title">Termal Görüş</div>
+            <div class="subsystem-card-desc">
+              <span data-i18n="sg.thermal_desc">LWIR (uzun dalga kızılötesi) termal sensör, duman, toz ve düşük görüş koşullarında ısı imzalarını tespit eder. Karmaşık arazide gizlenmiş personel veya teçhizatın belirlenmesinde kritik avantaj sağlar.</span>
+            </div>
+          </div>
         </div>
 
       </div>
