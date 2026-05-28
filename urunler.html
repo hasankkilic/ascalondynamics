@@ -651,11 +651,14 @@ document.querySelector('.navbar-toggle').onclick = function() {
 
 
 
+        /* ── FOOTER TASARIMI ── */
         .footer {
             background: linear-gradient(135deg, #1C2230, #131926);
             box-shadow: 0 0 50px rgba(255, 255, 255, 0.1);
             position: relative;
             overflow: hidden;
+            padding: 4rem 2.5rem;
+            color: white;
         }
         .footer::before {
             content: "";
@@ -668,58 +671,116 @@ document.querySelector('.navbar-toggle').onclick = function() {
             z-index: 0;
         }
         .footer-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
             position: relative;
             z-index: 1;
         }
-        .footer-link {
-            transition: color 0.3s ease-in-out;
+        .footer-section {
+            width: 100%;
+            margin-bottom: 2rem;
         }
-        .footer-link:hover {
-            color: #4a90e2;
+        @media (min-width: 768px) {
+            .footer-section {
+                width: calc(25% - 1rem);
+                margin-bottom: 0;
+            }
         }
-        .social-icon {
-            transition: transform 0.3s ease-in-out, color 0.3s ease-in-out;
+        .footer h2 {
+            font-size: 2rem;
+            font-weight: bold;
+            margin-bottom: 1rem;
         }
-        .social-icon:hover {
-            transform: scale(1.3);
-            color: #4a90e2;
+        .footer h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
         }
-        .glow-border {
-            border-top: 4px solid;
-            border-image: linear-gradient(90deg, #4a90e2, #73b4ff, #4a90e2) 1;
+        .footer p, .footer a {
+            color: rgba(255, 255, 255, 0.7);
+            transition: color 0.3s ease;
+            text-decoration: none;
+        }
+        .footer a:hover {
+            color: white;
+        }
+        .footer-links {
+            list-style: none;
+            padding: 0;
+        }
+        .footer-links li {
+            margin-bottom: 0.75rem;
+        }
+        .social-icons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        .social-icons a {
+            font-size: 1.5rem;
+        }
+        .footer-bottom {
+            text-align: center;
+            padding-top: 2rem;
+            margin-top: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            position: relative;
+            z-index: 1;
+        }
+        @media (max-width: 768px) {
+            .footer-section {
+                width: calc(50% - 1rem);
+                margin-bottom: 2rem;
+            }
+        }
+        @media (max-width: 480px) {
+            .footer-section {
+                width: 100%;
+            }
         }
     </style>
 
 
 <footer class="footer py-16 px-10 mt-10 text-white relative overflow-hidden" data-aos="fade-up">
-  <div class="container mx-auto flex flex-wrap justify-between footer-container">
-      <div class="w-full md:w-1/4 mb-6">
-          <img src="gorseller/logo/logo.png" alt="PURA DEFENCE Logo" style="height:56px;width:auto;margin-bottom:12px;display:block;">
-          <h2 class="text-4xl font-bold">PURA DEFENCE</h2>
-          <p class="mt-4 text-gray-400 leading-relaxed"><span data-i18n="footer.tagline">Gelişmiş insansız hava araçları geliştiriyor ve inovasyonu destekliyoruz.</span></p>
-      </div>
-      <div class="w-full md:w-1/4 mb-6 md:pl-10">
-          <h3 class="text-2xl font-semibold" data-i18n="footer.links">Bağlantılar</h3>
-          <ul class="mt-4 space-y-3">
-            <li><a href="index.html" class="text-gray-400 footer-link" data-text="Home"><span data-i18n="footer.nav.home">Ana Sayfa</span></a></li>
-            <li><a href="hakkimizda.html" class="text-gray-400 footer-link" data-text="About Us"><span data-i18n="footer.nav.about">Hakkımızda</span></a></li>
-            <li><a href="umay.html" class="text-gray-400 footer-link" data-text="UMAY"><span data-i18n="footer.nav.umay">UMAY</span></a></li>
-            <li><a href="urunler.html" class="text-gray-400 footer-link" data-text="Vehicles"><span data-i18n="footer.nav.vehicles">Ürünler</span></a></li>
-
-            <li><a href="iletisim.html" class="text-gray-400 footer-link" data-text="Contact"><span data-i18n="footer.nav.contact">İletişim</span></a></li>
-          </ul>
-      </div>
-      </div>
-      <div class="w-full md:w-1/4 mb-6">
-          <h3 class="text-2xl font-semibold" data-i18n="footer.contact">İletişim</h3>
-          <p class="mt-4 text-gray-400"><span data-i18n="footer.reach_out"><span data-i18n="footer.reach_out">Aşağıdaki e-posta adresi ile bize ulaşabilirsiniz.</span></span></p>
-          <p class="mt-2 text-lg font-semibold text-gray-300">purasavunma@gmail.com</p>
-      </div>
-  </div>
-  <div class="text-center mt-10 glow-border pt-6">
-      <p class="text-gray-400"><span data-i18n="footer.copyright"><span data-i18n="footer.copyright">© 2025 PURA DEFENCE | Tüm Hakları Saklıdır.</span></span></p>
-  </div>
-</footer>
+  <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-section">
+                <img src="gorseller/logo/logo.png" alt="PURA DEFENCE Logo" style="height:56px;width:auto;margin-bottom:12px;display:block;">
+                <h2>PURA DEFENCE</h2>
+                <p><span data-i18n="footer.tagline">Gelişmiş insansız hava araçları geliştiriyor ve inovasyonu destekliyoruz.</span></p>
+            </div>
+            
+            <div class="footer-section">
+                <h3>Links</h3>
+                <ul class="footer-links">
+                    <li><a href="index.html" data-i18n="footer.nav.home">Ana Sayfa</a></li>
+                    <li><a href="hakkimizda.html" data-i18n="footer.nav.about">Hakkımızda</a></li>
+                    <li><a href="umay.html" data-i18n="footer.nav.umay">UMAY</a></li>
+                    <li><a href="urunler.html" data-i18n="footer.nav.vehicles">Ürünler</a></li>
+                    <li><a href="iletisim.html" data-i18n="footer.nav.contact">İletişim</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-section">
+                <h3>Follow Us</h3>
+                <div class="social-icons">
+                    </div>
+            </div>
+            
+            <div class="footer-section">
+                <h3>Contact</h3>
+                <p><span data-i18n="footer.reach_out">Aşağıdaki e-posta adresi ile bize ulaşabilirsiniz.</span></p>
+                <p style="margin-top: 0.5rem;"><strong>purasavunma@gmail.com</strong></p>
+            </div>
+        </div>
+        
+        <div class="footer-bottom">
+            <p><span data-i18n="footer.copyright">© 2025 PURA DEFENCE | Tüm Hakları Saklıdır.</span></p>
+        </div>
+    </footer>
     <script>
         AOS.init();
         
