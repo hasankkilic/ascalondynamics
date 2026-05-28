@@ -778,40 +778,97 @@
     .cross { color: #f87171; }
 
     /* ── FOOTER ── */
-    .footer {
-      background: linear-gradient(to bottom, var(--dark), var(--darker));
-      border-top: 1px solid rgba(255,255,255,0.05);
-      padding: 4rem 2.5rem 2rem;
-    }
-    .footer-inner {
-      max-width: 1200px;
-      margin: 0 auto;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 3rem;
-      justify-content: space-between;
-    }
-    .footer-col h2 { font-size: 1.5rem; font-weight: 800; margin-bottom: 1rem; }
-    .footer-col h3 { font-size: 1.1rem; font-weight: 600; margin-bottom: 1rem; }
-    .footer-col p, .footer-col a {
-      color: var(--gray); font-size: 0.9rem; line-height: 1.7;
-      text-decoration: none;
-      display: block; margin-bottom: 0.4rem;
-      transition: color 0.2s;
-    }
-    .footer-col a:hover { color: var(--light); }
-    .footer-social { display: flex; gap: 1rem; margin-top: 0.5rem; }
-    .footer-social a { font-size: 1.4rem; color: var(--gray); transition: color 0.2s; }
-    .footer-social a:hover { color: var(--primary-light); }
-    .footer-bottom {
-      max-width: 1200px; margin: 2.5rem auto 0;
-      border-top: 1px solid rgba(255,255,255,0.06);
-      padding-top: 1.5rem;
-      text-align: center;
-      color: var(--gray);
-      font-size: 0.85rem;
-    }
-  </style>
+    /* ── FOOTER TASARIMI ── */
+        .footer {
+            background: linear-gradient(135deg, #1C2230, #131926);
+            box-shadow: 0 0 50px rgba(255, 255, 255, 0.1);
+            position: relative;
+            overflow: hidden;
+            padding: 4rem 2.5rem;
+            color: white;
+        }
+        .footer::before {
+            content: "";
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, rgba(0,0,0,0) 70%);
+            top: 0;
+            left: 0;
+            z-index: 0;
+        }
+        .footer-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            position: relative;
+            z-index: 1;
+        }
+        .footer-section {
+            width: 100%;
+            margin-bottom: 2rem;
+        }
+        @media (min-width: 768px) {
+            .footer-section {
+                width: calc(25% - 1rem);
+                margin-bottom: 0;
+            }
+        }
+        .footer h2 {
+            font-size: 2rem;
+            font-weight: bold;
+            margin-bottom: 1rem;
+        }
+        .footer h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+        .footer p, .footer a {
+            color: rgba(255, 255, 255, 0.7);
+            transition: color 0.3s ease;
+            text-decoration: none;
+        }
+        .footer a:hover {
+            color: white;
+        }
+        .footer-links {
+            list-style: none;
+            padding: 0;
+        }
+        .footer-links li {
+            margin-bottom: 0.75rem;
+        }
+        .social-icons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        .social-icons a {
+            font-size: 1.5rem;
+        }
+        .footer-bottom {
+            text-align: center;
+            padding-top: 2rem;
+            margin-top: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            position: relative;
+            z-index: 1;
+        }
+        @media (max-width: 768px) {
+            .footer-section {
+                width: calc(50% - 1rem);
+                margin-bottom: 2rem;
+            }
+        }
+        @media (max-width: 480px) {
+            .footer-section {
+                width: 100%;
+            }
+        }
+    </style>
 </head>
 <body>
 
@@ -1169,33 +1226,42 @@
   </section>
 
   <!-- ══ FOOTER ══ -->
-  <footer class="footer" data-aos="fade-up">
-    <div class="footer-inner">
-      <div class="footer-col">
-        <img src="gorseller/logo/logo.png" alt="PURA DEFENCE Logo" style="height:56px;width:auto;margin-bottom:12px;display:block;">
-        <h2>PURA DEFENCE</h2>
-        <p><span data-i18n="footer.tagline">Gelişmiş insansız hava araçları geliştiriyor ve inovasyonu destekliyoruz.</span></p>
-      </div>
-      <div class="footer-col">
-        <h3 data-i18n="footer.links">Bağlantılar</h3>
-        <a href="index.html" data-i18n="footer.nav.home">Ana Sayfa</a>
-        <a href="hakkimizda.html" data-i18n="footer.nav.about">Hakkımızda</a>
-        <a href="umay.html">UMAY</a>
-        <a href="urunler.html" data-i18n="footer.nav.vehicles">Ürünler</a>
-
-        <a href="iletisim.html" data-i18n="footer.nav.contact">İletişim</a>
-      </div>
-      </div>
-      <div class="footer-col">
-        <h3 data-i18n="footer.contact">İletişim</h3>
-        <p><span data-i18n="footer.reach_out">Aşağıdaki e-posta adresi ile bize ulaşabilirsiniz.</span></p>
-        <p style="color:#fff;font-weight:600;margin-top:.5rem">purasavunma@gmail.com</p>
-      </div>
-    </div>
-    <div class="footer-bottom">
-      <p><span data-i18n="footer.copyright">© 2025 PURA DEFENCE | Tüm Hakları Saklıdır.</span></p>
-    </div>
-  </footer>
+  <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-section">
+                <img src="gorseller/logo/logo.png" alt="PURA DEFENCE Logo" style="height:56px;width:auto;margin-bottom:12px;display:block;">
+                <h2>PURA DEFENCE</h2>
+                <p><span data-i18n="footer.tagline">Gelişmiş insansız hava araçları geliştiriyor ve inovasyonu destekliyoruz.</span></p>
+            </div>
+            
+            <div class="footer-section">
+                <h3>Links</h3>
+                <ul class="footer-links">
+                    <li><a href="index.html" data-i18n="footer.nav.home">Ana Sayfa</a></li>
+                    <li><a href="hakkimizda.html" data-i18n="footer.nav.about">Hakkımızda</a></li>
+                    <li><a href="umay.html" data-i18n="footer.nav.umay">UMAY</a></li>
+                    <li><a href="urunler.html" data-i18n="footer.nav.vehicles">Ürünler</a></li>
+                    <li><a href="iletisim.html" data-i18n="footer.nav.contact">İletişim</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-section">
+                <h3>Follow Us</h3>
+                <div class="social-icons">
+                    </div>
+            </div>
+            
+            <div class="footer-section">
+                <h3>Contact</h3>
+                <p><span data-i18n="footer.reach_out">Aşağıdaki e-posta adresi ile bize ulaşabilirsiniz.</span></p>
+                <p style="margin-top: 0.5rem;"><strong>purasavunma@gmail.com</strong></p>
+            </div>
+        </div>
+        
+        <div class="footer-bottom">
+            <p><span data-i18n="footer.copyright">© 2025 PURA DEFENCE | Tüm Hakları Saklıdır.</span></p>
+        </div>
+    </footer>
 
   <!-- AOS init + navbar logic -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
