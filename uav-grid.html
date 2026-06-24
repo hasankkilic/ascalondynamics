@@ -1,0 +1,1044 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ascalon Dynamics — İHA Filosu</title>
+  <link rel="icon" href="images/logo.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ── Reset ────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: auto; }
+    body {
+      background: #000;
+      color: #fff;
+      font-family: 'Inter', -apple-system, 'Segoe UI', sans-serif;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+      min-height: 100vh;
+    }
+    a { color: inherit; text-decoration: none; }
+    button { font-family: inherit; cursor: pointer; }
+
+    /* ── Mini Header ───────────────────────────────────── */
+    .top-bar {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-inline: 40px;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      background: rgba(0,0,0,0.7);
+      backdrop-filter: blur(14px);
+      z-index: 200;
+    }
+    .top-bar__brand {
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      color: #fff;
+    }
+    .top-bar__back {
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      color: rgba(255,255,255,0.45);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: color 0.2s;
+    }
+    .top-bar__back:hover { color: #fff; }
+
+    /* ── Backdrop ──────────────────────────────────────── */
+    #backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.82);
+      z-index: 49;
+      opacity: 0;
+      pointer-events: none;
+    }
+    #backdrop.active { pointer-events: auto; }
+
+    /* ── Page wrapper ──────────────────────────────────── */
+    .page {
+      padding-top: 64px;
+      padding-bottom: 100px;
+    }
+
+    /* ── Section header ────────────────────────────────── */
+    .fleet-header {
+      max-width: 900px;
+      margin-inline: auto;
+      padding: 80px 40px 60px;
+      text-align: center;
+    }
+    .fleet-eyebrow {
+      display: inline-block;
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.3);
+      margin-bottom: 20px;
+    }
+    .fleet-title {
+      font-size: clamp(36px, 5.5vw, 68px);
+      font-weight: 600;
+      letter-spacing: -0.04em;
+      color: #fff;
+      line-height: 0.95;
+    }
+    .fleet-lead {
+      margin-top: 20px;
+      font-size: clamp(15px, 1.5vw, 18px);
+      color: rgba(255,255,255,0.5);
+      letter-spacing: -0.01em;
+    }
+
+    /* ── Product Grid ──────────────────────────────────── */
+    .product-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+      max-width: 1160px;
+      margin-inline: auto;
+      padding-inline: 40px;
+    }
+
+    @media (max-width: 700px) {
+      .product-grid { grid-template-columns: 1fr; padding-inline: 20px; }
+      .fleet-header { padding-inline: 20px; }
+      .top-bar { padding-inline: 20px; }
+    }
+
+    /* ── Card ──────────────────────────────────────────── */
+    .card {
+      position: relative;
+      background: #0a0a0a;
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 14px;
+      overflow: hidden;
+      cursor: pointer;
+      transition: border-color 0.3s;
+      /* Mouse glow via custom props */
+      --gx: 50%;
+      --gy: 50%;
+    }
+    .card:hover {
+      border-color: rgba(255,255,255,0.2);
+    }
+
+    /* Mouse-follow glow overlay */
+    .card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      pointer-events: none;
+      z-index: 3;
+      opacity: 0;
+      transition: opacity 0.35s;
+      background: radial-gradient(
+        480px circle at var(--gx) var(--gy),
+        rgba(130, 230, 255, 0.11),
+        transparent 65%
+      );
+    }
+    .card:hover::before { opacity: 1; }
+
+    /* ── Compact face ──────────────────────────────────── */
+    .compact-face {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+    }
+
+    .card-visual {
+      position: relative;
+      aspect-ratio: 16/10;
+      overflow: hidden;
+      background: #111;
+      flex-shrink: 0;
+    }
+    .card-visual img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: transform 0.6s cubic-bezier(0.2, 0.7, 0.2, 1);
+    }
+    .card:hover .card-visual img { transform: scale(1.04); }
+
+    .card-badge {
+      position: absolute;
+      top: 14px;
+      left: 14px;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 9.5px;
+      font-weight: 600;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      padding: 5px 10px;
+      border-radius: 999px;
+      background: rgba(10,10,10,0.7);
+      border: 1px solid rgba(255,255,255,0.15);
+      backdrop-filter: blur(6px);
+      color: #fff;
+    }
+    .card-badge--recon   { border-color: rgba(100,210,255,0.35); color: rgba(130,230,255,1); }
+    .card-badge--vtol    { border-color: rgba(170,130,255,0.35); color: rgba(190,160,255,1); }
+    .card-badge--fixed   { border-color: rgba(100,220,150,0.35); color: rgba(120,230,160,1); }
+
+    .card-info {
+      padding: 22px 24px 24px;
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+    }
+    .card-title {
+      font-size: 22px;
+      font-weight: 600;
+      letter-spacing: -0.03em;
+      color: #fff;
+      margin-bottom: 8px;
+    }
+    .card-desc {
+      font-size: 13.5px;
+      color: rgba(255,255,255,0.5);
+      line-height: 1.6;
+      flex: 1;
+    }
+
+    /* Spec bar */
+    .card-specs {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-top: 20px;
+      padding-top: 18px;
+      border-top: 1px solid rgba(255,255,255,0.07);
+    }
+    .spec-item { display: flex; flex-direction: column; gap: 4px; }
+    .spec-label {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 9px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.3);
+    }
+    .spec-value {
+      font-size: 15px;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      color: #fff;
+    }
+
+    /* Details button */
+    .btn-details {
+      align-self: flex-start;
+      margin-top: 20px;
+      padding: 10px 20px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.18);
+      background: transparent;
+      color: rgba(255,255,255,0.75);
+      font-size: 13px;
+      font-weight: 500;
+      letter-spacing: 0.01em;
+      transition: border-color 0.2s, color 0.2s, background 0.2s;
+    }
+    .btn-details:hover {
+      border-color: rgba(255,255,255,0.5);
+      color: #fff;
+      background: rgba(255,255,255,0.05);
+    }
+
+    /* ── Expanded face ─────────────────────────────────── */
+    .expanded-face {
+      display: none;
+      position: absolute;
+      inset: 0;
+      flex-direction: row;
+      overflow: hidden;
+    }
+
+    /* Left: image */
+    .exp-visual {
+      width: 50%;
+      flex-shrink: 0;
+      position: relative;
+      overflow: hidden;
+    }
+    .exp-visual img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    /* Gradient that bleeds into right panel */
+    .exp-visual::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        to right,
+        transparent 50%,
+        rgba(8,8,8,0.9) 100%
+      );
+      pointer-events: none;
+    }
+
+    /* Right: detail panel */
+    .exp-panel {
+      width: 50%;
+      position: relative;
+      background: #080808;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    /* Close button */
+    .btn-close {
+      position: absolute;
+      top: 24px;
+      right: 24px;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      border: 1px solid rgba(255,255,255,0.15);
+      background: rgba(255,255,255,0.05);
+      color: rgba(255,255,255,0.6);
+      font-size: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: border-color 0.2s, color 0.2s, background 0.2s;
+      z-index: 10;
+      cursor: pointer;
+    }
+    .btn-close:hover {
+      border-color: rgba(255,255,255,0.4);
+      color: #fff;
+      background: rgba(255,255,255,0.1);
+    }
+
+    /* Scrollable content area */
+    .exp-scroll {
+      flex: 1;
+      overflow-y: auto;
+      padding: 56px 44px 44px;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(255,255,255,0.1) transparent;
+    }
+    .exp-scroll::-webkit-scrollbar { width: 4px; }
+    .exp-scroll::-webkit-scrollbar-track { background: transparent; }
+    .exp-scroll::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 4px; }
+
+    /* Panel header */
+    .exp-badge {
+      display: inline-block;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 9.5px;
+      font-weight: 600;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      padding: 4px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.2);
+      color: rgba(255,255,255,0.6);
+      margin-bottom: 14px;
+    }
+    .exp-title {
+      font-size: clamp(28px, 4vw, 48px);
+      font-weight: 600;
+      letter-spacing: -0.04em;
+      color: #fff;
+      line-height: 0.95;
+    }
+    .exp-subtitle {
+      margin-top: 10px;
+      font-size: 14px;
+      color: rgba(255,255,255,0.45);
+      letter-spacing: -0.01em;
+    }
+
+    /* Panel sections */
+    .exp-section {
+      margin-top: 36px;
+      padding-top: 28px;
+      border-top: 1px solid rgba(255,255,255,0.07);
+    }
+    .section-label {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 9.5px;
+      font-weight: 600;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.25);
+      margin-bottom: 16px;
+    }
+
+    /* Algorithm list */
+    .algo-list { display: flex; flex-direction: column; gap: 0; }
+    .algo-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 11px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+    .algo-item:last-child { border-bottom: none; }
+    .algo-name {
+      font-size: 13px;
+      color: rgba(255,255,255,0.65);
+      letter-spacing: -0.01em;
+    }
+    .algo-status {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+    }
+    .s-active { color: #4ade80; }
+    .s-ready  { color: #facc15; }
+    .s-scan   { color: #60a5fa; animation: scanPulse 1.8s ease-in-out infinite; }
+    .s-off    { color: rgba(255,255,255,0.3); }
+
+    @keyframes scanPulse {
+      0%, 100% { opacity: 1; }
+      50%       { opacity: 0.4; }
+    }
+
+    /* Telemetry grid */
+    .tele-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+    }
+    .tele-cell { display: flex; flex-direction: column; gap: 5px; }
+    .tele-label {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 8.5px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.25);
+    }
+    .tele-value {
+      font-size: 14px;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+      color: #fff;
+    }
+    .tele-link {
+      margin-top: 14px;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      color: rgba(255,255,255,0.3);
+    }
+
+    /* Tech specs */
+    .tech-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px 24px;
+    }
+    .tech-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      padding: 8px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+    }
+    .tech-label {
+      font-size: 12px;
+      color: rgba(255,255,255,0.4);
+    }
+    .tech-value {
+      font-size: 12px;
+      font-weight: 600;
+      color: rgba(255,255,255,0.85);
+    }
+
+    /* CTA row */
+    .exp-ctas {
+      margin-top: 36px;
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .cta-btn {
+      padding: 12px 24px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 500;
+      letter-spacing: 0.01em;
+      transition: 0.2s;
+    }
+    .cta-btn--primary {
+      background: #e11d2a;
+      color: #fff;
+      border: 1px solid transparent;
+    }
+    .cta-btn--primary:hover { background: #c4111d; }
+    .cta-btn--secondary {
+      background: transparent;
+      color: rgba(255,255,255,0.65);
+      border: 1px solid rgba(255,255,255,0.18);
+    }
+    .cta-btn--secondary:hover {
+      border-color: rgba(255,255,255,0.4);
+      color: #fff;
+    }
+
+    /* Mobile expanded layout */
+    @media (max-width: 700px) {
+      .expanded-face { flex-direction: column; }
+      .exp-visual { width: 100%; height: 38vh; flex-shrink: 0; }
+      .exp-visual::after { background: linear-gradient(to bottom, transparent 50%, rgba(8,8,8,0.9) 100%); }
+      .exp-panel { width: 100%; }
+      .exp-scroll { padding: 40px 24px 32px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Backdrop -->
+  <div id="backdrop"></div>
+
+  <!-- Header -->
+  <header class="top-bar">
+    <span class="top-bar__brand">ASCALON DYNAMICS</span>
+    <a href="index.html" class="top-bar__back">← Ana Sayfa</a>
+  </header>
+
+  <div class="page">
+    <!-- Section title -->
+    <div class="fleet-header">
+      <span class="fleet-eyebrow">İHA Filosu</span>
+      <h1 class="fleet-title">Dört Platform,<br>Tek Ekosistem</h1>
+      <p class="fleet-lead">Edge-AI entegre insansız hava sistemleri. Keşiften VTOL'a, sabit kanata dört farklı görev profili.</p>
+    </div>
+
+    <!-- Product grid -->
+    <div class="product-grid" id="productGrid">
+
+      <!-- ── ARGUS ── -->
+      <div class="card" data-id="argus">
+        <div class="compact-face">
+          <div class="card-visual">
+            <img src="images/air-argus.jpg" alt="Argus" loading="eager" />
+            <span class="card-badge card-badge--recon">KEŞİF</span>
+          </div>
+          <div class="card-info">
+            <h3 class="card-title">Argus</h3>
+            <p class="card-desc">Hızlı konuşlanma için optimize edilmiş, hafif ve modüler keşif platformu. Edge-AI destekli nesne tanıma.</p>
+            <div class="card-specs">
+              <div class="spec-item">
+                <span class="spec-label">Menzil</span>
+                <span class="spec-value">50 km</span>
+              </div>
+              <div class="spec-item">
+                <span class="spec-label">Uçuş Süresi</span>
+                <span class="spec-value">4 sa</span>
+              </div>
+              <div class="spec-item">
+                <span class="spec-label">Yük</span>
+                <span class="spec-value">2 kg</span>
+              </div>
+            </div>
+            <button class="btn-details">Detaylar →</button>
+          </div>
+        </div>
+        <div class="expanded-face">
+          <div class="exp-visual"><img src="images/air-argus.jpg" alt="Argus" /></div>
+          <div class="exp-panel">
+            <button class="btn-close" aria-label="Kapat">✕</button>
+            <div class="exp-scroll">
+              <div class="anim-in">
+                <span class="exp-badge">Keşif</span>
+                <h2 class="exp-title">Argus</h2>
+                <p class="exp-subtitle">Hafif Modüler Keşif İHA'sı</p>
+              </div>
+              <div class="exp-section">
+                <h4 class="section-label">Otonom Uçuş Algoritmaları</h4>
+                <div class="algo-list">
+                  <div class="algo-item anim-in"><span class="algo-name">GPS-Redde Yedek Navigasyon</span><span class="algo-status s-active">● AKTİF</span></div>
+                  <div class="algo-item anim-in"><span class="algo-name">Engel Algılama & Kaçınma</span><span class="algo-status s-active">● AKTİF</span></div>
+                  <div class="algo-item anim-in"><span class="algo-name">Otomatik İniş Sistemi</span><span class="algo-status s-ready">◎ HAZIR</span></div>
+                  <div class="algo-item anim-in"><span class="algo-name">RF Sinyal Analizi</span><span class="algo-status s-scan">◉ TARAMA</span></div>
+                </div>
+              </div>
+              <div class="exp-section">
+                <h4 class="section-label">Telemetri Verileri</h4>
+                <div class="tele-grid">
+                  <div class="tele-cell anim-in"><span class="tele-label">Enlem</span><span class="tele-value">37°09'N</span></div>
+                  <div class="tele-cell anim-in"><span class="tele-label">Boylam</span><span class="tele-value">34°49'E</span></div>
+                  <div class="tele-cell anim-in"><span class="tele-label">İrtifa</span><span class="tele-value">420 m</span></div>
+                  <div class="tele-cell anim-in"><span class="tele-label">Hız</span><span class="tele-value">48 kt</span></div>
+                  <div class="tele-cell anim-in"><span class="tele-label">Pil</span><span class="tele-value">82%</span></div>
+                  <div class="tele-cell anim-in"><span class="tele-label">Sinyal</span><span class="tele-value">-68 dBm</span></div>
+                </div>
+                <p class="tele-link anim-in">BAĞLANTI: <span class="s-active">● AES-256 ŞİFRELİ</span></p>
+              </div>
+              <div class="exp-section">
+                <h4 class="section-label">Teknik Özellikler</h4>
+                <div class="tech-grid">
+                  <div class="tech-item anim-in"><span class="tech-label">Kanat Açıklığı</span><span class="tech-value">1.2 m</span></div>
+                  <div class="tech-item anim-in"><span class="tech-label">Ağırlık</span><span class="tech-value">1.8 kg</span></div>
+                  <div class="tech-item anim-in"><span class="tech-label">Kamera</span><span class="tech-value">30× Optik</span></div>
+                  <div class="tech-item anim-in"><span class="tech-label">Motor</span><span class="tech-value">Fırçasız DC</span></div>
+                  <div class="tech-item anim-in"><span class="tech-label">Batarya</span><span class="tech-value">22.2V LiPo</span></div>
+                  <div class="tech-item anim-in"><span class="tech-label">Veri Şif.</span><span class="tech-value">AES-256</span></div>
+                </div>
+              </div>
+              <div class="exp-ctas anim-in">
+                <a href="iletisim.html" class="cta-btn cta-btn--primary">İletişime Geç</a>
+                <a href="air.html" class="cta-btn cta-btn--secondary">Teknik Sayfa</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── VTOL 3800 ── -->
+      <div class="card" data-id="vtol">
+        <div class="compact-face">
+          <div class="card-visual">
+            <img src="images/air-vtol.jpg" alt="VTOL 3800" loading="eager" />
+            <span class="card-badge card-badge--vtol">VTOL</span>
+          </div>
+          <div class="card-info">
+            <h3 class="card-title">VTOL 3800</h3>
+            <p class="card-desc">Dikey kalkış/iniş ile sabit kanat verimliliğini birleştiren çok görevli platform. Eve dönüş özellikli.</p>
+            <div class="card-specs">
+              <div class="spec-item">
+                <span class="spec-label">Menzil</span>
+                <span class="spec-value">120 km</span>
+              </div>
+              <div class="spec-item">
+                <span class="spec-label">Uçuş Süresi</span>
+                <span class="spec-value">6 sa</span>
+              </div>
+              <div class="spec-item">
+                <span class="spec-label">Yük</span>
+                <span class="spec-value">5 kg</span>
+              </div>
+            </div>
+            <button class="btn-details">Detaylar →</button>
+          </div>
+        </div>
+        <div class="expanded-face">
+          <div class="exp-visual"><img src="images/air-vtol.jpg" alt="VTOL 3800" /></div>
+          <div class="exp-panel">
+            <button class="btn-close" aria-label="Kapat">✕</button>
+            <div class="exp-scroll">
+              <div class="anim-in">
+                <span class="exp-badge">VTOL</span>
+                <h2 class="exp-title">VTOL 3800</h2>
+                <p class="exp-subtitle">Çok Görevli Dikey Kalkış İHA'sı</p>
+              </div>
+              <div class="exp-section">
+                <h4 class="section-label">Otonom Uçuş Algoritmaları</h4>
+                <div class="algo-list">
+                  <div class="algo-item anim-in"><span class="algo-name">VTOL-Sabit Kanat Geçiş Modu</span><span class="algo-status s-active">● AKTİF</span></div>
+                  <div class="algo-item anim-in"><span class="algo-name">Otomatik Eve Dönüş (RTH)</span><span class="algo-status s-active">● AKTİF</span></div>
+                  <div class="algo-item anim-in"><span class="algo-name">Çoklu Rota Planlama</span><span class="algo-status s-active">● AKTİF</span></div>
+                  <div class="algo-item anim-in"><span class="algo-name">Termal Kamera Füzyon</span><span class="algo-status s-scan">◉ TARAMA</span></div>
+                </div>
+              </div>
+              <div class="exp-section">
+                <h4 class="section-label">Telemetri Verileri</h4>
+                <div class="tele-grid">
+                  <div class="tele-cell anim-in"><span class="tele-label">Enlem</span><span class="tele-value">37°11'N</span></div>
+                  <div class="tele-cell anim-in"><span class="tele-label">Boylam</span><span class="tele-value">34°52'E</span></div>
+                  <div class="tele-cell anim-in"><span class="tele-label">İrtifa</span><span class="tele-value">850 m</span></div>
+                  <div class="tele-cell anim-in"><span class="tele-label">Hız</span><span class="tele-value">72 kt</span></div>
+                  <div class="tele-cell anim-in"><span class="tele-label">Pil</span><span class="tele-value">67%</span></div>
+                  <div class="tele-cell anim-in"><span class="tele-label">Sinyal</span><span class="tele-value">-71 dBm</span></div>
+                </div>
+                <p class="tele-link anim-in">BAĞLANTI: <span class="s-active">● AES-256 ŞİFRELİ</span></p>
+              </div>
+              <div class="exp-section">
+                <h4 class="section-label">Teknik Özellikler</h4>
+                <div class="tech-grid">
+                  <div class="tech-item anim-in"><span class="tech-label">Kanat Açıklığı</span><span class="tech-value">2.8 m</span></div>
+                  <div class="tech-item anim-in"><span class="tech-label">Ağırlık</span><span class="tech-value">4.6 kg</span></div>
+                  <div class="tech-item anim-in"><span class="tech-label">Motorlar</span><span class="tech-value">4+1 Hibrit</span></div>
+                  <div class="tech-item anim-in"><span class="tech-label">Batarya</span><span class="tech-value">44.4V LiPo</span></div>
+                  <div class="tech-item anim-in"><span class="tech-label">Kamera</span><span class="tech-value">Termal + EO</span></div>
+                  <div class="tech-item anim-in"><span class="tech-label">IP Rating</span><span class="tech-value">IP54</span></div>
+                </div>
+              </div>
+              <div class="exp-ctas anim-in">
+                <a href="iletisim.html" class="cta-btn cta-btn--primary">İletişime Geç</a>
+                <a href="air.html" class="cta-btn cta-btn--secondary">Teknik Sayfa</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── PURA B ── -->
+      <div class="card" data-id="pura-b">
+        <div class="compact-face">
+          <div class="card-visual">
+            <img src="images/air-basat-b.jpg" alt="Pura B" loading="lazy" />
+            <span class="card-badge card-badge--fixed">SABİT KANAT</span>
+          </div>
+          <div class="card-info">
+            <h3 class="card-title">Pura B</h3>
+            <p class="card-desc">Karbon fiber gövde ve şifreli video bağlantısıyla uzun menzilli gözetleme ve taktik keşif platformu.</p>
+            <div class="card-specs">
+              <div class="spec-item">
+                <span class="spec-label">Menzil</span>
+                <span class="spec-value">200 km</span>
+              </div>
+              <div class="spec-item">
+                <span class="spec-label">Uçuş Süresi</span>
+                <span class="spec-value">10 sa</span>
+              </div>
+              <div class="spec-item">
+                <span class="spec-label">Yük</span>
+                <span class="spec-value">3.5 kg</span>
+              </div>
+            </div>
+            <button class="btn-details">Detaylar →</button>
+          </div>
+        </div>
+        <div class="expanded-face">
+          <div class="exp-visual"><img src="images/air-basat-b.jpg" alt="Pura B" /></div>
+          <div class="exp-panel">
+            <button class="btn-close" aria-label="Kapat">✕</button>
+            <div class="exp-scroll">
+              <div class="anim-in">
+                <span class="exp-badge">Sabit Kanat</span>
+                <h2 class="exp-title">Pura B</h2>
+                <p class="exp-subtitle">Uzun Menzilli Sabit Kanat İHA</p>
+              </div>
+              <div class="exp-section">
+                <h4 class="section-label">Otonom Uçuş Algoritmaları</h4>
+                <div class="algo-list">
+                  <div class="algo-item anim-in"><span class="algo-name">Uzun Menzil Navigasyon (INS)</span><span class="algo-status s-active">● AKTİF</span></div>
+                  <div class="algo-item anim-in"><span class="algo-name">Düşük RF İzi Modu</span><span class="algo-status s-active">● AKTİF</span></div>
+                  <div class="algo-item anim-in"><span class="algo-name">Otomatik İniş (Katapult)</span><span class="algo-status s-ready">◎ HAZIR</span></div>
+                  <div class="algo-item anim-in"><span class="algo-name">SAR Görüntüleme Modu</span><span class="algo-status s-off">○ PASİF</span></div>
+                </div>
+              </div>
+              <div class="exp-section">
+                <h4 class="section-label">Telemetri Verileri</h4>
+                <div class="tele-grid">
+                  <div class="tele-cell anim-in"><span class="tele-label">Enlem</span><span class="tele-value">37°04'N</span></div>
+                  <div class="tele-cell anim-in"><span class="tele-label">Boylam</span><span class="tele-value">35°02'E</span></div>
+                  <div class="tele-cell anim-in"><span class="tele-label">İrtifa</span><span class="tele-value">1840 m</span></div>
+                  <div class="tele-cell anim-in"><span class="tele-label">Hız</span><span class="tele-value">95 kt</span></div>
+                  <div class="tele-cell anim-in"><span class="tele-label">Yakıt</span><span class="tele-value">54%</span></div>
+                  <div class="tele-cell anim-in"><span class="tele-label">Sinyal</span><span class="tele-value">-74 dBm</span></div>
+                </div>
+                <p class="tele-link anim-in">BAĞLANTI: <span class="s-active">● AES-256 ŞİFRELİ</span></p>
+              </div>
+              <div class="exp-section">
+                <h4 class="section-label">Teknik Özellikler</h4>
+                <div class="tech-grid">
+                  <div class="tech-item anim-in"><span class="tech-label">Kanat Açıklığı</span><span class="tech-value">3.4 m</span></div>
+                  <div class="tech-item anim-in"><span class="tech-label">Ağırlık</span><span class="tech-value">6.2 kg</span></div>
+                  <div class="tech-item anim-in"><span class="tech-label">Gövde</span><span class="tech-value">Karbon Fiber</span></div>
+                  <div class="tech-item anim-in"><span class="tech-label">Kalkış</span><span class="tech-value">Katapult/El</span></div>
+                  <div class="tech-item anim-in"><span class="tech-label">Video</span><span class="tech-value">H.265 4K</span></div>
+                  <div class="tech-item anim-in"><span class="tech-label">Link</span><span class="tech-value">FHSS 900MHz</span></div>
+                </div>
+              </div>
+              <div class="exp-ctas anim-in">
+                <a href="iletisim.html" class="cta-btn cta-btn--primary">İletişime Geç</a>
+                <a href="air.html" class="cta-btn cta-btn--secondary">Teknik Sayfa</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── PURA A ── -->
+      <div class="card" data-id="pura-a">
+        <div class="compact-face">
+          <div class="card-visual">
+            <img src="images/air-basat-a.jpg" alt="Pura A" loading="lazy" />
+            <span class="card-badge card-badge--fixed">SABİT KANAT</span>
+          </div>
+          <div class="card-info">
+            <h3 class="card-title">Pura A</h3>
+            <p class="card-desc">Kompakt sabit kanat tasarımıyla yüksek hızlı taktik keşif. El fırlatma ile hızlı konuşlanma.</p>
+            <div class="card-specs">
+              <div class="spec-item">
+                <span class="spec-label">Menzil</span>
+                <span class="spec-value">80 km</span>
+              </div>
+              <div class="spec-item">
+                <span class="spec-label">Uçuş Süresi</span>
+                <span class="spec-value">3 sa</span>
+              </div>
+              <div class="spec-item">
+                <span class="spec-label">Yük</span>
+                <span class="spec-value">1.5 kg</span>
+              </div>
+            </div>
+            <button class="btn-details">Detaylar →</button>
+          </div>
+        </div>
+        <div class="expanded-face">
+          <div class="exp-visual"><img src="images/air-basat-a.jpg" alt="Pura A" /></div>
+          <div class="exp-panel">
+            <button class="btn-close" aria-label="Kapat">✕</button>
+            <div class="exp-scroll">
+              <div class="anim-in">
+                <span class="exp-badge">Sabit Kanat</span>
+                <h2 class="exp-title">Pura A</h2>
+                <p class="exp-subtitle">Kompakt Taktik Keşif İHA'sı</p>
+              </div>
+              <div class="exp-section">
+                <h4 class="section-label">Otonom Uçuş Algoritmaları</h4>
+                <div class="algo-list">
+                  <div class="algo-item anim-in"><span class="algo-name">GPS-Redde Yedek Navigasyon</span><span class="algo-status s-active">● AKTİF</span></div>
+                  <div class="algo-item anim-in"><span class="algo-name">Hedef İzleme (AI Lock-On)</span><span class="algo-status s-active">● AKTİF</span></div>
+                  <div class="algo-item anim-in"><span class="algo-name">Otomatik Fotoğraf Tarama</span><span class="algo-status s-scan">◉ TARAMA</span></div>
+                  <div class="algo-item anim-in"><span class="algo-name">Elektronik Harp Direnci</span><span class="algo-status s-ready">◎ HAZIR</span></div>
+                </div>
+              </div>
+              <div class="exp-section">
+                <h4 class="section-label">Telemetri Verileri</h4>
+                <div class="tele-grid">
+                  <div class="tele-cell anim-in"><span class="tele-label">Enlem</span><span class="tele-value">37°07'N</span></div>
+                  <div class="tele-cell anim-in"><span class="tele-label">Boylam</span><span class="tele-value">34°45'E</span></div>
+                  <div class="tele-cell anim-in"><span class="tele-label">İrtifa</span><span class="tele-value">310 m</span></div>
+                  <div class="tele-cell anim-in"><span class="tele-label">Hız</span><span class="tele-value">84 kt</span></div>
+                  <div class="tele-cell anim-in"><span class="tele-label">Pil</span><span class="tele-value">91%</span></div>
+                  <div class="tele-cell anim-in"><span class="tele-label">Sinyal</span><span class="tele-value">-65 dBm</span></div>
+                </div>
+                <p class="tele-link anim-in">BAĞLANTI: <span class="s-active">● AES-256 ŞİFRELİ</span></p>
+              </div>
+              <div class="exp-section">
+                <h4 class="section-label">Teknik Özellikler</h4>
+                <div class="tech-grid">
+                  <div class="tech-item anim-in"><span class="tech-label">Kanat Açıklığı</span><span class="tech-value">1.8 m</span></div>
+                  <div class="tech-item anim-in"><span class="tech-label">Ağırlık</span><span class="tech-value">2.4 kg</span></div>
+                  <div class="tech-item anim-in"><span class="tech-label">Kalkış</span><span class="tech-value">El Fırlatma</span></div>
+                  <div class="tech-item anim-in"><span class="tech-label">İniş</span><span class="tech-value">Paraşüt</span></div>
+                  <div class="tech-item anim-in"><span class="tech-label">Kamera</span><span class="tech-value">EO/IR Çift</span></div>
+                  <div class="tech-item anim-in"><span class="tech-value">AES-256</span><span class="tech-label">Şifreleme</span></div>
+                </div>
+              </div>
+              <div class="exp-ctas anim-in">
+                <a href="iletisim.html" class="cta-btn cta-btn--primary">İletişime Geç</a>
+                <a href="air.html" class="cta-btn cta-btn--secondary">Teknik Sayfa</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /product-grid -->
+  </div><!-- /page -->
+
+  <!-- GSAP -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script>
+  (function () {
+    'use strict';
+
+    /* ── State ─────────────────────────────────────── */
+    let expandedCard = null;
+    let placeholder  = null;
+    let isAnimating  = false;
+
+    const backdrop = document.getElementById('backdrop');
+    const allCards = () => [...document.querySelectorAll('.card')];
+
+    /* ── Mouse-follow glow ─────────────────────────── */
+    allCards().forEach(card => {
+      card.addEventListener('mousemove', function (e) {
+        if (this.classList.contains('is-expanded')) return;
+        var r = this.getBoundingClientRect();
+        this.style.setProperty('--gx', (e.clientX - r.left) + 'px');
+        this.style.setProperty('--gy', (e.clientY - r.top)  + 'px');
+      });
+    });
+
+    /* ── Expand ────────────────────────────────────── */
+    function expand(card) {
+      if (isAnimating || expandedCard) return;
+      isAnimating   = true;
+      expandedCard  = card;
+
+      var fromRect      = card.getBoundingClientRect();
+      var compactFace   = card.querySelector('.compact-face');
+      var expandedFace  = card.querySelector('.expanded-face');
+      var others        = allCards().filter(function(c){ return c !== card; });
+
+      /* Placeholder to hold grid slot */
+      placeholder = document.createElement('div');
+      placeholder.style.cssText =
+        'width:' + fromRect.width + 'px;height:' + fromRect.height + 'px;' +
+        'visibility:hidden;border-radius:14px;flex-shrink:0;';
+      card.parentNode.insertBefore(placeholder, card);
+
+      /* Lift card out of flow */
+      document.body.appendChild(card);
+      gsap.set(card, {
+        position: 'fixed',
+        margin:   0,
+        top:      fromRect.top,
+        left:     fromRect.left,
+        width:    fromRect.width,
+        height:   fromRect.height,
+        zIndex:   100,
+        borderRadius: 14,
+      });
+
+      /* Reveal expanded face */
+      expandedFace.style.display  = 'flex';
+      expandedFace.style.opacity  = '0';
+      gsap.set(expandedFace.querySelectorAll('.anim-in'), { opacity: 0, y: 16 });
+
+      /* ── Master timeline ── */
+      var tl = gsap.timeline({ onComplete: function(){ isAnimating = false; } });
+
+      /* Card position: current → fullscreen */
+      tl.to(card, {
+        top: 0, left: 0,
+        width:  window.innerWidth,
+        height: window.innerHeight,
+        borderRadius: 0,
+        ease: 'power4.inOut', duration: 0.85,
+      }, 0);
+
+      /* Backdrop */
+      tl.to(backdrop, { opacity: 1, duration: 0.5 }, 0);
+      backdrop.classList.add('active');
+
+      /* Other cards fade + subtle scale-down */
+      tl.to(others, { opacity: 0, scale: 0.97, duration: 0.38, stagger: 0.05 }, 0);
+
+      /* Compact face fades mid-animation */
+      tl.to(compactFace, { opacity: 0, duration: 0.22 }, 0.36);
+
+      /* Switch layout at midpoint */
+      tl.call(function(){
+        card.classList.add('is-expanded');
+      }, [], 0.50);
+
+      /* Expanded face fades in */
+      tl.to(expandedFace, { opacity: 1, duration: 0.38 }, 0.54);
+
+      /* Panel content staggers in */
+      tl.to(expandedFace.querySelectorAll('.anim-in'), {
+        opacity: 1, y: 0,
+        stagger: 0.055, duration: 0.45, ease: 'power3.out',
+      }, 0.65);
+    }
+
+    /* ── Collapse ──────────────────────────────────── */
+    function collapse() {
+      if (isAnimating || !expandedCard) return;
+      isAnimating = true;
+
+      var card         = expandedCard;
+      var ph           = placeholder;
+      var compactFace  = card.querySelector('.compact-face');
+      var expandedFace = card.querySelector('.expanded-face');
+      var others       = allCards().filter(function(c){ return c !== card; });
+      var toRect       = ph.getBoundingClientRect();
+
+      var tl = gsap.timeline({
+        onComplete: function () {
+          /* Return card to DOM grid */
+          card.classList.remove('is-expanded');
+          expandedFace.style.display = 'none';
+          expandedFace.style.opacity = '';
+          compactFace.style.opacity  = '';
+
+          ph.parentNode.insertBefore(card, ph);
+          ph.remove();
+
+          gsap.set(card, { clearProps: 'position,top,left,width,height,zIndex,margin,borderRadius' });
+
+          expandedCard  = null;
+          placeholder   = null;
+          isAnimating   = false;
+          backdrop.classList.remove('active');
+        }
+      });
+
+      /* Expanded face fades out */
+      tl.to(expandedFace.querySelectorAll('.anim-in'), {
+        opacity: 0, y: -10,
+        stagger: 0.03, duration: 0.2, ease: 'power2.in',
+      }, 0);
+      tl.to(expandedFace, { opacity: 0, duration: 0.22 }, 0.1);
+
+      /* Card position: fullscreen → placeholder */
+      tl.to(card, {
+        top:   toRect.top,
+        left:  toRect.left,
+        width: toRect.width,
+        height: toRect.height,
+        borderRadius: 14,
+        ease: 'power4.inOut', duration: 0.82,
+      }, 0.18);
+
+      /* Compact face fades back in */
+      tl.to(compactFace, { opacity: 1, duration: 0.3 }, 0.60);
+
+      /* Backdrop fades */
+      tl.to(backdrop, { opacity: 0, duration: 0.4 }, 0.18);
+
+      /* Other cards reappear */
+      tl.to(others, { opacity: 1, scale: 1, duration: 0.5, stagger: 0.05 }, 0.42);
+    }
+
+    /* ── Event wiring ──────────────────────────────── */
+    allCards().forEach(function(card) {
+      /* Click on card or button */
+      card.addEventListener('click', function (e) {
+        if (expandedCard) return; /* already open */
+        expand(card);
+      });
+
+      /* Prevent close-button click from bubbling to card */
+      var closeBtn = card.querySelector('.btn-close');
+      if (closeBtn) {
+        closeBtn.addEventListener('click', function (e) {
+          e.stopPropagation();
+          collapse();
+        });
+      }
+    });
+
+    /* Click backdrop */
+    backdrop.addEventListener('click', collapse);
+
+    /* ESC key */
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && expandedCard) collapse();
+    });
+
+    /* Resize: recalculate fullscreen size if card is open */
+    window.addEventListener('resize', function () {
+      if (!expandedCard || isAnimating) return;
+      gsap.set(expandedCard, {
+        width:  window.innerWidth,
+        height: window.innerHeight,
+      });
+    });
+
+  })();
+  </script>
+</body>
+</html>

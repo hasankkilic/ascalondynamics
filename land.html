@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title data-en="Land Systems — UMAY | Ascalon Dynamics">Kara Sistemleri — UMAY | Ascalon Dynamics</title>
+  <meta name="description" data-en-content="UMAY (Şahin Göz): a real-time situational awareness and decision-support system for field teams, with edge-AI, AR/HUD and drone integration." content="UMAY (Şahin Göz): sahadaki ekipler için edge-AI, AR/HUD ve drone entegrasyonlu gerçek zamanlı durumsal farkındalık ve karar destek sistemi." />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Ascalon Dynamics Defence" />
+  <meta property="og:title" content="Kara Sistemleri — UMAY | Ascalon Dynamics" />
+  <meta property="og:description" content="UMAY · Şahin Göz — sahadaki ekipler için edge-AI, AR/HUD ve drone entegrasyonlu durumsal farkındalık sistemi." />
+  <meta property="og:image" content="images/logo.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <link rel="icon" href="images/logo.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="progress" id="progress"></div>
+
+  <header class="header" id="header">
+    <div class="container header__inner">
+      <a href="index.html" class="brand"><span class="brand--text">ASCALON&nbsp;DYNAMICS</span></a>
+      <nav class="nav nav--domains" aria-label="Birincil">
+        <ul class="nav__list">
+          <li><a class="nav__link" href="index.html" data-en="Home">Ana Sayfa</a></li>
+          <li><a class="nav__link" href="air.html" data-en="Air">Hava</a></li>
+          <li><a class="nav__link is-active" href="land.html" data-en="Land">Kara</a></li>
+          <li><a class="nav__link" href="hakkimizda.html" data-en="About">Hakkımızda</a></li>
+          <li><a class="nav__link" href="iletisim.html" data-en="Contact">İletişim</a></li>
+        </ul>
+      </nav>
+      <div class="nav__right">
+        <div class="lang-switch" role="group" aria-label="Dil / Language">
+          <button type="button" class="lang-btn is-active" data-lang="tr">TR</button>
+          <button type="button" class="lang-btn" data-lang="en">EN</button>
+        </div>
+        <a href="iletisim.html" class="btn btn--primary nav__cta" data-en="Get in Touch">İletişime Geç</a>
+      </div>
+      <button class="hamburger" id="hamburger" aria-label="Menü" aria-expanded="false"><span></span><span></span><span></span></button>
+    </div>
+  </header>
+
+  <div class="mobile-menu" id="mobileMenu">
+    <a class="mobile-menu__link" href="index.html" data-en="Home">Ana Sayfa</a>
+    <a class="mobile-menu__link" href="air.html" data-en="Air">Hava</a>
+    <a class="mobile-menu__link" href="land.html" data-en="Land">Kara</a>
+    <a class="mobile-menu__link" href="hakkimizda.html" data-en="About">Hakkımızda</a>
+    <a class="mobile-menu__link" href="iletisim.html" data-en="Contact">İletişim</a>
+    <a href="iletisim.html" class="btn btn--primary mobile-menu__cta" data-en="Get in Touch">İletişime Geç</a>
+    <div class="lang-switch lang-switch--mobile" role="group" aria-label="Dil / Language">
+      <button type="button" class="lang-btn is-active" data-lang="tr">TR</button>
+      <button type="button" class="lang-btn" data-lang="en">EN</button>
+    </div>
+  </div>
+
+  <main>
+    <!-- Page hero (video) -->
+    <section class="page-hero">
+      <video class="page-hero__bgzoom" autoplay muted loop playsinline style="width:100%;height:100%;object-fit:cover" src="images/umay-hero.mp4"></video>
+      <div class="container page-hero__inner">
+        <p class="breadcrumb"><a href="index.html" data-en="Home">Ana Sayfa</a> / <span data-en="Solutions">Çözümler</span> / <span data-en="Land">Kara</span></p>
+        <p class="page-hero__no" data-en="02 — Land Systems">02 — Kara Sistemleri</p>
+        <h1 class="page-hero__title">UMAY</h1>
+        <p class="page-hero__sub" data-en="ŞAHİN GÖZ — a real-time situational awareness and decision-support system for field teams. Edge AI · AR/HUD · Drone integration.">ŞAHİN GÖZ — sahadaki ekipler için gerçek zamanlı durumsal farkındalık ve karar destek sistemi. Edge AI · AR/HUD · Drone entegrasyonu.</p>
+      </div>
+    </section>
+
+    <!-- Overview -->
+    <section class="section">
+      <div class="container">
+        <p class="tag reveal" data-en="Field support for real heroes">Gerçek kahramanlar için saha desteği</p>
+        <h2 class="section__title reveal" data-en="All field data in a single ecosystem.">Tek bir ekosistemde tüm saha verisi.</h2>
+        <p class="section__text reveal" style="max-width:70ch" data-en="UMAY brings together an AR/HUD-enabled helmet, sensors, camera systems, a portable AI processing unit and a connected drone infrastructure in a single ecosystem. By processing imagery, audio, location and mission data with edge-based AI, it delivers rapid in-field analysis, alert generation, team coordination and incident tracking — without dependence on an internet connection.">
+          UMAY; AR/HUD destekli kask, sensörler, kamera sistemleri, taşınabilir yapay zeka işlem birimi ve
+          bağlantılı drone altyapısını tek bir ekosistemde birleştirir. Görüntü, ses, konum ve görev verilerini
+          edge tabanlı yapay zeka ile işleyerek; internet bağlantısına bağımlı kalmadan sahada hızlı analiz,
+          uyarı üretimi, ekip koordinasyonu ve olay takibi sağlar.
+        </p>
+      </div>
+    </section>
+
+    <!-- AI Takip / AR-HUD -->
+    <section class="section feature">
+      <div class="container feature__inner">
+        <div class="feature__media umay-video">
+          <video autoplay muted loop playsinline src="images/umay-arhud.mp4"></video>
+          <div class="umay-video__cap" data-en="UMAY · AI Tracking / AR-HUD">UMAY · AI Takip / AR-HUD</div>
+        </div>
+        <div class="feature__content">
+          <p class="tag reveal" data-en="Real-time AI tracking">Gerçek zamanlı AI takip</p>
+          <h2 class="section__title reveal" data-en="Live situational awareness in the field of view.">Görüş alanında canlı durumsal farkındalık.</h2>
+          <p class="section__text reveal" data-en="The AR/HUD layer projects threats, team positions and AI alerts into the operator's field of view in real time. Even in low-visibility conditions, autonomous object detection and tracking engage.">
+            AR/HUD katmanı; tehditleri, ekip konumlarını ve AI uyarılarını operatörün görüş alanına gerçek zamanlı
+            yansıtır. Düşük görüş koşullarında bile otonom nesne tespiti ve takip devreye girer.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Bileşen 01: Taktik Kask -->
+    <section class="section umay-comp">
+      <div class="container umay-comp__inner">
+        <div class="umay-comp__media umay-video">
+          <video autoplay muted loop playsinline src="images/umay-helmet.mp4"></video>
+          <div class="umay-video__cap" data-en="UMAY · Tactical Helmet">UMAY · Taktik Kask</div>
+        </div>
+        <div class="umay-comp__content">
+          <p class="umay-comp__no reveal" data-en="Component 01">Bileşen 01</p>
+          <h2 class="section__title reveal" data-en="Tactical Helmet">Taktik Kask</h2>
+          <p class="section__text reveal" data-en="As the central component of UMAY, the tactical helmet unifies multiple sensor systems under a single integrated platform. Thanks to its edge-AI processor, all data is analyzed locally without requiring a network connection.">
+            UMAY'ın merkezi bileşeni olan taktik kask, çoklu sensör sistemlerini tek bir entegre platform altında
+            birleştirir. Edge AI işlemcisi sayesinde ağ bağlantısı gerektirmeksizin tüm veriler yerelde analiz edilir.
+          </p>
+          <ul class="feature-list reveal">
+            <li data-en="Multi-sensor integration — camera, thermal, NIR">Çoklu sensör entegrasyonu — kamera, termal, NIR</li>
+            <li data-en="Information projected into the field of view via an AR/HUD micro-display">AR/HUD micro-display ile bilginin görüş alanına yansıtılması</li>
+            <li data-en="Independent data analysis with an edge-AI processor">Edge AI işlemcisiyle bağımsız veri analizi</li>
+            <li data-en="Infantry-grade lightweight and durable composite shell">Piyade sınıfı hafif ve dayanıklı kompozit kabuk</li>
+            <li data-en="Modular attach/detach architecture">Modüler takma/çıkarma mimarisi</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- Kask alt sistemleri -->
+    <section class="section" style="padding-top:0">
+      <div class="container">
+        <p class="tag reveal" data-en="Helmet subsystems">Kask alt sistemleri</p>
+        <h2 class="section__title reveal" data-en="Integrated sensor modules">Entegre sensör modülleri</h2>
+        <div class="subgrid">
+          <div class="subcard reveal"><p class="subcard__no">01</p><h3 data-en="Camera System">Kamera Sistemi</h3><p data-en="A dual-lens high-resolution camera array provides a continuous 360° view of the surroundings. Data is fed to the onboard AI for object detection and scene analysis.">Çift lensli yüksek çözünürlüklü kamera dizisi, sürekli 360° çevresel görüntü akışı sağlar. Veri onboard AI'ye aktarılarak nesne tespiti ve sahne analizi yapılır.</p></div>
+          <div class="subcard reveal"><p class="subcard__no">02</p><h3 data-en="AR Projection / HUD">AR Projeksiyon / HUD</h3><p data-en="A semi-transparent micro-display projects navigation data, team positions, threat markers and AI alerts into the field of view in real time.">Yarı saydam mikro-display; navigasyon verisi, takım konumları, tehdit işaretçileri ve AI uyarılarını görüş alanına gerçek zamanlı yansıtır.</p></div>
+          <div class="subcard reveal"><p class="subcard__no">03</p><h3 data-en="Night Vision">Gece Görüşü</h3><p data-en="An active NIR (near-infrared) module delivers crisp monochrome imagery in zero-light conditions. It works integrated with the HUD.">Aktif NIR (yakın kızılötesi) modülü, sıfır ışık koşullarında net monokrom görüntü sağlar. HUD ile entegre çalışır.</p></div>
+          <div class="subcard reveal"><p class="subcard__no">04</p><h3 data-en="Thermal Vision">Termal Görüş</h3><p data-en="An LWIR thermal sensor detects heat signatures through smoke, dust and low-visibility conditions. A critical advantage for identifying concealed personnel.">LWIR termal sensör; duman, toz ve düşük görüş koşullarında ısı imzalarını tespit eder. Gizlenmiş personeli belirlemede kritik avantaj.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Giyilebilir modüller -->
+    <section class="section" style="padding-top:0">
+      <div class="container">
+        <p class="tag reveal" data-en="Wearable modules">Giyilebilir modüller</p>
+        <h2 class="section__title reveal" data-en="Protection &amp; communication layer">Koruma &amp; iletişim katmanı</h2>
+        <div class="subgrid" style="grid-template-columns:repeat(3,1fr)">
+          <div class="subcard reveal"><p class="subcard__no">A</p><h3 data-en="Tactical Goggles">Taktik Gözlük</h3><p data-en="Ballistic-rated durable goggles house the AR projection optics. Working integrated with the HUD module, they relay the data layer into the field of view.">Balistik dereceli dayanıklı gözlük, AR projeksiyon optiğini barındırır. HUD modülüyle entegre çalışarak veri katmanını görüş alanına aktarır.</p></div>
+          <div class="subcard reveal"><p class="subcard__no">B</p><h3 data-en="Tactical Headset">Taktik Kulaklık</h3><p data-en="An active noise-cancelling headset with bone-conduction technology provides clear team communication and AI voice alerts in high-noise environments.">Aktif gürültü önlemeli ve kemik iletim teknolojili kulaklık; yüksek gürültüde net ekip içi iletişim ve AI sesli uyarılar sağlar.</p></div>
+          <div class="subcard reveal"><p class="subcard__no">C</p><h3 data-en="Protective Mask">Koruyucu Maske</h3><p data-en="A CBRN-class mask ensures respiratory safety in contaminated environments. Integrated air-quality sensors feed data to the UMAY panel.">CBRN sınıfı maske, kirlenmiş ortamlarda solunum güvenliği sağlar. Entegre hava kalitesi sensörleri UMAY paneline veri aktarır.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Bileşen 02: Kontrol Ünitesi -->
+    <section class="section umay-comp">
+      <div class="container umay-comp__inner flip">
+        <div class="umay-comp__media umay-video">
+          <video autoplay muted loop playsinline src="images/umay-control.mp4"></video>
+          <div class="umay-video__cap" data-en="UMAY · Control Unit">UMAY · Kontrol Ünitesi</div>
+        </div>
+        <div class="umay-comp__content">
+          <p class="umay-comp__no reveal" data-en="Component 02">Bileşen 02</p>
+          <h2 class="section__title reveal" data-en="Control Unit">Kontrol Ünitesi</h2>
+          <p class="section__text reveal" data-en="A rugged, portable edge-AI compute unit designed to be carried on the operator. It processes all sensor inputs locally — eliminating cloud dependency and managing the data flow between the helmet, the drone and the team network.">
+            Sağlam yapılı, taşınabilir edge AI hesaplama ünitesi operatörün üzerinde taşınacak şekilde tasarlanmıştır.
+            Tüm sensör girdilerini yerelde işler — bulut bağımlılığını ortadan kaldırarak kask, drone ve ekip ağı
+            arasındaki veri akışını yönetir.
+          </p>
+          <ul class="feature-list reveal">
+            <li data-en="Field-hardened, ruggedized edge-AI processor">Sahaya özel sertleştirilmiş edge AI işlemci</li>
+            <li data-en="Independent analysis without an internet connection">İnternet bağlantısı olmadan bağımsız analiz</li>
+            <li data-en="Instant data synchronization with the helmet, drone and team network">Kask, drone ve ekip ağıyla anlık veri senkronizasyonu</li>
+            <li data-en="Real-time alert generation and event logging">Gerçek zamanlı uyarı üretimi ve olay kaydı</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- Cross-link -->
+    <section class="section" style="padding-top:0">
+      <div class="container">
+        <p class="tag reveal" data-en="Other domain">Diğer alan</p>
+        <h2 class="section__title reveal" data-en="Explore air systems">Hava sistemlerini keşfet</h2>
+        <div class="domaincards" style="grid-template-columns:1fr">
+          <a class="domaincard reveal" href="air.html">
+            <video autoplay muted loop playsinline src="images/air-hero.mp4"></video>
+            <div class="domaincard__body"><p class="domaincard__no" data-en="01 — Air">01 — Hava</p><h3 data-en="Air Systems">Hava Sistemleri</h3><p data-en="Argus, VTOL 3800 and the Pura family — fixed-wing and vertical take-off UAV platforms.">Argus, VTOL 3800 ve Pura ailesi — sabit kanat ve dikey kalkış İHA platformları.</p><span class="link-arrow" data-en="Explore &rarr;">İncele &rarr;</span></div>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="section cta-band" style="background:radial-gradient(110% 150% at 50% 0%, #210608 0%, var(--bg) 60%)">
+      <div class="container cta-band__inner reveal">
+        <h2 class="cta-band__title" data-en="Request information about the UMAY ecosystem">UMAY ekosistemi hakkında bilgi alın</h2>
+        <a href="iletisim.html" class="btn btn--primary" data-en="Get in Touch">İletişime Geç</a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container footer__inner">
+      <div class="footer__brand">
+        <a href="index.html" class="brand"><span class="brand--text" style="font-size:18px">ASCALON&nbsp;DYNAMICS</span></a>
+        <p class="footer__mission" data-en="Ascalon Dynamics Defence — developing advanced unmanned aerial vehicles and championing innovation.">Ascalon Dynamics Defence — gelişmiş insansız hava araçları geliştiriyor ve inovasyonu destekliyoruz.</p>
+        <p class="flag" style="margin-top:8px"><img src="images/tr_bayrak.png" alt="Türkiye" /> Ankara, Türkiye</p>
+      </div>
+      <div class="footer__cols">
+        <div class="footer__col"><p class="footer__title" data-en="Air">Hava</p><a href="air.html">Argus</a><a href="air.html">VTOL 3800</a><a href="air.html">Pura A</a><a href="air.html">Pura B</a></div>
+        <div class="footer__col"><p class="footer__title" data-en="Land">Kara</p><a href="land.html">UMAY · Şahin Göz</a><a href="land.html" data-en="Tactical Helmet">Taktik Kask</a><a href="land.html" data-en="Control Unit">Kontrol Ünitesi</a></div>
+        <div class="footer__col"><p class="footer__title" data-en="Company">Kurumsal</p><a href="hakkimizda.html" data-en="About">Hakkımızda</a><a href="iletisim.html" data-en="Contact">İletişim</a></div>
+        <div class="footer__col"><p class="footer__title" data-en="Contact">İletişim</p><a href="tel:+905387439730">+90 538 743 97 30</a><a href="mailto:hasankilic@ascalondynamics.com" data-en="Email">E-posta</a></div>
+      </div>
+    </div>
+    <div class="footer__bottom">
+      <div class="container footer__bottom-inner">
+        <span data-en="&copy; 2025 Ascalon Dynamics Defence | All Rights Reserved.">&copy; 2025 Ascalon Dynamics Defence | Tüm Hakları Saklıdır.</span>
+        <div class="footer__social"><a href="#" aria-label="LinkedIn">in</a><a href="#" aria-label="Instagram">◎</a><a href="#" aria-label="X">X</a></div>
+      </div>
+    </div>
+  </footer>
+
+  <button class="to-top" id="toTop" aria-label="Yukarı çık">↑</button>
+  <script src="script.js"></script>
+</body>
+</html>

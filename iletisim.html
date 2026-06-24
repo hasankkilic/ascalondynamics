@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title data-en="Contact | Ascalon Dynamics">İletişim | Ascalon Dynamics</title>
+  <meta name="description" data-en-content="Get in touch with Ascalon Dynamics Defence — for technical documentation and collaboration inquiries." content="Ascalon Dynamics Defence ile iletişime geçin — teknik dokümantasyon ve iş birliği talepleri için." />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Ascalon Dynamics Defence" />
+  <meta property="og:title" content="İletişim | Ascalon Dynamics" />
+  <meta property="og:description" content="Teknik dokümantasyon ve iş birliği talepleriniz için Ascalon Dynamics Defence ile iletişime geçin." />
+  <meta property="og:image" content="images/logo.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <link rel="icon" href="images/logo.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="progress" id="progress"></div>
+
+  <header class="header" id="header">
+    <div class="container header__inner">
+      <a href="index.html" class="brand"><span class="brand--text">ASCALON&nbsp;DYNAMICS</span></a>
+      <nav class="nav nav--domains" aria-label="Birincil">
+        <ul class="nav__list">
+          <li><a class="nav__link" href="index.html" data-en="Home">Ana Sayfa</a></li>
+          <li><a class="nav__link" href="air.html" data-en="Air">Hava</a></li>
+          <li><a class="nav__link" href="land.html" data-en="Land">Kara</a></li>
+          <li><a class="nav__link" href="hakkimizda.html" data-en="About">Hakkımızda</a></li>
+          <li><a class="nav__link is-active" href="iletisim.html" data-en="Contact">İletişim</a></li>
+        </ul>
+      </nav>
+      <div class="nav__right">
+        <div class="lang-switch" role="group" aria-label="Dil / Language">
+          <button type="button" class="lang-btn is-active" data-lang="tr">TR</button>
+          <button type="button" class="lang-btn" data-lang="en">EN</button>
+        </div>
+        <a href="#form" class="btn btn--primary nav__cta" data-en="Get in Touch">İletişime Geç</a>
+      </div>
+      <button class="hamburger" id="hamburger" aria-label="Menü" aria-expanded="false"><span></span><span></span><span></span></button>
+    </div>
+  </header>
+
+  <div class="mobile-menu" id="mobileMenu">
+    <a class="mobile-menu__link" href="index.html" data-en="Home">Ana Sayfa</a>
+    <a class="mobile-menu__link" href="air.html" data-en="Air">Hava</a>
+    <a class="mobile-menu__link" href="land.html" data-en="Land">Kara</a>
+    <a class="mobile-menu__link" href="hakkimizda.html" data-en="About">Hakkımızda</a>
+    <a class="mobile-menu__link" href="iletisim.html" data-en="Contact">İletişim</a>
+    <a href="#form" class="btn btn--primary mobile-menu__cta" data-en="Get in Touch">İletişime Geç</a>
+    <div class="lang-switch lang-switch--mobile" role="group" aria-label="Dil / Language">
+      <button type="button" class="lang-btn is-active" data-lang="tr">TR</button>
+      <button type="button" class="lang-btn" data-lang="en">EN</button>
+    </div>
+  </div>
+
+  <main>
+    <!-- Page hero -->
+    <section class="page-hero">
+      <video class="page-hero__bgzoom" autoplay muted loop playsinline style="width:100%;height:100%;object-fit:cover" src="images/air-hero.mp4"></video>
+      <div class="container page-hero__inner">
+        <p class="breadcrumb"><a href="index.html" data-en="Home">Ana Sayfa</a> / <span data-en="Contact">İletişim</span></p>
+        <p class="page-hero__no" data-en="Get in touch">Bize ulaşın</p>
+        <h1 class="page-hero__title" data-en="Contact">İletişim</h1>
+        <p class="page-hero__sub" data-en="Contact Ascalon Dynamics Defence for technical documentation and collaboration inquiries.">Teknik dokümantasyon ve iş birliği talepleriniz için Ascalon Dynamics Defence ile iletişime geçin.</p>
+      </div>
+    </section>
+
+    <!-- Contact info -->
+    <section class="section">
+      <div class="container">
+        <p class="tag reveal" data-en="Contact details">İletişim bilgileri</p>
+        <h2 class="section__title reveal" data-en="How can we help you?">Size nasıl yardımcı olabiliriz?</h2>
+        <div class="contact-grid reveal">
+          <div class="contact-item"><p class="tag" data-en="Address">Adres</p><p data-en="Beytepe Campus,<br />Çankaya / Ankara, Türkiye">Beytepe Kampüsü,<br />Çankaya / Ankara, Türkiye</p></div>
+          <div class="contact-item"><p class="tag" data-en="Phone">Telefon</p><a href="tel:+905387439730">+90 538 743 97 30</a></div>
+          <div class="contact-item"><p class="tag" data-en="Email">E-posta</p><a href="mailto:hasankilic@ascalondynamics.com">hasankilic@ascalondynamics.com</a></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Harita -->
+    <section class="section" style="padding-top:0">
+      <div class="container">
+        <p class="tag reveal" data-en="Location">Konum</p>
+        <h2 class="section__title reveal" data-en="Beytepe Campus, Ankara">Beytepe Kampüsü, Ankara</h2>
+        <div class="map reveal">
+          <iframe src="https://www.openstreetmap.org/export/embed.html?bbox=32.7100%2C39.8500%2C32.7600%2C39.8850&layer=mapnik&marker=39.8669%2C32.7335" loading="lazy" title="Ascalon Dynamics konum"></iframe>
+        </div>
+        <a href="https://www.google.com/maps?q=Beytepe+Kamp%C3%BCs%C3%BC,+%C3%87ankaya,+Ankara" target="_blank" rel="noopener" class="link-arrow reveal" data-en="Open in Google Maps &rarr;">Google Haritalar'da aç &rarr;</a>
+      </div>
+    </section>
+
+    <!-- Form -->
+    <section class="section demo" id="form">
+      <div class="container">
+        <p class="tag reveal" data-en="Contact form">İletişim formu</p>
+        <h2 class="section__title reveal" data-en="Write to us">Bize yazın</h2>
+        <form class="demo__form reveal" id="contactForm" novalidate>
+          <div class="demo__row"><input type="text" name="name" placeholder="Adınız" data-en-ph="Your name" required /><input type="email" name="email" placeholder="İş e-postası" data-en-ph="Work email" required /></div>
+          <div class="demo__row"><input type="text" name="org" placeholder="Kurum" data-en-ph="Organization" /><input type="text" name="country" placeholder="Ülke" data-en-ph="Country" /></div>
+          <textarea name="message" placeholder="Size nasıl yardımcı olabiliriz?" data-en-ph="How can we help you?" required></textarea>
+          <button type="submit" class="btn btn--primary demo__submit" data-en="Send Message">Mesajı Gönder</button>
+          <p class="form-status" id="formStatus" role="status" aria-live="polite" data-en="Thank you — your message has been received. Our team will get back to you shortly." hidden>Teşekkürler — mesajınız alındı. Ekibimiz en kısa sürede size geri dönecek.</p>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container footer__inner">
+      <div class="footer__brand">
+        <a href="index.html" class="brand"><span class="brand--text" style="font-size:18px">ASCALON&nbsp;DYNAMICS</span></a>
+        <p class="footer__mission" data-en="Ascalon Dynamics Defence — developing advanced unmanned aerial vehicles and championing innovation.">Ascalon Dynamics Defence — gelişmiş insansız hava araçları geliştiriyor ve inovasyonu destekliyoruz.</p>
+        <p class="flag" style="margin-top:8px"><img src="images/tr_bayrak.png" alt="Türkiye" /> Ankara, Türkiye</p>
+      </div>
+      <div class="footer__cols">
+        <div class="footer__col"><p class="footer__title" data-en="Air">Hava</p><a href="air.html">Argus</a><a href="air.html">VTOL 3800</a><a href="air.html">Pura A</a><a href="air.html">Pura B</a></div>
+        <div class="footer__col"><p class="footer__title" data-en="Land">Kara</p><a href="land.html">UMAY · Şahin Göz</a><a href="land.html" data-en="Tactical Helmet">Taktik Kask</a><a href="land.html" data-en="Control Unit">Kontrol Ünitesi</a></div>
+        <div class="footer__col"><p class="footer__title" data-en="Company">Kurumsal</p><a href="hakkimizda.html" data-en="About">Hakkımızda</a><a href="iletisim.html" data-en="Contact">İletişim</a></div>
+        <div class="footer__col"><p class="footer__title" data-en="Contact">İletişim</p><a href="tel:+905387439730">+90 538 743 97 30</a><a href="mailto:hasankilic@ascalondynamics.com" data-en="Email">E-posta</a></div>
+      </div>
+    </div>
+    <div class="footer__bottom">
+      <div class="container footer__bottom-inner">
+        <span data-en="&copy; 2025 Ascalon Dynamics Defence | All Rights Reserved.">&copy; 2025 Ascalon Dynamics Defence | Tüm Hakları Saklıdır.</span>
+        <div class="footer__social"><a href="#" aria-label="LinkedIn">in</a><a href="#" aria-label="Instagram">◎</a><a href="#" aria-label="X">X</a></div>
+      </div>
+    </div>
+  </footer>
+
+  <button class="to-top" id="toTop" aria-label="Yukarı çık">↑</button>
+  <script src="script.js"></script>
+</body>
+</html>

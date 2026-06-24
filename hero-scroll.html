@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ascalon Dynamics — Immersive Hero</title>
+  <link rel="icon" href="images/logo.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ─── Reset ─────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: auto; }
+
+    body {
+      background: #000;
+      color: #fff;
+      font-family: 'Inter', -apple-system, 'Segoe UI', Roboto, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    a { color: inherit; text-decoration: none; }
+
+    /* ─── Subtle noise grain texture ───────────────────── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 9999;
+      opacity: 0.028;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)'/%3E%3C/svg%3E");
+      background-repeat: repeat;
+      background-size: 300px 300px;
+    }
+
+    /* ─── 1. INTRO SPACER ───────────────────────────────── */
+    .intro-spacer {
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+      user-select: none;
+    }
+
+    /* Dot grid background */
+    .intro-spacer::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background-image: radial-gradient(circle, rgba(255,255,255,0.07) 1px, transparent 1px);
+      background-size: 36px 36px;
+      mask-image: radial-gradient(ellipse 70% 60% at 50% 50%, black 30%, transparent 100%);
+      -webkit-mask-image: radial-gradient(ellipse 70% 60% at 50% 50%, black 30%, transparent 100%);
+    }
+
+    .intro-eyebrow {
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.35);
+      margin-bottom: 28px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .intro-title {
+      font-size: clamp(42px, 8.5vw, 116px);
+      font-weight: 600;
+      letter-spacing: -0.04em;
+      color: #fff;
+      line-height: 0.92;
+      text-align: center;
+      position: relative;
+      z-index: 1;
+    }
+
+    .intro-sub {
+      margin-top: 28px;
+      font-size: clamp(14px, 1.4vw, 19px);
+      font-weight: 400;
+      letter-spacing: -0.01em;
+      color: rgba(255,255,255,0.55);
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Scroll hint */
+    .intro-scroll {
+      position: absolute;
+      bottom: 44px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      z-index: 1;
+    }
+
+    .intro-scroll__label {
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.25);
+    }
+
+    .intro-scroll__line {
+      width: 1px;
+      height: 40px;
+      background: linear-gradient(to bottom, rgba(255,255,255,0.3), transparent);
+      animation: scrollPulse 2.2s ease-in-out infinite;
+    }
+
+    @keyframes scrollPulse {
+      0%   { transform: scaleY(1);   opacity: 1; }
+      50%  { transform: scaleY(0.2); opacity: 0.3; }
+      100% { transform: scaleY(1);   opacity: 1; }
+    }
+
+    /* ─── 2. HERO SECTION (pinned by GSAP) ─────────────── */
+    .hero-section {
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      z-index: 10;
+    }
+
+    /* ─── 3. ZOOM CONTAINER ─────────────────────────────── */
+    .zoom-container {
+      width: 40vw;
+      height: 40vh;
+      border-radius: 24px;
+      border: 1px solid rgba(255,255,255,0.15);
+      background: #030303;
+      overflow: hidden;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      will-change: width, height, border-radius;
+    }
+
+    @media (max-width: 680px) {
+      .zoom-container { width: 82vw; height: 50vh; }
+    }
+
+    /* ── HUD: Top bar ── */
+    .hud-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 11px 16px;
+      border-bottom: 1px solid rgba(255,255,255,0.055);
+      flex-shrink: 0;
+    }
+
+    .hud-brand {
+      font-size: 9.5px;
+      font-weight: 600;
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.65);
+    }
+
+    .hud-online {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 9.5px;
+      font-weight: 500;
+      letter-spacing: 0.18em;
+      color: rgba(255,255,255,0.35);
+      text-transform: uppercase;
+    }
+
+    .hud-dot {
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: #4ade80;
+      flex-shrink: 0;
+      animation: blink 2.4s ease-in-out infinite;
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      45%       { opacity: 0.2; }
+    }
+
+    /* ── HUD: Body ── */
+    .hud-body {
+      flex: 1;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    /* Dot grid inside container */
+    .hud-grid {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+      background-size: 44px 44px;
+    }
+
+    /* Animated scan line */
+    .hud-scan {
+      position: absolute;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.12) 50%, transparent 100%);
+      animation: scanY 5s linear infinite;
+      pointer-events: none;
+    }
+
+    @keyframes scanY {
+      0%   { top: -1px; }
+      100% { top: 100%; }
+    }
+
+    /* Corner bracket decorations */
+    .bracket {
+      position: absolute;
+      width: 18px;
+      height: 18px;
+      border-color: rgba(255,255,255,0.22);
+      border-style: solid;
+    }
+    .bracket--tl { top: 10px; left: 10px;  border-width: 1px 0 0 1px; }
+    .bracket--tr { top: 10px; right: 10px; border-width: 1px 1px 0 0; }
+    .bracket--bl { bottom: 10px; left: 10px;  border-width: 0 0 1px 1px; }
+    .bracket--br { bottom: 10px; right: 10px; border-width: 0 1px 1px 0; }
+
+    /* Center reticle */
+    .hud-reticle {
+      position: absolute;
+      width: 44px;
+      height: 44px;
+      border: 1px solid rgba(255,255,255,0.18);
+      border-radius: 50%;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+    }
+
+    .hud-reticle::before,
+    .hud-reticle::after {
+      content: '';
+      position: absolute;
+      background: rgba(255,255,255,0.18);
+    }
+
+    .hud-reticle::before {
+      width: 1px;
+      height: 100%;
+      top: 0;
+      left: 50%;
+    }
+
+    .hud-reticle::after {
+      height: 1px;
+      width: 100%;
+      top: 50%;
+      left: 0;
+    }
+
+    /* Center text content */
+    .hud-center {
+      position: relative;
+      z-index: 2;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .hud-center__title {
+      font-size: clamp(11px, 1.4vw, 17px);
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      color: #fff;
+      line-height: 1.2;
+    }
+
+    .hud-center__sub {
+      font-size: clamp(9px, 0.9vw, 11px);
+      font-weight: 500;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.38);
+    }
+
+    /* ── HUD: Bottom bar ── */
+    .hud-bottom {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 9px 16px;
+      border-top: 1px solid rgba(255,255,255,0.055);
+      flex-shrink: 0;
+    }
+
+    .hud-meta {
+      font-size: 9px;
+      font-weight: 400;
+      letter-spacing: 0.12em;
+      color: rgba(255,255,255,0.28);
+      text-transform: uppercase;
+    }
+
+    /* ─── 4. POST-HERO CONTENT ──────────────────────────── */
+    .post-hero {
+      min-height: 100vh;
+      background: #000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      z-index: 5;
+      border-top: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .post-hero__inner {
+      max-width: 720px;
+      text-align: center;
+      padding: 80px 32px;
+    }
+
+    .post-hero__eyebrow {
+      display: block;
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.3);
+      margin-bottom: 24px;
+    }
+
+    .post-hero__title {
+      font-size: clamp(36px, 6vw, 80px);
+      font-weight: 600;
+      letter-spacing: -0.04em;
+      color: #fff;
+      line-height: 0.95;
+    }
+
+    .post-hero__text {
+      margin-top: 28px;
+      font-size: clamp(15px, 1.5vw, 18px);
+      font-weight: 400;
+      letter-spacing: -0.01em;
+      color: rgba(255,255,255,0.6);
+      line-height: 1.72;
+    }
+
+    .post-hero__cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 40px;
+      padding: 15px 30px;
+      border: 1px solid rgba(255,255,255,0.22);
+      border-radius: 999px;
+      font-size: 14px;
+      font-weight: 500;
+      letter-spacing: -0.01em;
+      color: #fff;
+      transition: border-color 0.22s, background 0.22s;
+    }
+
+    .post-hero__cta:hover {
+      border-color: rgba(255,255,255,0.55);
+      background: rgba(255,255,255,0.05);
+    }
+
+    .post-hero__cta svg {
+      width: 14px;
+      height: 14px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    /* Stats row */
+    .post-hero__stats {
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      gap: 48px;
+      margin-top: 60px;
+      padding-top: 60px;
+      border-top: 1px solid rgba(255,255,255,0.07);
+      flex-wrap: wrap;
+    }
+
+    .stat-item { text-align: center; }
+
+    .stat-item__num {
+      display: block;
+      font-size: clamp(32px, 4vw, 52px);
+      font-weight: 600;
+      letter-spacing: -0.04em;
+      color: #fff;
+      line-height: 1;
+    }
+
+    .stat-item__label {
+      display: block;
+      margin-top: 8px;
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.35);
+    }
+
+    /* ─── Footer ──────────────────────────────────────────── */
+    .mini-footer {
+      text-align: center;
+      padding: 32px;
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      color: rgba(255,255,255,0.2);
+      border-top: 1px solid rgba(255,255,255,0.05);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+       1 · INTRO SPACER
+  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+  <section class="intro-spacer">
+    <p class="intro-eyebrow">Autonomous Systems</p>
+    <h1 class="intro-title">ASCALON<br>DYNAMICS</h1>
+    <p class="intro-sub">Next-Generation Autonomous Systems</p>
+
+    <div class="intro-scroll">
+      <span class="intro-scroll__label">Scroll</span>
+      <span class="intro-scroll__line"></span>
+    </div>
+  </section>
+
+  <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+       2 · HERO SECTION — GSAP tarafından pinlenir
+  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+  <section class="hero-section" id="heroSection">
+    <div class="zoom-container" id="zoomContainer">
+
+      <!-- HUD Üst Çubuk -->
+      <div class="hud-top hud-chrome">
+        <span class="hud-brand">ASCALON · EDGE</span>
+        <span class="hud-online">
+          <span class="hud-dot"></span>
+          SYS:ONLINE
+        </span>
+      </div>
+
+      <!-- HUD Gövde -->
+      <div class="hud-body">
+        <div class="hud-grid"></div>
+        <div class="hud-scan"></div>
+
+        <!-- Köşe parantezleri -->
+        <div class="bracket bracket--tl hud-chrome"></div>
+        <div class="bracket bracket--tr hud-chrome"></div>
+        <div class="bracket bracket--bl hud-chrome"></div>
+        <div class="bracket bracket--br hud-chrome"></div>
+
+        <!-- Merkez nişangah -->
+        <div class="hud-reticle hud-chrome"></div>
+
+        <!-- Merkez içerik -->
+        <div class="hud-center hud-chrome">
+          <p class="hud-center__title">UAV Otonom Uçuş Sistemi</p>
+          <p class="hud-center__sub">Sistem Arayüzü Gelecek</p>
+        </div>
+      </div>
+
+      <!-- HUD Alt Çubuk -->
+      <div class="hud-bottom hud-chrome">
+        <span class="hud-meta">37°09′24″N &nbsp;34°49′41″E</span>
+        <span class="hud-meta">ALT: 420 M &nbsp;·&nbsp; SPD: 64 KT</span>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+       3 · PIN AÇILDIKTAN SONRA GELEN İÇERİK
+  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+  <section class="post-hero" id="postHero">
+    <div class="post-hero__inner">
+      <span class="post-hero__eyebrow">Platform Overview</span>
+      <h2 class="post-hero__title">Beyond the Horizon</h2>
+      <p class="post-hero__text">
+        Edge-AI entegre insansız hava sistemleri; savunma, keşif ve kritik altyapı
+        operasyonları için tasarlandı. Sabit kanat, VTOL ve bağlı drone konfigürasyonlarında
+        tam otonom görev yeteneği.
+      </p>
+      <a href="index.html" class="post-hero__cta">
+        Platformları Keşfet
+        <svg viewBox="0 0 16 16"><line x1="2" y1="8" x2="14" y2="8"/><polyline points="9,3 14,8 9,13"/></svg>
+      </a>
+
+      <div class="post-hero__stats">
+        <div class="stat-item">
+          <span class="stat-item__num">1000+</span>
+          <span class="stat-item__label">Toplam Uçuş Süresi</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-item__num">5</span>
+          <span class="stat-item__label">İHA Platformu</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-item__num">30+</span>
+          <span class="stat-item__label">Ekip Üyesi</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Mini footer -->
+  <footer class="mini-footer">
+    © 2025 ASCALON DYNAMICS DEFENCE — ANKARA, TÜRKİYE
+  </footer>
+
+  <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+       GSAP + ScrollTrigger
+  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+
+  <script>
+    gsap.registerPlugin(ScrollTrigger);
+
+    /* ── 1. Sayfa açılış animasyonu ────────────────────── */
+    const loadTl = gsap.timeline({ defaults: { ease: 'power3.out' } });
+    loadTl
+      .from('.intro-eyebrow', { opacity: 0, y: 12, duration: 0.7, delay: 0.15 })
+      .from('.intro-title',   { opacity: 0, y: 56, duration: 1.1 }, '-=0.35')
+      .from('.intro-sub',     { opacity: 0, y: 22, duration: 0.8 }, '-=0.55')
+      .from('.intro-scroll',  { opacity: 0, duration: 0.7 }, '-=0.3');
+
+    /* ── 2. Pin & Zoom (ScrollTrigger) ─────────────────── */
+    const zoomTl = gsap.timeline({
+      scrollTrigger: {
+        trigger: '#heroSection',
+        start: 'top top',
+        end: '+=280%',          /* Kaydırma mesafesi: 2.8× viewport yüksekliği */
+        pin: true,
+        scrub: 1.4,             /* 1.4 saniyelik yumuşatma */
+        pinSpacing: true,
+        anticipatePin: 1,
+      }
+    });
+
+    /* Aşama 1 (0 → 0.25): HUD öğeleri solar */
+    zoomTl.to('.hud-chrome', {
+      opacity: 0,
+      duration: 0.25,
+      ease: 'none',
+    });
+
+    /* Aşama 2 (0 → 1): Çerçeve tam ekrana açılır */
+    zoomTl.to('#zoomContainer', {
+      width: '100vw',
+      height: '100vh',
+      borderRadius: 0,
+      borderColor: 'rgba(255,255,255,0)',
+      ease: 'none',
+      duration: 1,
+    }, 0); /* zaman = 0 → her iki animasyon aynı anda başlar */
+
+    /* ── 3. Post-hero giriş animasyonu ─────────────────── */
+    gsap.from(
+      '.post-hero__eyebrow, .post-hero__title, .post-hero__text, .post-hero__cta, .stat-item',
+      {
+        opacity: 0,
+        y: 32,
+        stagger: 0.12,
+        duration: 0.9,
+        ease: 'power3.out',
+        scrollTrigger: {
+          trigger: '#postHero',
+          start: 'top 72%',
+        }
+      }
+    );
+  </script>
+</body>
+</html>
