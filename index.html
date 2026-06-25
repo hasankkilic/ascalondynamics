@@ -3,662 +3,550 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title data-en="Ascalon Dynamics | Advanced Unmanned Aerial Systems">Ascalon Dynamics | İleri İnsansız Hava Sistemleri</title>
-  <meta name="description" data-en-content="Ascalon Dynamics develops edge-AI integrated unmanned aerial systems for defense, reconnaissance and critical infrastructure operations." content="Ascalon Dynamics; savunma, keşif ve kritik altyapı operasyonları için edge-AI entegre insansız hava sistemleri geliştirir." />
+  <title data-en="Ascalon Dynamics | Autonomous Aerial Intelligence">Ascalon Dynamics | Otonom Hava İstihbaratı</title>
+  <meta name="description" data-en-content="Ascalon Dynamics builds edge-AI integrated unmanned aerial systems for defense, reconnaissance and critical infrastructure." content="Ascalon Dynamics; savunma ve kritik altyapı operasyonları için edge-AI entegre insansız hava sistemleri geliştiriyor." />
   <meta property="og:type" content="website" />
-  <meta property="og:site_name" content="Ascalon Dynamics Defence" />
-  <meta property="og:title" content="Ascalon Dynamics | İleri İnsansız Hava Sistemleri" />
-  <meta property="og:description" content="Savunma, keşif ve kritik altyapı operasyonları için edge-AI entegre insansız hava sistemleri." />
-  <meta property="og:image" content="images/logo.png" />
-  <meta name="twitter:card" content="summary_large_image" />
+  <meta property="og:site_name" content="Ascalon Dynamics" />
   <link rel="icon" href="images/logo.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=IBM+Plex+Mono:wght@300;400;500;600&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="styles.css" />
-
-  <style>
-    /* ══════════════════════════════════════════════════
-       SCROLL-TRIGGERED HERO — Pin & Zoom
-    ══════════════════════════════════════════════════ */
-
-    /* ── Intro Spacer ── */
-    .intro-spacer {
-      height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      position: relative;
-      overflow: hidden;
-      background: #fafafa;
-      user-select: none;
-    }
-
-    /* Nokta grid arka plan */
-    .intro-spacer::after {
-      content: '';
-      position: absolute;
-      inset: 0;
-      pointer-events: none;
-      background-image: radial-gradient(circle, rgba(0,0,0,0.07) 1px, transparent 1px);
-      background-size: 36px 36px;
-      mask-image: radial-gradient(ellipse 65% 55% at 50% 50%, black 25%, transparent 100%);
-      -webkit-mask-image: radial-gradient(ellipse 65% 55% at 50% 50%, black 25%, transparent 100%);
-    }
-
-    .intro-eyebrow {
-      font-size: 10px;
-      font-weight: 500;
-      letter-spacing: 0.3em;
-      text-transform: uppercase;
-      color: rgba(0,0,0,0.4);
-      margin-bottom: 26px;
-      position: relative;
-      z-index: 1;
-    }
-
-    .intro-title {
-      font-size: clamp(44px, 9vw, 120px);
-      font-weight: 600;
-      letter-spacing: -0.04em;
-      color: #0d0f12;
-      line-height: 0.91;
-      text-align: center;
-      position: relative;
-      z-index: 1;
-    }
-
-    .intro-sub {
-      margin-top: 28px;
-      font-size: clamp(14px, 1.4vw, 19px);
-      font-weight: 400;
-      letter-spacing: -0.01em;
-      color: rgba(0,0,0,0.5);
-      position: relative;
-      z-index: 1;
-    }
-
-    .intro-scroll-hint {
-      position: absolute;
-      bottom: 44px;
-      left: 50%;
-      transform: translateX(-50%);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 10px;
-      z-index: 1;
-    }
-
-    .intro-scroll-hint__label {
-      font-size: 9.5px;
-      font-weight: 500;
-      letter-spacing: 0.22em;
-      text-transform: uppercase;
-      color: rgba(0,0,0,0.25);
-    }
-
-    .intro-scroll-hint__line {
-      display: block;
-      width: 1px;
-      height: 40px;
-      background: linear-gradient(to bottom, rgba(0,0,0,0.25), transparent);
-      animation: scrollLinePulse 2.3s ease-in-out infinite;
-    }
-
-    @keyframes scrollLinePulse {
-      0%, 100% { transform: scaleY(1);   opacity: 1; }
-      50%       { transform: scaleY(0.2); opacity: 0.25; }
-    }
-
-    /* ── Hero Zoom Section (GSAP pinler) ── */
-    .hero-zoom-section {
-      height: 100vh;
-      position: relative;
-      overflow: hidden;
-      background: #fafafa;
-      z-index: 10;
-    }
-
-    /* ── Zoom Container ── */
-    .zoom-container {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      width: 40vw;
-      height: 40vh;
-      border-radius: 24px;
-      border: 1px solid rgba(255,255,255,0.15);
-      background: #020202;
-      overflow: hidden;
-      will-change: width, height, border-radius;
-    }
-
-    @media (max-width: 680px) {
-      .zoom-container { width: 82vw; height: 50vh; }
-    }
-
-    /* Video dolgu */
-    .zoom-video {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      display: block;
-    }
-
-    /* HUD katmanı (video üstü) */
-    .hud-overlay {
-      position: absolute;
-      inset: 0;
-      z-index: 2;
-      display: flex;
-      flex-direction: column;
-      pointer-events: none;
-      background: linear-gradient(
-        to bottom,
-        rgba(0,0,0,0.5) 0%,
-        rgba(0,0,0,0.08) 35%,
-        rgba(0,0,0,0.08) 65%,
-        rgba(0,0,0,0.5) 100%
-      );
-    }
-
-    /* HUD Üst Çubuk */
-    .hud-top {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 11px 16px;
-      border-bottom: 1px solid rgba(255,255,255,0.08);
-      flex-shrink: 0;
-      backdrop-filter: blur(8px);
-      background: rgba(0,0,0,0.35);
-    }
-
-    .hud-brand {
-      font-size: 9.5px;
-      font-weight: 600;
-      letter-spacing: 0.28em;
-      text-transform: uppercase;
-      color: rgba(255,255,255,0.75);
-    }
-
-    .hud-online {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      font-size: 9.5px;
-      font-weight: 500;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-      color: rgba(255,255,255,0.38);
-    }
-
-    .hud-dot {
-      width: 5px;
-      height: 5px;
-      border-radius: 50%;
-      background: #4ade80;
-      flex-shrink: 0;
-      animation: hudBlink 2.5s ease-in-out infinite;
-    }
-
-    @keyframes hudBlink {
-      0%, 100% { opacity: 1; }
-      48%       { opacity: 0.15; }
-    }
-
-    /* HUD Gövde */
-    .hud-body {
-      flex: 1;
-      position: relative;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .hud-grid {
-      position: absolute;
-      inset: 0;
-      pointer-events: none;
-      background-image:
-        linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
-      background-size: 44px 44px;
-    }
-
-    .hud-scan {
-      position: absolute;
-      left: 0; right: 0;
-      height: 1px;
-      background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.15) 50%, transparent 100%);
-      animation: hudScanY 5s linear infinite;
-      pointer-events: none;
-    }
-
-    @keyframes hudScanY {
-      0%   { top: 0; }
-      100% { top: 100%; }
-    }
-
-    /* Köşe parantezleri */
-    .bracket {
-      position: absolute;
-      width: 18px;
-      height: 18px;
-      border-color: rgba(255,255,255,0.32);
-      border-style: solid;
-    }
-    .bracket--tl { top: 10px;    left: 10px;  border-width: 1px 0 0 1px; }
-    .bracket--tr { top: 10px;    right: 10px; border-width: 1px 1px 0 0; }
-    .bracket--bl { bottom: 10px; left: 10px;  border-width: 0 0 1px 1px; }
-    .bracket--br { bottom: 10px; right: 10px; border-width: 0 1px 1px 0; }
-
-    /* Nişangah */
-    .hud-reticle {
-      position: absolute;
-      width: 42px; height: 42px;
-      border: 1px solid rgba(255,255,255,0.22);
-      border-radius: 50%;
-      top: 50%; left: 50%;
-      transform: translate(-50%, -50%);
-      pointer-events: none;
-    }
-    .hud-reticle::before,
-    .hud-reticle::after {
-      content: ''; position: absolute;
-      background: rgba(255,255,255,0.22);
-    }
-    .hud-reticle::before { width: 1px; height: 100%; top: 0; left: 50%; }
-    .hud-reticle::after  { height: 1px; width: 100%; top: 50%; left: 0; }
-
-    /* Merkez metin */
-    .hud-center {
-      position: relative;
-      z-index: 2;
-      text-align: center;
-      margin-top: 52px;
-    }
-
-    .hud-center__title {
-      font-size: clamp(11px, 1.3vw, 17px);
-      font-weight: 600;
-      letter-spacing: -0.02em;
-      color: #fff;
-      text-shadow: 0 1px 10px rgba(0,0,0,0.9);
-    }
-
-    .hud-center__sub {
-      margin-top: 6px;
-      font-size: clamp(9px, 0.82vw, 11px);
-      font-weight: 500;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      color: rgba(255,255,255,0.38);
-    }
-
-    /* HUD Alt Çubuk */
-    .hud-bottom {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 9px 16px;
-      border-top: 1px solid rgba(255,255,255,0.08);
-      flex-shrink: 0;
-      backdrop-filter: blur(8px);
-      background: rgba(0,0,0,0.35);
-    }
-
-    .hud-meta {
-      font-size: 9px;
-      font-weight: 400;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: rgba(255,255,255,0.28);
-    }
-  </style>
 </head>
 <body>
+
+  <!-- Scroll progress line -->
   <div class="progress" id="progress"></div>
 
-  <!-- Preloader -->
+  <!-- ══════ PRELOADER ══════ -->
   <div class="preloader" id="preloader">
-    <div class="preloader__brand"><span class="brand--text" style="font-size:24px;letter-spacing:.32em">ASCALON DYNAMICS</span></div>
-    <div class="preloader__bar"><span></span></div>
-    <p class="preloader__tag" data-en="Ascalon Dynamics — Unmanned Aerial Systems">Ascalon Dynamics — İnsansız Hava Sistemleri</p>
+    <div class="pre__inner">
+      <div class="pre__logo">ASCALON<span>DYNAMICS</span></div>
+      <div class="pre__bar"><span id="preBar"></span></div>
+      <p class="pre__tag" data-en="Initializing Systems">Sistemler Başlatılıyor</p>
+    </div>
   </div>
 
-  <!-- Header -->
+  <!-- ══════ HEADER ══════ -->
   <header class="header" id="header">
-    <div class="container header__inner">
-      <a href="index.html" class="brand"><span class="brand--text">ASCALON&nbsp;DYNAMICS</span></a>
-      <nav class="nav nav--domains" aria-label="Birincil">
+    <div class="hdr__inner">
+      <a href="index.html" class="brand">
+        <span class="brand__word">ASCALON</span><span class="brand__word brand__word--accent">DYNAMICS</span>
+      </a>
+      <nav class="nav" aria-label="Primary">
         <ul class="nav__list">
           <li><a class="nav__link is-active" href="index.html" data-en="Home">Ana Sayfa</a></li>
-          <li><a class="nav__link" href="air.html" data-en="Air">Hava</a></li>
-          <li><a class="nav__link" href="land.html" data-en="Land">Kara</a></li>
+          <li><a class="nav__link" href="air.html" data-en="Air Systems">Hava</a></li>
+          <li><a class="nav__link" href="land.html" data-en="Land Systems">Kara</a></li>
           <li><a class="nav__link" href="hakkimizda.html" data-en="About">Hakkımızda</a></li>
-          <li><a class="nav__link" href="iletisim.html" data-en="Contact">İletişim</a></li>
         </ul>
       </nav>
-      <div class="nav__right">
-        <div class="lang-switch" role="group" aria-label="Dil / Language">
-          <button type="button" class="lang-btn is-active" data-lang="tr">TR</button>
-          <button type="button" class="lang-btn" data-lang="en">EN</button>
+      <div class="hdr__right">
+        <div class="lang-switch">
+          <button class="lang-btn is-active" data-lang="tr">TR</button>
+          <button class="lang-btn" data-lang="en">EN</button>
         </div>
-        <a href="iletisim.html" class="btn btn--primary nav__cta" data-en="Get in Touch">İletişime Geç</a>
+        <a href="iletisim.html" class="btn btn--primary" data-en="Get in Touch">İletişime Geç</a>
+        <button class="hamburger" id="hamburger" aria-label="Menu" aria-expanded="false">
+          <span></span><span></span><span></span>
+        </button>
       </div>
-      <button class="hamburger" id="hamburger" aria-label="Menü" aria-expanded="false"><span></span><span></span><span></span></button>
     </div>
   </header>
 
+  <!-- Mobile menu -->
   <div class="mobile-menu" id="mobileMenu">
-    <a class="mobile-menu__link" href="index.html" data-en="Home">Ana Sayfa</a>
-    <a class="mobile-menu__link" href="air.html" data-en="Air">Hava</a>
-    <a class="mobile-menu__link" href="land.html" data-en="Land">Kara</a>
-    <a class="mobile-menu__link" href="hakkimizda.html" data-en="About">Hakkımızda</a>
-    <a class="mobile-menu__link" href="iletisim.html" data-en="Contact">İletişim</a>
-    <a href="iletisim.html" class="btn btn--primary mobile-menu__cta" data-en="Get in Touch">İletişime Geç</a>
-    <div class="lang-switch lang-switch--mobile" role="group" aria-label="Dil / Language">
-      <button type="button" class="lang-btn is-active" data-lang="tr">TR</button>
-      <button type="button" class="lang-btn" data-lang="en">EN</button>
+    <a class="mm__link" href="index.html" data-en="Home">Ana Sayfa</a>
+    <a class="mm__link" href="air.html" data-en="Air Systems">Hava Sistemleri</a>
+    <a class="mm__link" href="land.html" data-en="Land Systems">Kara Sistemleri</a>
+    <a class="mm__link" href="hakkimizda.html" data-en="About">Hakkımızda</a>
+    <a class="mm__link" href="iletisim.html" data-en="Contact">İletişim</a>
+    <div class="mm__footer">
+      <div class="lang-switch">
+        <button class="lang-btn is-active" data-lang="tr">TR</button>
+        <button class="lang-btn" data-lang="en">EN</button>
+      </div>
+      <a href="iletisim.html" class="btn btn--primary" data-en="Get in Touch">İletişime Geç</a>
     </div>
   </div>
 
   <main>
-    <!-- ━━━ INTRO SPACER ━━━ -->
-    <section class="intro-spacer">
-      <p class="intro-eyebrow" data-en="Autonomous Systems">Otonom Sistemler</p>
-      <h1 class="intro-title">ASCALON<br>DYNAMICS</h1>
-      <p class="intro-sub" data-en="Next-Generation Autonomous Systems">Yeni Nesil Otonom Sistemler</p>
-      <div class="intro-scroll-hint" aria-hidden="true">
-        <span class="intro-scroll-hint__label" data-en="Scroll">Kaydır</span>
-        <span class="intro-scroll-hint__line"></span>
+
+    <!-- ══════════════════════════════════════════════
+         SECTION 1 — HERO (Three.js WebGL Canvas)
+    ══════════════════════════════════════════════ -->
+    <section class="hero" id="hero">
+      <canvas id="heroCanvas"></canvas>
+
+      <!-- Cinematic vignette -->
+      <div class="hero__vignette"></div>
+
+      <!-- HUD corner brackets -->
+      <div class="hud-frame" aria-hidden="true">
+        <span class="hud-frame__corner hud-frame__corner--tl"></span>
+        <span class="hud-frame__corner hud-frame__corner--tr"></span>
+        <span class="hud-frame__corner hud-frame__corner--bl"></span>
+        <span class="hud-frame__corner hud-frame__corner--br"></span>
+        <span class="hud-frame__line hud-frame__line--top"></span>
+        <span class="hud-frame__line hud-frame__line--bottom"></span>
+      </div>
+
+      <!-- HUD status bar -->
+      <div class="hero__hud-top" aria-hidden="true">
+        <span class="hud-tag">ASCALON · EDGE · v4.2.1</span>
+        <div class="hud-status">
+          <span class="hud-dot"></span>
+          <span data-en="SYSTEMS ONLINE">SİSTEM AKTİF</span>
+        </div>
+        <span class="hud-tag hud-tag--right">37°09′N &nbsp;34°49′E</span>
+      </div>
+
+      <!-- Main headline -->
+      <div class="hero__content">
+        <p class="hero__eyebrow" data-en="Next-Generation Autonomous Systems">Yeni Nesil Otonom Sistemler</p>
+        <h1 class="hero__title">
+          <span class="hero__title-line" data-en="Autonomous">Otonom</span>
+          <span class="hero__title-line hero__title-line--accent" data-en="Intelligence">İstihbarat</span>
+          <span class="hero__title-line hero__title-line--thin" data-en="for the Next Generation">Yeni Nesil Havacılık için</span>
+        </h1>
+        <p class="hero__sub" data-en="Precision-engineered UAV platforms powered by edge AI — built for the most demanding defense and reconnaissance operations.">Sınır tanımayan savunma ve keşif operasyonları için edge AI destekli, hassas mühendislik ürünü İHA platformları.</p>
+        <div class="hero__actions">
+          <a href="air.html" class="btn btn--primary" data-en="Explore Systems">Sistemleri Keşfet</a>
+          <a href="iletisim.html" class="btn btn--ghost" data-en="Contact Us">İletişime Geç</a>
+        </div>
+      </div>
+
+      <!-- HUD bottom telemetry -->
+      <div class="hero__hud-bottom" aria-hidden="true">
+        <div class="hud-metric"><span class="hud-metric__label" data-en="ALT">İRT</span><span class="hud-metric__val">420 M</span></div>
+        <div class="hud-metric"><span class="hud-metric__label">SPD</span><span class="hud-metric__val">64 KT</span></div>
+        <div class="hud-metric"><span class="hud-metric__label" data-en="HDG">HED</span><span class="hud-metric__val">247°</span></div>
+        <div class="hud-metric"><span class="hud-metric__label">BATT</span><span class="hud-metric__val">98%</span></div>
+        <div class="hud-metric hud-metric--wide"><span class="hud-metric__label" data-en="MISSION">GÖREV</span><span class="hud-metric__val hud-metric__val--green" data-en="ACTIVE">AKTİF</span></div>
+      </div>
+
+      <!-- Scroll cue -->
+      <div class="hero__scroll-cue" aria-hidden="true">
+        <span class="scroll-cue__label" data-en="SCROLL">KAYDIR</span>
+        <span class="scroll-cue__line"></span>
       </div>
     </section>
 
-    <!-- ━━━ HERO — GSAP Pin & Zoom ━━━ -->
-    <section class="hero-zoom-section" id="heroZoomSection">
+    <!-- ══════════════════════════════════════════════
+         MARQUEE
+    ══════════════════════════════════════════════ -->
+    <div class="marquee" aria-hidden="true">
+      <div class="marquee__track">
+        <span data-en="EDGE AI">EDGE AI</span><span class="mdot">◆</span>
+        <span data-en="AUTONOMOUS FLIGHT">OTONOM UÇUŞ</span><span class="mdot">◆</span>
+        <span data-en="VTOL &amp; FIXED WING">VTOL &amp; SABİT KANAT</span><span class="mdot">◆</span>
+        <span data-en="ELECTRONIC WARFARE RESILIENCE">ELEKTRONİK HARP DİRENCİ</span><span class="mdot">◆</span>
+        <span data-en="REAL-TIME TELEMETRY">GERÇEK ZAMANLI TELEMETRİ</span><span class="mdot">◆</span>
+        <span data-en="LOW RF SIGNATURE">DÜŞÜK RF İZİ</span><span class="mdot">◆</span>
+        <span data-en="EDGE AI">EDGE AI</span><span class="mdot">◆</span>
+        <span data-en="AUTONOMOUS FLIGHT">OTONOM UÇUŞ</span><span class="mdot">◆</span>
+        <span data-en="VTOL &amp; FIXED WING">VTOL &amp; SABİT KANAT</span><span class="mdot">◆</span>
+        <span data-en="ELECTRONIC WARFARE RESILIENCE">ELEKTRONİK HARP DİRENCİ</span><span class="mdot">◆</span>
+        <span data-en="REAL-TIME TELEMETRY">GERÇEK ZAMANLI TELEMETRİ</span><span class="mdot">◆</span>
+        <span data-en="LOW RF SIGNATURE">DÜŞÜK RF İZİ</span><span class="mdot">◆</span>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════
+         SECTION 2 — MISSION STATEMENT
+    ══════════════════════════════════════════════ -->
+    <section class="section mission-stmt" id="missionStmt">
+      <div class="container">
+        <p class="sec-tag reveal" data-en="Our Mission">Misyonumuz</p>
+        <h2 class="mission-stmt__title reveal" data-en="We build <em>intelligent unmanned systems</em> that extend human reach, protect field teams, and secure critical infrastructure against evolving threats.">Sahadaki ekipleri koruyan, kritik altyapıyı güvence altına alan <em>akıllı insansız sistemler</em> geliştiriyoruz.</h2>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════════
+         SECTION 3 — PLATFORM SHOWCASE (Video Cards)
+    ══════════════════════════════════════════════ -->
+    <section class="section platforms" id="platforms">
+      <div class="container">
+        <div class="sec-header reveal">
+          <div>
+            <p class="sec-tag" data-en="Solution Areas">Çözüm Alanları</p>
+            <h2 class="sec-title" data-en="One ecosystem. Air and land.">Tek ekosistem. Hava ve kara.</h2>
+          </div>
+          <a href="air.html" class="btn btn--ghost btn--sm reveal" data-en="View All Platforms">Tüm Platformlar</a>
+        </div>
+        <div class="platform-grid">
+          <a class="platform-card reveal" href="air.html">
+            <video autoplay muted loop playsinline src="images/air-hero.mp4"></video>
+            <div class="platform-card__overlay"></div>
+            <div class="platform-card__hud" aria-hidden="true">
+              <span class="platform-card__hud-line"></span>
+            </div>
+            <div class="platform-card__body">
+              <p class="platform-card__no">01</p>
+              <h3 class="platform-card__title" data-en="Air Systems">Hava Sistemleri</h3>
+              <p class="platform-card__text" data-en="Argus · VTOL 3800 · Pura — fixed-wing and VTOL platforms for ISR and strike missions.">Argus · VTOL 3800 · Pura — keşif ve görev platformları.</p>
+              <span class="platform-card__cta" data-en="Explore →">İncele →</span>
+            </div>
+          </a>
+          <a class="platform-card reveal" href="land.html">
+            <video autoplay muted loop playsinline src="images/umay-helmet.mp4"></video>
+            <div class="platform-card__overlay"></div>
+            <div class="platform-card__hud" aria-hidden="true">
+              <span class="platform-card__hud-line"></span>
+            </div>
+            <div class="platform-card__body">
+              <p class="platform-card__no">02</p>
+              <h3 class="platform-card__title" data-en="Land Systems · UMAY">Kara Sistemleri · UMAY</h3>
+              <p class="platform-card__text" data-en="Şahin Göz — edge-AI situational awareness with AR/HUD and drone integration for field teams.">Şahin Göz — AR/HUD ve drone entegrasyonlu durumsal farkındalık sistemi.</p>
+              <span class="platform-card__cta" data-en="Explore →">İncele →</span>
+            </div>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════════
+         SECTION 4 — UAV FLEET
+    ══════════════════════════════════════════════ -->
+    <section class="section fleet" id="fleet">
+      <div class="container">
+        <p class="sec-tag reveal" data-en="Air Platforms">Hava Platformları</p>
+        <h2 class="sec-title reveal" data-en="Our UAV fleet">İHA Filomuz</h2>
+        <div class="fleet-grid">
+          <a class="fleet-card reveal" href="air.html">
+            <div class="fleet-card__media">
+              <img src="images/air-argus.jpg" alt="Argus" loading="lazy" />
+              <span class="fleet-card__badge" data-en="Recon">Keşif</span>
+            </div>
+            <div class="fleet-card__body">
+              <p class="fleet-card__class" data-en="Lightweight Recon UAV">Hafif Keşif İHA'sı</p>
+              <h3 class="fleet-card__name">Argus</h3>
+              <p class="fleet-card__text" data-en="Compact, rapidly deployable system for short-range ISR missions.">Kısa menzilli keşif görevleri için kompakt, hızlı konuşlanabilir sistem.</p>
+              <div class="fleet-card__specs">
+                <div><span data-en="Range">Menzil</span><strong>15 km</strong></div>
+                <div><span data-en="Endurance">Dayanıklılık</span><strong>90 dk</strong></div>
+                <div><span data-en="Payload">Yük</span><strong>0.8 kg</strong></div>
+              </div>
+            </div>
+          </a>
+          <a class="fleet-card reveal" href="air.html">
+            <div class="fleet-card__media">
+              <img src="images/air-vtol.jpg" alt="VTOL 3800" loading="lazy" />
+              <span class="fleet-card__badge">VTOL</span>
+            </div>
+            <div class="fleet-card__body">
+              <p class="fleet-card__class" data-en="Multi-Role VTOL UAV">Çok Görevli VTOL İHA</p>
+              <h3 class="fleet-card__name">VTOL 3800</h3>
+              <p class="fleet-card__text" data-en="Vertical take-off with fixed-wing endurance — no runway required.">Dikey kalkış, sabit kanat dayanıklılığı — pist gerektirmez.</p>
+              <div class="fleet-card__specs">
+                <div><span data-en="Range">Menzil</span><strong>40 km</strong></div>
+                <div><span data-en="Endurance">Dayanıklılık</span><strong>180 dk</strong></div>
+                <div><span data-en="Payload">Yük</span><strong>2.5 kg</strong></div>
+              </div>
+            </div>
+          </a>
+          <a class="fleet-card reveal" href="air.html">
+            <div class="fleet-card__media">
+              <img src="images/air-basat-b.jpg" alt="Pura B" loading="lazy" />
+              <span class="fleet-card__badge" data-en="Fixed Wing">Sabit Kanat</span>
+            </div>
+            <div class="fleet-card__body">
+              <p class="fleet-card__class" data-en="Long-Range Fixed-Wing UAV">Uzun Menzilli Sabit Kanat İHA</p>
+              <h3 class="fleet-card__name">Pura B</h3>
+              <p class="fleet-card__text" data-en="Carbon-fiber airframe with encrypted datalink for extended operations.">Karbon fiber gövde ve şifreli veri bağlantısıyla uzun menzil.</p>
+              <div class="fleet-card__specs">
+                <div><span data-en="Range">Menzil</span><strong>80 km</strong></div>
+                <div><span data-en="Endurance">Dayanıklılık</span><strong>240 dk</strong></div>
+                <div><span data-en="Payload">Yük</span><strong>3.2 kg</strong></div>
+              </div>
+            </div>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════════
+         SCROLL ZOOM — Pin & Expand (Fleet → AI Core arası)
+    ══════════════════════════════════════════════ -->
+    <section class="zoom-section" id="zoomSection">
       <div class="zoom-container" id="zoomContainer">
-
-        <!-- Video arka plan -->
         <video class="zoom-video" autoplay muted loop playsinline preload="auto" src="images/showcase.mp4"></video>
-
-        <!-- HUD Katmanı -->
-        <div class="hud-overlay">
-
-          <div class="hud-top hud-chrome">
-            <span class="hud-brand">ASCALON · EDGE</span>
-            <span class="hud-online">
+        <div class="zoom-hud">
+          <div class="zoom-hud__top zoom-chrome">
+            <span class="zoom-hud__brand">ASCALON · EDGE · v4.2</span>
+            <span class="zoom-hud__status">
               <span class="hud-dot"></span>
-              SYS:ONLINE
+              <span data-en="SYS:ONLINE">SYS:AKTİF</span>
             </span>
           </div>
-
-          <div class="hud-body">
-            <div class="hud-grid"></div>
-            <div class="hud-scan"></div>
-            <div class="bracket bracket--tl hud-chrome"></div>
-            <div class="bracket bracket--tr hud-chrome"></div>
-            <div class="bracket bracket--bl hud-chrome"></div>
-            <div class="bracket bracket--br hud-chrome"></div>
-            <div class="hud-reticle hud-chrome"></div>
-            <div class="hud-center hud-chrome">
-              <p class="hud-center__title" data-en="UAV Autonomous Flight System">UAV Otonom Uçuş Sistemi</p>
-              <p class="hud-center__sub" data-en="System Interface · Coming Soon">Sistem Arayüzü · Yakında</p>
+          <div class="zoom-hud__body">
+            <div class="zoom-grid"></div>
+            <div class="zoom-scan"></div>
+            <span class="zoom-bracket zoom-bracket--tl zoom-chrome"></span>
+            <span class="zoom-bracket zoom-bracket--tr zoom-chrome"></span>
+            <span class="zoom-bracket zoom-bracket--bl zoom-chrome"></span>
+            <span class="zoom-bracket zoom-bracket--br zoom-chrome"></span>
+            <div class="zoom-reticle zoom-chrome"></div>
+            <div class="zoom-center zoom-chrome">
+              <p class="zoom-center__title" data-en="UAV Autonomous Flight System">UAV Otonom Uçuş Sistemi</p>
+              <p class="zoom-center__sub" data-en="EDGE AI · REAL-TIME TELEMETRY">EDGE AI · GERÇEK ZAMANLI TELEMETRİ</p>
             </div>
           </div>
-
-          <div class="hud-bottom hud-chrome">
-            <span class="hud-meta">37°09′N &nbsp;34°49′E</span>
-            <span class="hud-meta">ALT: 420 M &nbsp;·&nbsp; SPD: 64 KT</span>
+          <div class="zoom-hud__bottom zoom-chrome">
+            <span class="zoom-meta">37°09′N &nbsp;34°49′E</span>
+            <span class="zoom-meta">ALT: 420 M &nbsp;·&nbsp; SPD: 64 KT &nbsp;·&nbsp; HDG: 247°</span>
           </div>
-
         </div>
       </div>
     </section>
 
-    <!-- MARQUEE -->
-    <section class="marquee" aria-hidden="true">
-      <div class="marquee__track">
-        <span data-en="EDGE AI">EDGE AI</span><span class="dot">◆</span>
-        <span data-en="AUTONOMOUS FLIGHT">OTONOM UÇUŞ</span><span class="dot">◆</span>
-        <span data-en="VTOL &amp; FIXED WING">VTOL &amp; SABİT KANAT</span><span class="dot">◆</span>
-        <span data-en="LOW RF SIGNATURE">DÜŞÜK RF İZİ</span><span class="dot">◆</span>
-        <span data-en="ELECTRONIC WARFARE RESILIENCE">ELEKTRONİK HARP DİRENCİ</span><span class="dot">◆</span>
-        <span data-en="REAL-TIME TELEMETRY">GERÇEK ZAMANLI TELEMETRİ</span><span class="dot">◆</span>
-        <span data-en="EDGE AI">EDGE AI</span><span class="dot">◆</span>
-        <span data-en="AUTONOMOUS FLIGHT">OTONOM UÇUŞ</span><span class="dot">◆</span>
-        <span data-en="VTOL &amp; FIXED WING">VTOL &amp; SABİT KANAT</span><span class="dot">◆</span>
-        <span data-en="LOW RF SIGNATURE">DÜŞÜK RF İZİ</span><span class="dot">◆</span>
-        <span data-en="ELECTRONIC WARFARE RESILIENCE">ELEKTRONİK HARP DİRENCİ</span><span class="dot">◆</span>
-        <span data-en="REAL-TIME TELEMETRY">GERÇEK ZAMANLI TELEMETRİ</span><span class="dot">◆</span>
-      </div>
-    </section>
-
-    <!-- MISSION STATEMENT -->
-    <section class="section mission" id="mission">
-      <div class="container">
-        <p class="tag reveal" style="margin-bottom:22px" data-en="Our Mission">Misyonumuz</p>
-        <h2 class="mission__title reveal" data-en="Through relentless innovation and a pursuit of excellence, we build <b>intelligent unmanned aerial systems</b> that protect field teams and critical infrastructure.">Sürekli inovasyon ve mükemmellik arayışıyla, sahadaki ekipleri ve kritik altyapıyı koruyan <b>akıllı insansız hava sistemleri</b> geliştiriyoruz.</h2>
-      </div>
-    </section>
-
-    <!-- ÇÖZÜMLER: Hava & Kara -->
-    <section class="section">
-      <div class="container">
-        <div class="sec-head reveal">
-          <div><p class="tag" data-en="Solution areas">Çözüm alanları</p><h2 class="section__title" data-en="One ecosystem for air and land">Hava ve kara için tek ekosistem</h2></div>
-        </div>
-        <div class="domaincards">
-          <a class="domaincard reveal" href="air.html">
-            <video autoplay muted loop playsinline src="images/air-hero.mp4"></video>
-            <div class="domaincard__body">
-              <p class="domaincard__no" data-en="01 — Air">01 — Hava</p>
-              <h3 data-en="Air Systems">Hava Sistemleri</h3>
-              <p data-en="Argus, VTOL 3800 and the Pura family — fixed-wing and vertical take-off UAV platforms.">Argus, VTOL 3800 ve Pura ailesi — sabit kanat ve dikey kalkış İHA platformları.</p>
-              <span class="link-arrow" data-en="Explore &rarr;">İncele &rarr;</span>
-            </div>
-          </a>
-          <a class="domaincard reveal" href="land.html">
-            <video autoplay muted loop playsinline src="images/umay-helmet.mp4"></video>
-            <div class="domaincard__body">
-              <p class="domaincard__no" data-en="02 — Land">02 — Kara</p>
-              <h3 data-en="Land Systems · UMAY">Kara Sistemleri · UMAY</h3>
-              <p data-en="Şahin Göz — an edge-AI situational awareness system with AR/HUD and drone integration for field teams.">Şahin Göz — sahadaki ekipler için edge-AI, AR/HUD ve drone entegrasyonlu durumsal farkındalık sistemi.</p>
-              <span class="link-arrow" data-en="Explore &rarr;">İncele &rarr;</span>
-            </div>
-          </a>
-        </div>
-      </div>
-    </section>
-
-    <!-- HAVA ÖNİZLEME -->
-    <section class="section" style="padding-top:0">
-      <div class="container">
-        <p class="tag reveal" data-en="Air platforms">Hava platformları</p>
-        <h2 class="section__title reveal" data-en="Our UAV fleet">İHA filomuz</h2>
-        <div class="cards cards--3">
-          <a class="card vehicle reveal" href="air.html">
-            <div class="card__media"><img src="images/air-argus.jpg" alt="Argus" loading="lazy" /><span class="card__badge" data-en="Recon">Keşif</span></div>
-            <div class="card__body"><h3 class="card__title">Argus</h3><p class="vehicle__class" data-en="Lightweight Modular Reconnaissance UAV">Hafif Modüler Keşif İHA'sı</p><p class="card__text" data-en="A compact system for rapid deployment in short-range reconnaissance missions.">Kısa menzilli keşif görevlerinde hızlı konuşlanma için kompakt sistem.</p><span class="link-arrow" data-en="Explore &rarr;">İncele &rarr;</span></div>
-          </a>
-          <a class="card vehicle reveal" href="air.html">
-            <div class="card__media"><img src="images/air-vtol.jpg" alt="VTOL 3800" loading="lazy" /><span class="card__badge">VTOL</span></div>
-            <div class="card__body"><h3 class="card__title">VTOL 3800</h3><p class="vehicle__class" data-en="Multi-Role Vertical Take-Off UAV">Çok Görevli Dikey Kalkış İHA'sı</p><p class="card__text" data-en="A multi-role platform with vertical take-off/landing and return-to-home capability.">Dikey kalkış/iniş ve eve dönüş özellikli çok görevli platform.</p><span class="link-arrow" data-en="Explore &rarr;">İncele &rarr;</span></div>
-          </a>
-          <a class="card vehicle reveal" href="air.html">
-            <div class="card__media"><img src="images/air-basat-b.jpg" alt="Pura B" loading="lazy" /><span class="card__badge" data-en="Fixed Wing">Sabit Kanat</span></div>
-            <div class="card__body"><h3 class="card__title">Pura B</h3><p class="vehicle__class" data-en="Long-Range Fixed-Wing UAV">Uzun Menzilli Sabit Kanat İHA</p><p class="card__text" data-en="Long range with a carbon-fiber airframe and an encrypted video link.">Karbon fiber gövde ve şifreli video bağlantısıyla uzun menzil.</p><span class="link-arrow" data-en="Explore &rarr;">İncele &rarr;</span></div>
-          </a>
-        </div>
-      </div>
-    </section>
-
-    <!-- EDGE AI -->
-    <section class="section software">
-      <div class="container software__inner">
-        <div class="software__content">
-          <p class="tag reveal">Edge AI</p>
-          <h2 class="section__title reveal" data-en="Decisions in the field, without connectivity.">Bağlantı olmadan, sahada karar.</h2>
-          <p class="section__text reveal" data-en="Imagery, audio, location and mission data are processed locally with edge-based AI — enabling real-time analysis, alert generation and team coordination without dependence on an internet connection.">
-            Görüntü, ses, konum ve görev verileri edge tabanlı yapay zeka ile yerelde işlenir. Böylece
-            internet bağlantısına bağımlı kalmadan gerçek zamanlı analiz, uyarı üretimi ve ekip koordinasyonu sağlanır.
-          </p>
-          <ul class="software__list reveal">
-            <li data-en="Autonomous object detection on an embedded processor">Gömülü işlemcide otonom nesne tespiti</li>
-            <li data-en="Real-time telemetry and event logging">Gerçek zamanlı telemetri ve olay kaydı</li>
-            <li data-en="Low RF signature and electronic warfare resilience">Düşük RF izi ve elektronik harp direnci</li>
+    <!-- ══════════════════════════════════════════════
+         SECTION 5 — EDGE AI / COMMAND CENTER
+    ══════════════════════════════════════════════ -->
+    <section class="section ai-core" id="aiCore">
+      <div class="container ai-core__inner">
+        <div class="ai-core__content">
+          <p class="sec-tag reveal">Edge AI</p>
+          <h2 class="sec-title reveal" data-en="Decisions at the edge. Without connectivity.">Bağlantı olmadan, uçta karar.</h2>
+          <p class="sec-text reveal" data-en="Imagery, audio, location and mission data are processed locally on embedded processors — enabling real-time object detection, autonomous navigation and team coordination without reliance on cloud infrastructure.">Görüntü, ses, konum ve görev verileri gömülü işlemcilerde yerel olarak işlenir. Bulut altyapısına bağlı kalmaksızın gerçek zamanlı nesne tespiti ve otonom navigasyon sağlanır.</p>
+          <ul class="ai-list reveal">
+            <li data-en="Autonomous object detection on embedded hardware">Gömülü donanımda otonom nesne tespiti</li>
+            <li data-en="Real-time telemetry and encrypted event logging">Gerçek zamanlı telemetri ve şifreli olay kaydı</li>
+            <li data-en="Low RF signature with electronic warfare resilience">Düşük RF izi ve elektronik harp direnci</li>
+            <li data-en="Edge inference at &lt;10ms latency">Edge çıkarımı &lt;10ms gecikmeyle</li>
           </ul>
-          <a href="land.html" class="btn btn--primary reveal" data-en="See the UMAY ecosystem">UMAY ekosistemini gör</a>
+          <a href="land.html" class="btn btn--primary reveal" data-en="See UMAY Ecosystem">UMAY Ekosistemini Gör</a>
         </div>
-        <div class="dashboard reveal" data-parallax="0.05" aria-hidden="true">
-          <div class="dashboard__bar">
-            <span class="dot dot--r"></span><span class="dot dot--y"></span><span class="dot dot--g"></span>
-            <span class="dashboard__title" data-en="ASCALON EDGE · LIVE">ASCALON EDGE · CANLI</span>
-            <span class="dashboard__live">● ONLINE</span>
+
+        <!-- Tactical dashboard -->
+        <div class="tac-board reveal" aria-hidden="true">
+          <div class="tac-board__bar">
+            <div class="tac-board__dots">
+              <span class="tac-dot tac-dot--r"></span>
+              <span class="tac-dot tac-dot--y"></span>
+              <span class="tac-dot tac-dot--g"></span>
+            </div>
+            <span class="tac-board__title">ASCALON EDGE · LIVE</span>
+            <span class="tac-board__status">● ONLINE</span>
           </div>
-          <div class="dashboard__body">
-            <div class="radar"><span class="radar__sweep"></span><span class="blip b1"></span><span class="blip b2"></span><span class="blip b3"></span></div>
-            <div class="dashboard__side">
-              <div class="track"><span>ARGUS</span><i style="--w:82%"></i></div>
-              <div class="track"><span>VTOL 3800</span><i style="--w:67%"></i></div>
-              <div class="track"><span>PURA A</span><i style="--w:91%"></i></div>
-              <div class="track"><span>PURA B</span><i style="--w:54%"></i></div>
-              <div class="dashboard__metric"><span class="dashboard__metric-num" data-count="4">0</span><span data-en="active platforms">aktif platform</span></div>
+          <div class="tac-board__body">
+            <div class="tac-radar">
+              <span class="tac-radar__sweep"></span>
+              <span class="tac-blip tac-blip--1"></span>
+              <span class="tac-blip tac-blip--2"></span>
+              <span class="tac-blip tac-blip--3"></span>
+              <!-- Crosshairs -->
+              <span class="tac-radar__cross tac-radar__cross--h"></span>
+              <span class="tac-radar__cross tac-radar__cross--v"></span>
+              <span class="tac-radar__ring tac-radar__ring--inner"></span>
+            </div>
+            <div class="tac-board__right">
+              <div class="tac-track"><span>ARGUS-01</span><div class="tac-bar"><i style="--w:82%"></i></div><em>82%</em></div>
+              <div class="tac-track"><span>VTOL-3800</span><div class="tac-bar"><i style="--w:67%"></i></div><em>67%</em></div>
+              <div class="tac-track"><span>PURA-B</span><div class="tac-bar"><i style="--w:91%"></i></div><em>91%</em></div>
+              <div class="tac-track"><span>PURA-A</span><div class="tac-bar"><i style="--w:54%"></i></div><em>54%</em></div>
+              <div class="tac-metric">
+                <span class="tac-metric__num" data-count="4">0</span>
+                <span class="tac-metric__label" data-en="Active Platforms">Aktif Platform</span>
+              </div>
             </div>
           </div>
+          <!-- Scan line -->
+          <div class="tac-scan"></div>
         </div>
       </div>
     </section>
 
-    <!-- UMAY FEATURE -->
-    <section class="section feature">
-      <div class="container feature__inner">
-        <div class="feature__media umay-video">
-          <video autoplay muted loop playsinline src="images/umay-helmet.mp4" style="width:100%;display:block"></video>
-          <div class="umay-video__cap">UMAY · Şahin Göz</div>
+    <!-- ══════════════════════════════════════════════
+         SECTION 6 — UMAY LAND SYSTEM
+    ══════════════════════════════════════════════ -->
+    <section class="section umay" id="umay">
+      <div class="container umay__inner">
+        <div class="umay__media reveal">
+          <video autoplay muted loop playsinline src="images/umay-helmet.mp4"></video>
+          <div class="umay__media-hud" aria-hidden="true">
+            <span class="umay__media-label">UMAY · Şahin Göz</span>
+            <span class="umay__media-status">
+              <span class="hud-dot"></span> AR/HUD ACTIVE
+            </span>
+          </div>
         </div>
-        <div class="feature__content">
-          <p class="tag reveal" data-en="Land System · UMAY">Kara Sistemi · UMAY</p>
-          <h2 class="section__title reveal" data-en="Real-time decision support for field teams.">Sahadaki ekipler için gerçek zamanlı karar desteği.</h2>
-          <p class="section__text reveal" data-en="An AR/HUD-enabled tactical helmet, multi-sensor modules, a portable edge-AI control unit and a connected drone infrastructure — all in a single ecosystem.">
-            AR/HUD destekli taktik kask, çoklu sensör modülleri, taşınabilir edge-AI kontrol ünitesi ve
-            bağlantılı drone altyapısı — hepsi tek bir ekosistemde.
-          </p>
-          <a href="land.html" class="link-arrow reveal" data-en="Explore UMAY &rarr;">UMAY'ı keşfet &rarr;</a>
+        <div class="umay__content">
+          <p class="sec-tag reveal" data-en="Land System">Kara Sistemi</p>
+          <h2 class="sec-title reveal" data-en="Real-time decision support for field teams.">Sahadaki ekipler için gerçek zamanlı karar desteği.</h2>
+          <p class="sec-text reveal" data-en="An AR/HUD-enabled tactical helmet, multi-sensor modules, portable edge-AI control unit and connected drone infrastructure — all in a single interoperable ecosystem.">AR/HUD destekli taktik kask, çoklu sensör modülleri, taşınabilir edge-AI kontrol ünitesi ve bağlantılı drone altyapısı — tek bir ekosistemde.</p>
+          <div class="umay__features reveal">
+            <div class="umay__feature">
+              <span class="umay__feature-icon">◈</span>
+              <div>
+                <strong data-en="AR/HUD Helmet">AR/HUD Kask</strong>
+                <p data-en="Real-time overlays for situational awareness">Durumsal farkındalık için gerçek zamanlı katmanlar</p>
+              </div>
+            </div>
+            <div class="umay__feature">
+              <span class="umay__feature-icon">◈</span>
+              <div>
+                <strong data-en="Edge AI Control Unit">Edge AI Kontrol Ünitesi</strong>
+                <p data-en="Offline inference, zero cloud dependency">Çevrimdışı çıkarım, sıfır bulut bağımlılığı</p>
+              </div>
+            </div>
+            <div class="umay__feature">
+              <span class="umay__feature-icon">◈</span>
+              <div>
+                <strong data-en="Drone Integration">Drone Entegrasyonu</strong>
+                <p data-en="Seamless UAV-to-ground operator link">UAV'dan kara operatörüne kesintisiz bağlantı</p>
+              </div>
+            </div>
+          </div>
+          <a href="land.html" class="btn btn--ghost reveal" data-en="Explore UMAY →">UMAY'ı Keşfet →</a>
         </div>
       </div>
     </section>
 
-    <!-- STATS -->
-    <section class="section stats">
-      <div class="container stats__grid">
-        <div class="stat reveal"><span class="stat__num" data-count="1000">0</span><span class="stat__suffix">+</span><p class="stat__label" data-en="Total flight time">Toplam uçuş süresi</p></div>
-        <div class="stat reveal"><span class="stat__num" data-count="80">0</span><span class="stat__suffix">+</span><p class="stat__label" data-en="Number of flights">Uçuş sayısı</p></div>
-        <div class="stat reveal"><span class="stat__num" data-count="30">0</span><span class="stat__suffix">+</span><p class="stat__label" data-en="Team members">Ekip üyesi</p></div>
-        <div class="stat reveal"><span class="stat__num" data-count="5">0</span><span class="stat__suffix"></span><p class="stat__label" data-en="UAV platforms">İHA platformu</p></div>
+    <!-- ══════════════════════════════════════════════
+         SECTION 7 — ENGINEERING EXCELLENCE (Stats)
+    ══════════════════════════════════════════════ -->
+    <section class="section engineering" id="engineering">
+      <div class="container">
+        <div class="engineering__header reveal">
+          <p class="sec-tag" data-en="Engineering Excellence">Mühendislik Üstünlüğü</p>
+          <h2 class="sec-title" data-en="Built to perform under pressure.">Baskı altında performans için inşa edildi.</h2>
+        </div>
+        <div class="stats-grid">
+          <div class="stat-card reveal">
+            <div class="stat-card__bg"></div>
+            <span class="stat-card__num"><span class="stat-card__counter" data-count="1000">0</span>+</span>
+            <p class="stat-card__label" data-en="Hours of flight time">Toplam uçuş saati</p>
+            <div class="stat-card__bar"><span style="--p:82%"></span></div>
+          </div>
+          <div class="stat-card reveal">
+            <div class="stat-card__bg"></div>
+            <span class="stat-card__num"><span class="stat-card__counter" data-count="80">0</span>+</span>
+            <p class="stat-card__label" data-en="Successful missions">Başarılı görev</p>
+            <div class="stat-card__bar"><span style="--p:95%"></span></div>
+          </div>
+          <div class="stat-card reveal">
+            <div class="stat-card__num"><span class="stat-card__counter" data-count="30">0</span>+</span>
+            <p class="stat-card__label" data-en="Team members">Ekip üyesi</p>
+            <div class="stat-card__bar"><span style="--p:60%"></span></div>
+          </div>
+          <div class="stat-card reveal">
+            <div class="stat-card__num"><span class="stat-card__counter" data-count="5">0</span></span>
+            <p class="stat-card__label" data-en="UAV platforms">İHA platformu</p>
+            <div class="stat-card__bar"><span style="--p:100%"></span></div>
+          </div>
+        </div>
+
+        <!-- Capability bars -->
+        <div class="capability-grid reveal">
+          <div class="cap-item">
+            <div class="cap-item__header">
+              <span class="cap-item__name" data-en="AI Inference Speed">AI Çıkarım Hızı</span>
+              <span class="cap-item__val">&lt;10ms</span>
+            </div>
+            <div class="cap-bar"><span class="cap-bar__fill" style="--p:97%"></span></div>
+          </div>
+          <div class="cap-item">
+            <div class="cap-item__header">
+              <span class="cap-item__name" data-en="Mission Success Rate">Görev Başarı Oranı</span>
+              <span class="cap-item__val">98.7%</span>
+            </div>
+            <div class="cap-bar"><span class="cap-bar__fill" style="--p:99%"></span></div>
+          </div>
+          <div class="cap-item">
+            <div class="cap-item__header">
+              <span class="cap-item__name" data-en="RF Signature Reduction">RF İz Azaltımı</span>
+              <span class="cap-item__val">-62 dB</span>
+            </div>
+            <div class="cap-bar"><span class="cap-bar__fill" style="--p:85%"></span></div>
+          </div>
+          <div class="cap-item">
+            <div class="cap-item__header">
+              <span class="cap-item__name" data-en="Operational Uptime">Operasyonel Çalışma Süresi</span>
+              <span class="cap-item__val">99.2%</span>
+            </div>
+            <div class="cap-bar"><span class="cap-bar__fill" style="--p:99%"></span></div>
+          </div>
+        </div>
       </div>
     </section>
 
-    <!-- KAPANIŞ CTA -->
-    <section class="section cta-band" style="background:radial-gradient(110% 150% at 50% 0%, #210608 0%, var(--bg) 60%)">
-      <div class="container cta-band__inner reveal">
-        <h2 class="cta-band__title" data-en="Interested in our technology?">Teknolojimizle ilgileniyor musunuz?</h2>
-        <p class="cta-band__text" data-en="Contact our team for technical documentation and partnership inquiries.">Teknik dokümantasyon ve iş birliği talepleriniz için ekibimizle iletişime geçin.</p>
-        <a href="iletisim.html" class="btn btn--primary" data-en="Get in Touch">İletişime Geç</a>
+    <!-- ══════════════════════════════════════════════
+         SECTION 8 — CTA CLOSING
+    ══════════════════════════════════════════════ -->
+    <section class="section cta-closing" id="ctaClosing">
+      <div class="cta-closing__bg" aria-hidden="true">
+        <canvas id="ctaCanvas"></canvas>
+        <div class="cta-closing__grid"></div>
+      </div>
+      <div class="container cta-closing__inner">
+        <p class="sec-tag reveal" data-en="Ready to Deploy">Konuşlanmaya Hazır</p>
+        <h2 class="cta-closing__title reveal" data-en="Interested in our technology?">Teknolojimizle ilgileniyor musunuz?</h2>
+        <p class="cta-closing__text reveal" data-en="Contact our team for technical documentation, demo requests, and partnership opportunities.">Teknik dokümantasyon, demo talepleri ve iş birliği için ekibimizle iletişime geçin.</p>
+        <div class="cta-closing__actions reveal">
+          <a href="iletisim.html" class="btn btn--primary" data-en="Get in Touch">İletişime Geç</a>
+          <a href="air.html" class="btn btn--ghost" data-en="View Platforms">Platformları İncele</a>
+        </div>
       </div>
     </section>
+
   </main>
 
-  <!-- Footer -->
+  <!-- ══════ FOOTER ══════ -->
   <footer class="footer">
     <div class="container footer__inner">
       <div class="footer__brand">
-        <a href="index.html" class="brand"><span class="brand--text" style="font-size:18px">ASCALON&nbsp;DYNAMICS</span></a>
-        <p class="footer__mission" data-en="Ascalon Dynamics Defence — developing advanced unmanned aerial vehicles and championing innovation.">Ascalon Dynamics Defence — gelişmiş insansız hava araçları geliştiriyor ve inovasyonu destekliyoruz.</p>
-        <p class="flag" style="margin-top:8px"><img src="images/tr_bayrak.png" alt="Türkiye" /> Ankara, Türkiye</p>
+        <a href="index.html" class="brand">
+          <span class="brand__word">ASCALON</span><span class="brand__word brand__word--accent">DYNAMICS</span>
+        </a>
+        <p class="footer__mission" data-en="Developing advanced unmanned aerial systems and edge AI solutions for defense and critical infrastructure.">Savunma ve kritik altyapı için gelişmiş insansız hava sistemleri ve edge AI çözümleri geliştiriyoruz.</p>
+        <p class="footer__flag"><img src="images/tr_bayrak.png" alt="Türkiye" /> Ankara, Türkiye</p>
       </div>
       <div class="footer__cols">
-        <div class="footer__col"><p class="footer__title" data-en="Air">Hava</p><a href="air.html">Argus</a><a href="air.html">VTOL 3800</a><a href="air.html">Pura A</a><a href="air.html">Pura B</a></div>
-        <div class="footer__col"><p class="footer__title" data-en="Land">Kara</p><a href="land.html">UMAY · Şahin Göz</a><a href="land.html" data-en="Tactical Helmet">Taktik Kask</a><a href="land.html" data-en="Control Unit">Kontrol Ünitesi</a></div>
-        <div class="footer__col"><p class="footer__title" data-en="Company">Kurumsal</p><a href="hakkimizda.html" data-en="About">Hakkımızda</a><a href="hakkimizda.html" data-en="Careers">Kariyer</a><a href="iletisim.html" data-en="Contact">İletişim</a></div>
-        <div class="footer__col"><p class="footer__title" data-en="Contact">İletişim</p><a href="tel:+905387439730">+90 538 743 97 30</a><a href="mailto:hasankilic@ascalondynamics.com" data-en="Email">E-posta</a></div>
+        <div class="footer__col">
+          <p class="footer__col-title" data-en="Air">Hava</p>
+          <a href="air.html">Argus</a>
+          <a href="air.html">VTOL 3800</a>
+          <a href="air.html">Pura A</a>
+          <a href="air.html">Pura B</a>
+        </div>
+        <div class="footer__col">
+          <p class="footer__col-title" data-en="Land">Kara</p>
+          <a href="land.html">UMAY · Şahin Göz</a>
+          <a href="land.html" data-en="Tactical Helmet">Taktik Kask</a>
+          <a href="land.html" data-en="Control Unit">Kontrol Ünitesi</a>
+        </div>
+        <div class="footer__col">
+          <p class="footer__col-title" data-en="Company">Kurumsal</p>
+          <a href="hakkimizda.html" data-en="About">Hakkımızda</a>
+          <a href="iletisim.html" data-en="Contact">İletişim</a>
+        </div>
+        <div class="footer__col">
+          <p class="footer__col-title" data-en="Contact">İletişim</p>
+          <a href="tel:+905387439730">+90 538 743 97 30</a>
+          <a href="mailto:hasankilic@ascalondynamics.com">hasankilic@<br>ascalondynamics.com</a>
+        </div>
       </div>
     </div>
     <div class="footer__bottom">
       <div class="container footer__bottom-inner">
-        <span data-en="&copy; 2025 Ascalon Dynamics Defence | All Rights Reserved.">&copy; 2025 Ascalon Dynamics Defence | Tüm Hakları Saklıdır.</span>
-        <div class="footer__social"><a href="#" aria-label="LinkedIn">in</a><a href="#" aria-label="Instagram">◎</a><a href="#" aria-label="X">X</a></div>
+        <span data-en="© 2025 Ascalon Dynamics Defence | All Rights Reserved.">© 2025 Ascalon Dynamics Defence | Tüm Hakları Saklıdır.</span>
+        <div class="footer__social">
+          <a href="#" aria-label="LinkedIn">in</a>
+          <a href="#" aria-label="Instagram">◎</a>
+          <a href="#" aria-label="X">X</a>
+        </div>
       </div>
     </div>
   </footer>
 
-  <button class="to-top" id="toTop" aria-label="Yukarı çık">↑</button>
+  <button class="to-top" id="toTop" aria-label="Scroll to top">↑</button>
+
+  <!-- Three.js -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
   <!-- GSAP + ScrollTrigger -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
-  <script>
-    (function () {
-      if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') return;
-      gsap.registerPlugin(ScrollTrigger);
-
-      /* ── Sayfa açılış animasyonu ── */
-      window.addEventListener('load', function () {
-        var loadTl = gsap.timeline({ defaults: { ease: 'power3.out' } });
-        loadTl
-          .from('.intro-eyebrow', { opacity: 0, y: 14, duration: 0.7, delay: 0.6 })
-          .from('.intro-title',   { opacity: 0, y: 60, duration: 1.1 }, '-=0.3')
-          .from('.intro-sub',     { opacity: 0, y: 22, duration: 0.8 }, '-=0.55')
-          .from('.intro-scroll-hint', { opacity: 0, duration: 0.6 }, '-=0.3');
-
-        /* ── Pin & Zoom ── */
-        var zoomTl = gsap.timeline({
-          scrollTrigger: {
-            trigger: '#heroZoomSection',
-            start: 'top top',
-            end: '+=280%',
-            pin: true,
-            scrub: 1.4,
-            pinSpacing: true,
-            anticipatePin: 1,
-          }
-        });
-
-        /* Aşama 0 → 0.25 : HUD öğeleri solar */
-        zoomTl.to('.hud-chrome', {
-          opacity: 0,
-          ease: 'none',
-          duration: 0.25,
-        });
-
-        /* Aşama 0 → 1 : Çerçeve tam ekrana açılır */
-        zoomTl.to('#zoomContainer', {
-          width: '100vw',
-          height: '100vh',
-          borderRadius: 0,
-          borderColor: 'rgba(255,255,255,0)',
-          ease: 'none',
-          duration: 1,
-        }, 0);
-
-        /* ── Header: zoom boyunca gizle, sonrasında geri getir ── */
-        ScrollTrigger.create({
-          trigger: '#heroZoomSection',
-          start: 'top top',
-          end: '+=280%',
-          onEnter:     function () { gsap.to('#header', { opacity: 0, duration: 0.4, ease: 'power2.in' }); },
-          onLeave:     function () { gsap.to('#header', { opacity: 1, duration: 0.5, ease: 'power2.out' }); },
-          onLeaveBack: function () { gsap.to('#header', { opacity: 1, duration: 0.4, ease: 'power2.out' }); },
-          onEnterBack: function () { gsap.to('#header', { opacity: 0, duration: 0.4, ease: 'power2.in' }); },
-        });
-      });
-    })();
-  </script>
 
   <script src="script.js"></script>
 </body>
