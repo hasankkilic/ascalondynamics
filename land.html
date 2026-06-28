@@ -74,16 +74,22 @@
     </section>
 
     <!-- Overview -->
-    <section class="section">
-      <div class="container">
-        <p class="tag reveal" data-en="Field support for real heroes">Gerçek kahramanlar için saha desteği</p>
-        <h2 class="section__title reveal" data-en="All field data in a single ecosystem.">Tek bir ekosistemde tüm saha verisi.</h2>
-        <p class="section__text reveal" style="max-width:70ch" data-en="UMAY brings together an AR/HUD-enabled helmet, sensors, camera systems, a portable AI processing unit and a connected drone infrastructure in a single ecosystem. By processing imagery, audio, location and mission data with edge-based AI, it delivers rapid in-field analysis, alert generation, team coordination and incident tracking — without dependence on an internet connection.">
-          UMAY; AR/HUD destekli kask, sensörler, kamera sistemleri, taşınabilir yapay zeka işlem birimi ve
-          bağlantılı drone altyapısını tek bir ekosistemde birleştirir. Görüntü, ses, konum ve görev verilerini
-          edge tabanlı yapay zeka ile işleyerek; internet bağlantısına bağımlı kalmadan sahada hızlı analiz,
-          uyarı üretimi, ekip koordinasyonu ve olay takibi sağlar.
-        </p>
+    <section class="section feature">
+      <div class="container feature__inner">
+        <div class="feature__content">
+          <p class="tag reveal" data-en="Field support for real heroes">Gerçek kahramanlar için saha desteği</p>
+          <h2 class="section__title reveal" data-en="All field data in a single ecosystem.">Tek bir ekosistemde tüm saha verisi.</h2>
+          <p class="section__text reveal" data-en="UMAY brings together an AR/HUD-enabled helmet, sensors, camera systems, a portable AI processing unit and a connected drone infrastructure in a single ecosystem. By processing imagery, audio, location and mission data with edge-based AI, it delivers rapid in-field analysis, alert generation, team coordination and incident tracking — without dependence on an internet connection.">
+            UMAY; AR/HUD destekli kask, sensörler, kamera sistemleri, taşınabilir yapay zeka işlem birimi ve
+            bağlantılı drone altyapısını tek bir ekosistemde birleştirir. Görüntü, ses, konum ve görev verilerini
+            edge tabanlı yapay zeka ile işleyerek; internet bağlantısına bağımlı kalmadan sahada hızlı analiz,
+            uyarı üretimi, ekip koordinasyonu ve olay takibi sağlar.
+          </p>
+        </div>
+        <div class="feature__media umay-video">
+          <video autoplay muted loop playsinline src="images/umay-overview.mp4"></video>
+          <div class="umay-video__cap" data-en="UMAY · Ecosystem Overview">UMAY · Ekosistem Genel Bakış</div>
+        </div>
       </div>
     </section>
 
@@ -242,6 +248,56 @@
             <li data-en="Real-time alert generation and event logging">Gerçek zamanlı uyarı üretimi ve olay kaydı</li>
           </ul>
         </div>
+      </div>
+    </section>
+
+    <!-- Kullanım Senaryoları -->
+    <section class="section">
+      <div class="container">
+        <p class="tag reveal" data-en="Mission scenarios">Görev senaryoları</p>
+        <h2 class="section__title reveal" data-en="UMAY in the field">UMAY sahada</h2>
+        <div class="subgrid" style="grid-template-columns:repeat(3,1fr); margin-top:40px">
+          <div class="subcard reveal">
+            <div class="subcard__media">
+              <img src="images/umay-scenario-urban.jpg" alt="Kentsel Keşif" loading="lazy" />
+            </div>
+            <div class="subcard__body">
+              <p class="subcard__no" data-en="Scenario 01">Senaryo 01</p>
+              <h3 data-en="Urban Reconnaissance">Kentsel Keşif</h3>
+              <p data-en="In complex urban environments, UMAY's AR/HUD layer marks threats and team positions in real time, enabling rapid decision-making in low-visibility conditions.">Karmaşık kentsel ortamlarda UMAY'ın AR/HUD katmanı tehditleri ve ekip konumlarını gerçek zamanlı işaretler; düşük görüş koşullarında hızlı karar vermeyi sağlar.</p>
+            </div>
+          </div>
+          <div class="subcard reveal">
+            <div class="subcard__media">
+              <img src="images/umay-scenario-perimeter.jpg" alt="Çevre Güvenliği" loading="lazy" />
+            </div>
+            <div class="subcard__body">
+              <p class="subcard__no" data-en="Scenario 02">Senaryo 02</p>
+              <h3 data-en="Perimeter Security">Çevre Güvenliği</h3>
+              <p data-en="Drone and ground sensor data merge in the UMAY panel, delivering 360° situational awareness across wide perimeters without additional personnel.">Drone ve kara sensörü verileri UMAY panelinde birleşerek ek personel ihtiyacı olmadan geniş çevrelerde 360° durumsal farkındalık sağlar.</p>
+            </div>
+          </div>
+          <div class="subcard reveal">
+            <div class="subcard__media">
+              <img src="images/umay-scenario-rescue.jpg" alt="Arama & Kurtarma" loading="lazy" />
+            </div>
+            <div class="subcard__body">
+              <p class="subcard__no" data-en="Scenario 03">Senaryo 03</p>
+              <h3 data-en="Search &amp; Rescue">Arama &amp; Kurtarma</h3>
+              <p data-en="Thermal and NIR sensors detect heat signatures in disaster zones while the drone maps the area overhead, guiding rescue teams to targets faster.">Termal ve NIR sensörler afet bölgesinde ısı imzalarını tespit ederken drone alanı yukarıdan haritalandırarak kurtarma ekiplerini hedeflere daha hızlı yönlendirir.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Sinematik bant -->
+    <section class="cine-band">
+      <video class="cine-band__video" autoplay muted loop playsinline src="images/umay-cinematic.mp4"></video>
+      <div class="cine-band__overlay"></div>
+      <div class="cine-band__content">
+        <p class="cine-band__label" data-en="Built for the field">Saha için inşa edildi</p>
+        <h2 class="cine-band__title" data-en="When every second counts.">Her saniye önemli olduğunda.</h2>
       </div>
     </section>
 
