@@ -139,6 +139,83 @@
   </footer>
 
   <button class="to-top" id="toTop" aria-label="Yukarı çık">↑</button>
+
+  <!-- Success Modal -->
+  <div class="success-modal-backdrop" id="successModal" role="dialog" aria-modal="true" aria-labelledby="successModalTitle">
+    <div class="success-modal">
+      <div class="success-modal__icon">✓</div>
+      <h2 class="success-modal__title" id="successModalTitle" data-en="Message Sent!">Mesajınız Gönderildi!</h2>
+      <p class="success-modal__body" data-en="Thank you for reaching out. Our team will get back to you as soon as possible.">Bize ulaştığınız için teşekkürler. Ekibimiz en kısa sürede size geri dönecek.</p>
+      <button class="success-modal__close" id="successModalClose" data-en="Close">Tamam</button>
+    </div>
+  </div>
+
   <script src="script.js"></script>
+  <script>
+    (function () {
+      var LANG_KEY = 'ascalon-lang';
+      var contactForm     = document.getElementById('contactForm');
+      var modalBackdrop   = document.getElementById('successModal');
+      var modalClose      = document.getElementById('successModalClose');
+      var submitBtn       = contactForm && contactForm.querySelector('.demo__submit');
+      var statusEl        = document.getElementById('formStatus');
+
+      function getLang() { return localStorage.getItem(LANG_KEY) || 'tr'; }
+
+      function applyModalLang() {
+        var lang = getLang();
+        modalBackdrop && modalBackdrop.querySelectorAll('[data-en]').forEach(function (el) {
+          if (!el._trText) el._trText = el.textContent;
+          el.textContent = lang === 'en' ? el.dataset.en : el._trText;
+        });
+      }
+
+      function openModal()  { modalBackdrop && modalBackdrop.classList.add('is-open');    applyModalLang(); modalClose && modalClose.focus(); }
+      function closeModal() { modalBackdrop && modalBackdrop.classList.remove('is-open'); }
+
+      modalClose    && modalClose.addEventListener('click', closeModal);
+      modalBackdrop && modalBackdrop.addEventListener('click', function (e) { if (e.target === modalBackdrop) closeModal(); });
+      document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeModal(); });
+
+      if (!contactForm) return;
+
+      contactForm.addEventListener('submit', function (e) {
+        e.preventDefault();
+        if (!contactForm.checkValidity()) { contactForm.reportValidity(); return; }
+
+        var lang = getLang();
+        submitBtn.disabled = true;
+        var orig = submitBtn.textContent;
+        submitBtn.textContent = lang === 'en' ? 'Sending…' : 'Gönderiliyor…';
+
+        fetch('https://formspree.io/f/maqgbjoa', {
+          method: 'POST',
+          body: new FormData(contactForm),
+          headers: { Accept: 'application/json' }
+        })
+        .then(function (res) {
+          if (res.ok) {
+            contactForm.reset();
+            openModal();
+          } else {
+            throw new Error('error');
+          }
+        })
+        .catch(function () {
+          if (statusEl) {
+            statusEl.removeAttribute('hidden');
+            statusEl.style.color = '#e55';
+            statusEl.textContent = getLang() === 'en'
+              ? 'Something went wrong. Please try again or email us directly.'
+              : 'Bir hata oluştu. Lütfen tekrar deneyin ya da doğrudan e-posta gönderin.';
+          }
+        })
+        .finally(function () {
+          submitBtn.disabled = false;
+          submitBtn.textContent = orig;
+        });
+      });
+    })();
+  </script>
 </body>
 </html>
