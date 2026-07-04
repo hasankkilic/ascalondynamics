@@ -131,14 +131,6 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   /* ─────────────────────────────────────────
-     THREE.JS — Hero particle field
-  ───────────────────────────────────────── */
-  const heroCanvas = document.getElementById('heroCanvas');
-  if (heroCanvas && typeof THREE !== 'undefined') {
-    initHeroScene(heroCanvas);
-  }
-
-  /* ─────────────────────────────────────────
      THREE.JS — CTA grid particles
   ───────────────────────────────────────── */
   const ctaCanvas = document.getElementById('ctaCanvas');
@@ -151,241 +143,292 @@ document.addEventListener('DOMContentLoaded', () => {
   ───────────────────────────────────────── */
   if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {
     gsap.registerPlugin(ScrollTrigger);
+
+    /* Cinematic hangar → UAV → takeoff sequence — desktop + motion-ok
+       only. Mobile / reduced-motion users get the static .cine-mobile
+       fallback (see styles.css) and never pay the Three.js/pin cost.
+       Must run BEFORE initScrollAnimations(): it pins #cine and inserts
+       a large spacer into the document flow, and every ScrollTrigger
+       created afterwards needs that spacer to already exist so its own
+       start/end positions measure correctly. */
+    const cineCanvas = document.getElementById('cineCanvas');
+    const wantsCinematic = window.innerWidth > 900 &&
+      !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (cineCanvas && wantsCinematic && typeof THREE !== 'undefined') {
+      initCinematicSequence(cineCanvas);
+    }
+
     initScrollAnimations();
+    ScrollTrigger.refresh();
   }
-
-  /* ─────────────────────────────────────────
-     Hero entrance animation (CSS-driven but
-     staggered via JS class additions)
-  ───────────────────────────────────────── */
-  window.addEventListener('load', () => {
-    const eyebrow = document.querySelector('.hero__eyebrow');
-    const lines   = document.querySelectorAll('.hero__title-line');
-    const sub     = document.querySelector('.hero__sub');
-    const actions = document.querySelector('.hero__actions');
-    const hudTop  = document.querySelector('.hero__hud-top');
-    const hudBot  = document.querySelector('.hero__hud-bottom');
-
-    [eyebrow, ...lines, sub, actions, hudTop, hudBot].forEach((el, i) => {
-      if (!el) return;
-      el.style.opacity = '0';
-      el.style.transform = 'translateY(30px)';
-      el.style.transition = 'opacity 0.9s cubic-bezier(0.2,0.8,0.2,1), transform 0.9s cubic-bezier(0.2,0.8,0.2,1)';
-      setTimeout(() => {
-        el.style.opacity = '1';
-        el.style.transform = 'none';
-      }, 800 + i * 120);
-    });
-  });
 
 }); // end DOMContentLoaded
 
 /* ============================================================
-   THREE.JS HERO SCENE — Flying UAV wireframe
+   UAV WIREFRAME BUILDER (nose points toward +Z)
+   Shared by the cinematic hero sequence for the hero UAV and
+   the dim parked silhouettes in the hangar background.
    ============================================================ */
-function initHeroScene(canvas) {
+function buildUAVWireframe(s, materials) {
+  const g = new THREE.Group();
+  const wM = () => {
+    const m = new THREE.LineBasicMaterial({ color: 0x00d4ff, transparent: true, opacity: 0.05 });
+    materials.push(m);
+    return m;
+  };
+  const rM = () => {
+    const m = new THREE.LineBasicMaterial({ color: 0xe11d2a, transparent: true, opacity: 0.05 });
+    materials.push(m);
+    return m;
+  };
+  const add = (geo, mat, px, py, pz, rx, ry, rz) => {
+    const ls = new THREE.LineSegments(new THREE.EdgesGeometry(geo), mat());
+    ls.position.set(px||0, py||0, pz||0);
+    if (rx !== undefined) ls.rotation.set(rx, ry||0, rz||0);
+    g.add(ls);
+  };
+
+  // Fuselage — tapered cylinder, narrow end at nose (+Z)
+  add(new THREE.CylinderGeometry(0.9*s, 1.5*s, 22*s, 8), wM, 0, 0, 0, Math.PI/2);
+  // Nose cone
+  add(new THREE.ConeGeometry(0.9*s, 6*s, 8), wM, 0, 0, 14*s, Math.PI/2);
+  // Main wings (span along X, chord along Z)
+  add(new THREE.BoxGeometry(24*s, 0.22*s, 13*s), wM, 0, 0, -1*s);
+  // Winglets at tips
+  add(new THREE.BoxGeometry(0.22*s, 2.8*s, 2.5*s), wM,  12*s, 1*s, -6*s, 0, 0,  0.18);
+  add(new THREE.BoxGeometry(0.22*s, 2.8*s, 2.5*s), wM, -12*s, 1*s, -6*s, 0, 0, -0.18);
+  // V-tail fins
+  add(new THREE.BoxGeometry(0.22*s, 4.5*s, 9*s), rM,  3.8*s, 2.2*s, -13*s,  0.38, 0,  0.1);
+  add(new THREE.BoxGeometry(0.22*s, 4.5*s, 9*s), rM, -3.8*s, 2.2*s, -13*s, -0.38, 0, -0.1);
+  // Engine pods under wings
+  add(new THREE.CylinderGeometry(0.65*s, 0.9*s, 5.5*s, 8), wM,  7.5*s, -2*s, -1.5*s, Math.PI/2);
+  add(new THREE.CylinderGeometry(0.65*s, 0.9*s, 5.5*s, 8), wM, -7.5*s, -2*s, -1.5*s, Math.PI/2);
+  // Horizontal stabiliser (small rear wing)
+  add(new THREE.BoxGeometry(10*s, 0.2*s, 5*s), wM, 0, 0.5*s, -13*s);
+
+  return g;
+}
+
+/* Generates a soft radial-gradient sprite texture — used to fake
+   volumetric light beams / glow without a full postprocessing pipeline. */
+function makeGlowTexture(hex) {
+  const size = 128;
+  const c = document.createElement('canvas');
+  c.width = c.height = size;
+  const ctx = c.getContext('2d');
+  const grad = ctx.createRadialGradient(size/2, size/2, 0, size/2, size/2, size/2);
+  grad.addColorStop(0,   hex + 'e6');
+  grad.addColorStop(0.4, hex + '55');
+  grad.addColorStop(1,   hex + '00');
+  ctx.fillStyle = grad;
+  ctx.fillRect(0, 0, size, size);
+  return new THREE.CanvasTexture(c);
+}
+
+/* ============================================================
+   CINEMATIC SEQUENCE — Hangar → doors open → UAV reveal →
+   orbit → runway transition → takeoff into sunrise.
+   One scrubbed GSAP timeline drives every camera move, light
+   change and UAV motion as a single continuous scroll-shot.
+   ============================================================ */
+function initCinematicSequence(canvas) {
   const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
   renderer.setSize(canvas.clientWidth, canvas.clientHeight);
   renderer.setClearColor(0x000000, 0);
 
-  const scene  = new THREE.Scene();
-  const camera = new THREE.PerspectiveCamera(60, canvas.clientWidth / canvas.clientHeight, 0.1, 2000);
-  camera.position.set(0, 0, 80);
+  const scene = new THREE.Scene();
+  const fog = new THREE.FogExp2(0x03060a, 0.05);
+  scene.fog = fog;
 
-  scene.fog = new THREE.FogExp2(0xfafafa, 0.006);
+  const camera = new THREE.PerspectiveCamera(55, canvas.clientWidth / canvas.clientHeight, 0.1, 3000);
 
-  scene.add(new THREE.AmbientLight(0xd0e8f0, 1.4));
-  const pointLight1 = new THREE.PointLight(0x0088aa, 2, 200);
-  pointLight1.position.set(40, 20, 30);
-  scene.add(pointLight1);
-  const pointLight2 = new THREE.PointLight(0xe11d2a, 1.5, 150);
-  pointLight2.position.set(-40, -20, 20);
-  scene.add(pointLight2);
-
-  /* ── Background star field ── */
-  const starPositions = new Float32Array(2400 * 3);
-  for (let i = 0; i < starPositions.length; i++) starPositions[i] = (Math.random() - 0.5) * 800;
-  const starGeo = new THREE.BufferGeometry();
-  starGeo.setAttribute('position', new THREE.BufferAttribute(starPositions, 3));
-  scene.add(new THREE.Points(starGeo, new THREE.PointsMaterial({ color: 0x1a2433, size: 0.5, transparent: true, opacity: 0.35, sizeAttenuation: true })));
-
-  /* ── Cyan particle cloud ── */
-  const partPos = new Float32Array(1000 * 3);
-  for (let i = 0; i < 1000; i++) {
-    partPos[i*3]   = (Math.random()-0.5)*200;
-    partPos[i*3+1] = (Math.random()-0.5)*120;
-    partPos[i*3+2] = (Math.random()-0.5)*100 - 20;
+  /* ── Ambient dust / atmosphere ── */
+  const dustPos = new Float32Array(700 * 3);
+  for (let i = 0; i < 700; i++) {
+    dustPos[i*3]   = (Math.random()-0.5) * 220;
+    dustPos[i*3+1] = Math.random() * 90 - 10;
+    dustPos[i*3+2] = (Math.random()-0.5) * 260 - 60;
   }
-  const partGeo = new THREE.BufferGeometry();
-  partGeo.setAttribute('position', new THREE.BufferAttribute(partPos, 3));
-  const particles = new THREE.Points(partGeo, new THREE.PointsMaterial({ color: 0x0088aa, size: 0.9, transparent: true, opacity: 0.4, sizeAttenuation: true }));
-  scene.add(particles);
+  const dustGeo = new THREE.BufferGeometry();
+  dustGeo.setAttribute('position', new THREE.BufferAttribute(dustPos, 3));
+  const dust = new THREE.Points(dustGeo, new THREE.PointsMaterial({ color: 0x00d4ff, size: 0.5, transparent: true, opacity: 0.25, sizeAttenuation: true }));
+  scene.add(dust);
 
-  /* ── Red accent particles ── */
-  const redPos = new Float32Array(260 * 3);
-  for (let i = 0; i < 260; i++) {
-    redPos[i*3]   = (Math.random()-0.5)*160;
-    redPos[i*3+1] = (Math.random()-0.5)*90;
-    redPos[i*3+2] = (Math.random()-0.5)*60 - 10;
-  }
-  const redGeo = new THREE.BufferGeometry();
-  redGeo.setAttribute('position', new THREE.BufferAttribute(redPos, 3));
-  scene.add(new THREE.Points(redGeo, new THREE.PointsMaterial({ color: 0xe11d2a, size: 0.7, transparent: true, opacity: 0.35, sizeAttenuation: true })));
+  /* ── Hangar / runway floor grid ── */
+  const grid = new THREE.GridHelper(520, 52, 0x00d4ff, 0x08202a);
+  grid.position.y = -14;
+  grid.material.transparent = true;
+  grid.material.opacity = 0.32;
+  scene.add(grid);
 
-  /* ── Ground grid ── */
-  const gridHelper = new THREE.GridHelper(400, 40, 0xc8d0da, 0xd8dde5);
-  gridHelper.position.y = -30;
-  scene.add(gridHelper);
+  /* ── Back wall of the hangar ── */
+  const backWall = new THREE.Mesh(
+    new THREE.PlaneGeometry(220, 90),
+    new THREE.MeshBasicMaterial({ color: 0x040810, transparent: true, opacity: 0.2 })
+  );
+  backWall.position.set(0, 30, -95);
+  scene.add(backWall);
 
-  /* ── UAV wireframe builder (nose points toward +Z) ── */
-  function buildUAV(s) {
-    const g = new THREE.Group();
-    const wM = () => new THREE.LineBasicMaterial({ color: 0x00d4ff, transparent: true, opacity: 0.7 });
-    const rM = () => new THREE.LineBasicMaterial({ color: 0xe11d2a, transparent: true, opacity: 0.5 });
+  /* ── Hangar doors — two panels that slide open ── */
+  const doorGeo = new THREE.BoxGeometry(30, 70, 2);
+  const buildDoor = (x) => {
+    // Wireframe only, no solid fill — reads as a door outline without
+    // blocking the scene/video behind it with an opaque rectangle.
+    const edge = new THREE.LineSegments(new THREE.EdgesGeometry(doorGeo), new THREE.LineBasicMaterial({ color: 0x00d4ff, transparent: true, opacity: 0.6 }));
+    edge.position.set(x, 25, -20);
+    scene.add(edge);
+    return edge;
+  };
+  const doorL = buildDoor(-15);
+  const doorR = buildDoor(15);
 
-    const add = (geo, mat, px, py, pz, rx, ry, rz) => {
-      const ls = new THREE.LineSegments(new THREE.EdgesGeometry(geo), mat());
-      ls.position.set(px||0, py||0, pz||0);
-      if (rx !== undefined) ls.rotation.set(rx, ry||0, rz||0);
-      g.add(ls);
-    };
+  /* ── Light beam sprites through the door gap ── */
+  const beamTex = makeGlowTexture('#00d4ff');
+  const makeBeam = (x) => {
+    const spr = new THREE.Sprite(new THREE.SpriteMaterial({ map: beamTex, transparent: true, opacity: 0, blending: THREE.AdditiveBlending, depthWrite: false }));
+    spr.scale.set(26, 100, 1);
+    spr.position.set(x, 30, -18);
+    scene.add(spr);
+    return spr;
+  };
+  const beamA = makeBeam(-4);
+  const beamB = makeBeam(4);
 
-    // Fuselage — tapered cylinder, narrow end at nose (+Z)
-    add(new THREE.CylinderGeometry(0.9*s, 1.5*s, 22*s, 8), wM, 0, 0, 0, Math.PI/2);
-    // Nose cone
-    add(new THREE.ConeGeometry(0.9*s, 6*s, 8), wM, 0, 0, 14*s, Math.PI/2);
-    // Main wings (span along X, chord along Z)
-    add(new THREE.BoxGeometry(24*s, 0.22*s, 13*s), wM, 0, 0, -1*s);
-    // Winglets at tips
-    add(new THREE.BoxGeometry(0.22*s, 2.8*s, 2.5*s), wM,  12*s, 1*s, -6*s, 0, 0,  0.18);
-    add(new THREE.BoxGeometry(0.22*s, 2.8*s, 2.5*s), wM, -12*s, 1*s, -6*s, 0, 0, -0.18);
-    // V-tail fins
-    add(new THREE.BoxGeometry(0.22*s, 4.5*s, 9*s), rM,  3.8*s, 2.2*s, -13*s,  0.38, 0,  0.1);
-    add(new THREE.BoxGeometry(0.22*s, 4.5*s, 9*s), rM, -3.8*s, 2.2*s, -13*s, -0.38, 0, -0.1);
-    // Engine pods under wings
-    add(new THREE.CylinderGeometry(0.65*s, 0.9*s, 5.5*s, 8), wM,  7.5*s, -2*s, -1.5*s, Math.PI/2);
-    add(new THREE.CylinderGeometry(0.65*s, 0.9*s, 5.5*s, 8), wM, -7.5*s, -2*s, -1.5*s, Math.PI/2);
-    // Horizontal stabiliser (small rear wing)
-    add(new THREE.BoxGeometry(10*s, 0.2*s, 5*s), wM, 0, 0.5*s, -13*s);
+  /* ── Rim glow behind the UAV ── */
+  const rimGlow = new THREE.Sprite(new THREE.SpriteMaterial({ map: beamTex, transparent: true, opacity: 0, blending: THREE.AdditiveBlending, depthWrite: false }));
+  rimGlow.scale.set(70, 70, 1);
+  rimGlow.position.set(0, 10, -66);
+  scene.add(rimGlow);
 
-    return g;
-  }
-
-  /* ── Main drone ── */
-  const mainUAV = buildUAV(1.3);
+  /* ── Main UAV — dark wireframe until revealed ── */
+  const uavMaterials = [];
+  const mainUAV = buildUAVWireframe(1.6, uavMaterials);
+  mainUAV.position.set(0, 9, -60);
   scene.add(mainUAV);
 
-  /* ── Contrail (trail particles) ── */
-  const TRAIL_N = 70;
-  const trailArr = new Float32Array(TRAIL_N * 3);
-  const trailGeo = new THREE.BufferGeometry();
-  trailGeo.setAttribute('position', new THREE.BufferAttribute(trailArr, 3));
-  const trailPts = new THREE.Points(trailGeo, new THREE.PointsMaterial({ color: 0x00d4ff, size: 0.55, transparent: true, opacity: 0.38, sizeAttenuation: true }));
-  scene.add(trailPts);
-  const trailHist = [];
+  /* ── Parked silhouettes deeper in the hangar (atmosphere only) ── */
+  const bgMaterials = [];
+  const bgUAV1 = buildUAVWireframe(0.5, bgMaterials);
+  bgUAV1.position.set(-34, 4, -78);
+  bgUAV1.rotation.y = 0.4;
+  const bgUAV2 = buildUAVWireframe(0.4, bgMaterials);
+  bgUAV2.position.set(30, 2, -85);
+  bgUAV2.rotation.y = -0.5;
+  scene.add(bgUAV1, bgUAV2);
+  bgMaterials.forEach(m => { m.opacity = 0.14; });
 
-  /* ── Background drones — straight fly-bys ── */
-  const bgDrones = [
-    { uav: buildUAV(0.42), x:  115, y: 13,  z: -52, vx: -0.26 },
-    { uav: buildUAV(0.3),  x: -115, y: -3,  z: -70, vx:  0.19 },
-    { uav: buildUAV(0.36), x:  98,  y: 21,  z: -88, vx: -0.14 },
-  ];
-  bgDrones.forEach(d => {
-    d.uav.position.set(d.x, d.y, d.z);
-    d.uav.rotation.y = d.vx < 0 ? -Math.PI/2 : Math.PI/2;
-    scene.add(d.uav);
-  });
-
-  /* ── Data stream lines ── */
-  const lineMeshes = [];
-  for (let i = 0; i < 8; i++) {
-    const x0 = (Math.random()-0.5)*120, y0 = (Math.random()-0.5)*60, z0 = (Math.random()-0.5)*40 - 30;
-    const lGeo = new THREE.BufferGeometry().setFromPoints([
-      new THREE.Vector3(x0, y0, z0),
-      new THREE.Vector3(x0+(Math.random()-0.5)*40, y0+(Math.random()-0.5)*30, z0+20)
-    ]);
-    const lMat = new THREE.LineBasicMaterial({ color: i%2===0 ? 0x0088aa : 0xe11d2a, transparent: true, opacity: 0.18 });
-    scene.add(new THREE.Line(lGeo, lMat));
-    lineMeshes.push({ mat: lMat, phase: Math.random()*Math.PI*2 });
-  }
-
-  /* ── Resize ── */
   const onResize = () => {
     const w = canvas.clientWidth, h = canvas.clientHeight;
-    renderer.setSize(w, h); camera.aspect = w/h; camera.updateProjectionMatrix();
+    renderer.setSize(w, h);
+    camera.aspect = w / h;
+    camera.updateProjectionMatrix();
   };
   window.addEventListener('resize', onResize);
 
-  /* ── Mouse parallax ── */
-  let mouseX = 0, mouseY = 0, targetX = 0, targetY = 0;
-  window.addEventListener('mousemove', e => {
-    mouseX = (e.clientX/window.innerWidth - 0.5)*2;
-    mouseY = (e.clientY/window.innerHeight - 0.5)*2;
-  }, { passive: true });
+  /* ── Camera + UAV motion state — tweened directly by the
+       scrubbed timeline, applied to the real objects every frame ── */
+  const cam = { x: 0, y: 11, z: 150, lx: 0, ly: 24, lz: -20 };
+  const uavMove = { x: 0, y: 9, z: -60, tilt: 0 };
 
-  let scrollY = 0;
-  window.addEventListener('scroll', () => { scrollY = window.scrollY; }, { passive: true });
+  const altEl = document.getElementById('cineAlt');
+  const spdEl = document.getElementById('cineSpd');
 
-  /* ── Animate ── */
+  /* ═══════════════════════════════════════════════════════
+     MASTER SCRUBBED TIMELINE — one continuous cinematic shot
+     ═══════════════════════════════════════════════════════ */
+  const tl = gsap.timeline({
+    defaults: { ease: 'none' },
+    scrollTrigger: {
+      trigger: '#cine',
+      start: 'top top',
+      end: '+=650%',
+      scrub: 1,
+      pin: true,
+      anticipatePin: 1,
+      onUpdate(self) {
+        const p = self.progress;
+        if (altEl) altEl.textContent = Math.round(p * p * 420) + ' M';
+        if (spdEl) spdEl.textContent = Math.round(6 + p * 180) + ' KT';
+      }
+    }
+  });
+
+  // Stage 0 — hangar closed, title readable, ambient video fills the
+  // otherwise-empty opening seconds until the Three.js scene takes over
+  tl.to('.cine__scrollcue', { opacity: 0, duration: 5 }, 3);
+  tl.to('.cine__content',   { opacity: 0, y: -30, duration: 6 }, 6);
+  tl.to('.cine__bgvideo',   { opacity: 0, duration: 12 }, 6);
+
+  // Stage 1 — doors open, fog disperses, beams appear, camera creeps forward
+  tl.to(doorL.position, { x: -34, duration: 24 }, 8);
+  tl.to(doorR.position, { x: 34,  duration: 24 }, 8);
+  tl.to(fog,            { density: 0.006, duration: 26 }, 8);
+  tl.to([beamA.material, beamB.material], { opacity: 0.55, duration: 14 }, 12);
+  tl.to(cam,            { x: 0, y: 12, z: 92, lx: 0, ly: 14, lz: -55, duration: 24 }, 8);
+
+  // Stage 2 — UAV illuminates into view
+  tl.to(uavMaterials,     { opacity: 0.9, duration: 16 }, 27);
+  tl.to(rimGlow.material, { opacity: 0.85, duration: 16 }, 27);
+  tl.to(cam,              { x: 14, y: 10, z: 46, lx: 0, ly: 9, lz: -60, duration: 18 }, 28);
+  tl.to([beamA.material, beamB.material], { opacity: 0.12, duration: 10 }, 34);
+
+  // Stage 3 — orbit around the UAV + technical highlight callouts
+  const orbitStart = 44, orbitEnd = 66, orbitSteps = 8, orbitR = 32;
+  const orbitStep = (orbitEnd - orbitStart) / orbitSteps;
+  for (let i = 0; i <= orbitSteps; i++) {
+    const a = -0.9 + (i / orbitSteps) * 2.6;
+    tl.to(cam, {
+      x: Math.sin(a) * orbitR,
+      y: 9 + Math.sin(i * 1.7) * 2.2,
+      z: -60 + Math.cos(a) * orbitR,
+      lx: 0, ly: 9, lz: -60,
+      duration: orbitStep,
+    }, orbitStart + i * orbitStep);
+  }
+  tl.to('#cineLabel1', { opacity: 1, duration: 2 }, 45);
+  tl.to('#cineLabel1', { opacity: 0, duration: 2 }, 51);
+  tl.to('#cineLabel2', { opacity: 1, duration: 2 }, 52);
+  tl.to('#cineLabel2', { opacity: 0, duration: 2 }, 58);
+  tl.to('#cineLabel3', { opacity: 1, duration: 2 }, 59);
+  tl.to('#cineLabel3', { opacity: 0, duration: 2 }, 65);
+
+  // Stage 4 — pull back to a wide runway shot, UAV taxis forward
+  tl.to(cam,               { x: 0, y: 22, z: 130, lx: 0, ly: 12, lz: -30, duration: 16 }, 66);
+  tl.to(uavMove,           { z: -18, duration: 14 }, 68);
+  tl.to(fog.color,         { r: 0.06, g: 0.09, b: 0.14, duration: 16 }, 66);
+  tl.to(backWall.material, { opacity: 0.08, duration: 14 }, 66);
+  tl.to(grid.material,     { opacity: 0.1, duration: 14 }, 66);
+
+  // Stage 5 — takeoff, sky turns to sunrise, final message
+  tl.to(uavMove,     { y: 150, z: -230, tilt: -0.35, duration: 18 }, 82);
+  tl.to(cam,         { x: 0, y: 60, z: 150, lx: 0, ly: 70, lz: -160, duration: 18 }, 82);
+  tl.to('.cine__sky', { opacity: 1, duration: 18 }, 82);
+  tl.to(fog,         { density: 0.0015, duration: 18 }, 82);
+  tl.to('#cineFinal', { opacity: 1, duration: 8 }, 90);
+
+  // Header uses the light site-wide theme — hide it for the length of
+  // the dark cinematic pin so it doesn't clash, then bring it back
+  // just before the sequence hands off to the rest of the page.
+  tl.to('#header', { opacity: 0, duration: 2 }, 0);
+  tl.to('#header', { opacity: 1, duration: 2 }, 96);
+
+  /* ── Render loop — applies the tweened state every frame ── */
   let t = 0;
   const animate = () => {
-    if (!document.getElementById('heroCanvas')) return;
+    if (!document.getElementById('cineCanvas')) return;
     requestAnimationFrame(animate);
     t += 0.006;
 
-    targetX += (mouseX - targetX) * 0.04;
-    targetY += (mouseY - targetY) * 0.04;
-    camera.position.x = targetX * 12;
-    camera.position.y = -targetY * 6 + 4;
-    camera.lookAt(0, 6, 0);
+    camera.position.set(cam.x, cam.y, cam.z);
+    camera.lookAt(cam.lx, cam.ly, cam.lz);
 
-    // Main drone: oval flight path
-    const spd = 0.13, R = 34;
-    const a = t * spd;
-    mainUAV.position.x = Math.sin(a) * R;
-    mainUAV.position.y = 8 + Math.sin(a * 2) * 3.5;
-    mainUAV.position.z = -Math.cos(a) * 18 - 20;
-    // Heading — atan2(vx, vz) makes +Z local axis face velocity
-    const vx = Math.cos(a) * R;
-    const vz = Math.sin(a) * 18;
-    mainUAV.rotation.y = Math.atan2(vx, vz);
-    // Bank into turns, pitch with mouse
-    mainUAV.rotation.z = -Math.sin(a * 2) * 0.24;
-    mainUAV.rotation.x = targetY * 0.07;
+    mainUAV.position.set(uavMove.x, uavMove.y, uavMove.z);
+    mainUAV.rotation.x = uavMove.tilt;
 
-    // Contrail
-    trailHist.unshift({ x: mainUAV.position.x, y: mainUAV.position.y - 0.8, z: mainUAV.position.z });
-    if (trailHist.length > TRAIL_N) trailHist.pop();
-    for (let i = 0; i < TRAIL_N; i++) {
-      const p = trailHist[i] || trailHist[0] || { x:0, y:0, z:0 };
-      trailArr[i*3] = p.x; trailArr[i*3+1] = p.y; trailArr[i*3+2] = p.z;
-    }
-    trailGeo.attributes.position.needsUpdate = true;
+    dust.rotation.y = t * 0.02;
+    dust.rotation.x = t * 0.006;
 
-    // Background drones fly straight across
-    bgDrones.forEach(d => {
-      d.x += d.vx;
-      if (d.x >  140) d.x = -140;
-      if (d.x < -140) d.x =  140;
-      d.uav.position.x = d.x;
-      d.uav.rotation.y = d.vx < 0 ? -Math.PI/2 : Math.PI/2;
-    });
-
-    // Particle drift
-    particles.rotation.y = t * 0.02;
-    particles.rotation.x = t * 0.008;
-
-    // Light cycle
-    pointLight1.position.x = Math.sin(t * 0.4) * 50;
-    pointLight1.position.y = Math.cos(t * 0.3) * 25;
-    pointLight2.position.x = -Math.sin(t * 0.35) * 40;
-
-    // Line flicker
-    lineMeshes.forEach(l => { l.mat.opacity = 0.08 + 0.18*(0.5 + 0.5*Math.sin(t*2 + l.phase)); });
-
-    const scrollFade = Math.max(0, 1 - scrollY / (window.innerHeight * 0.6));
-    renderer.domElement.style.opacity = scrollFade;
     renderer.render(scene, camera);
   };
   animate();

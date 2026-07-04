@@ -73,62 +73,110 @@
   <main>
 
     <!-- ══════════════════════════════════════════════
-         SECTION 1 — HERO (Three.js WebGL Canvas)
+         SECTION 1 — CINEMATIC OPENING (pinned scroll sequence)
+         Hangar → doors open → UAV reveal → orbit → takeoff
     ══════════════════════════════════════════════ -->
-    <section class="hero" id="hero">
-      <canvas id="heroCanvas"></canvas>
+    <section class="cine" id="cine">
+      <!-- Ambient background video — fills the opening seconds before the
+           Three.js hangar/doors/UAV take over, fades out as they do -->
+      <video class="cine__bgvideo" id="cineBgVideo" autoplay muted loop playsinline src="images/air-hero.mp4"></video>
+      <canvas id="cineCanvas"></canvas>
 
+      <!-- Sunrise sky overlay (fades in during takeoff) -->
+      <div class="cine__sky" aria-hidden="true"></div>
       <!-- Cinematic vignette -->
-      <div class="hero__vignette"></div>
+      <div class="cine__vignette" aria-hidden="true"></div>
 
       <!-- HUD corner brackets -->
-      <div class="hud-frame" aria-hidden="true">
-        <span class="hud-frame__corner hud-frame__corner--tl"></span>
-        <span class="hud-frame__corner hud-frame__corner--tr"></span>
-        <span class="hud-frame__corner hud-frame__corner--bl"></span>
-        <span class="hud-frame__corner hud-frame__corner--br"></span>
-        <span class="hud-frame__line hud-frame__line--top"></span>
-        <span class="hud-frame__line hud-frame__line--bottom"></span>
+      <div class="cine__frame" aria-hidden="true">
+        <span class="cine__corner cine__corner--tl"></span>
+        <span class="cine__corner cine__corner--tr"></span>
+        <span class="cine__corner cine__corner--bl"></span>
+        <span class="cine__corner cine__corner--br"></span>
       </div>
 
       <!-- HUD status bar -->
-      <div class="hero__hud-top" aria-hidden="true">
-        <span class="hud-tag">ASCALON · EDGE · v4.2.1</span>
-        <div class="hud-status">
-          <span class="hud-dot"></span>
+      <div class="cine__hud-top" aria-hidden="true">
+        <span class="cine__tag">ASCALON · EDGE · v4.2.1</span>
+        <div class="cine__status">
+          <span class="cine__dot"></span>
           <span data-en="SYSTEMS ONLINE">SİSTEM AKTİF</span>
         </div>
-        <span class="hud-tag hud-tag--right">37°09′N &nbsp;34°49′E</span>
+        <span class="cine__tag cine__tag--right">37°09′N &nbsp;34°49′E</span>
       </div>
 
-      <!-- Main headline -->
-      <div class="hero__content">
-        <p class="hero__eyebrow" data-en="Next-Generation Autonomous Systems">Yeni Nesil Otonom Sistemler</p>
-        <h1 class="hero__title">
-          <span class="hero__title-line" data-en="Autonomous">Otonom</span>
-          <span class="hero__title-line hero__title-line--accent" data-en="Intelligence">İstihbarat</span>
-          <span class="hero__title-line hero__title-line--thin" data-en="for the Next Generation">Yeni Nesil Havacılık için</span>
+      <!-- Opening title -->
+      <div class="cine__content" id="cineIntro">
+        <p class="cine__eyebrow" data-en="Next-Generation Autonomous Systems">Yeni Nesil Otonom Sistemler</p>
+        <h1 class="cine__title">
+          <span data-en="ASCALON">ASCALON</span>
+          <span class="cine__title--accent" data-en="DYNAMICS">DYNAMICS</span>
         </h1>
-        <p class="hero__sub" data-en="Precision-engineered UAV platforms powered by edge AI — built for the most demanding defense and reconnaissance operations.">Sınır tanımayan savunma ve keşif operasyonları için edge AI destekli, hassas mühendislik ürünü İHA platformları.</p>
-        <div class="hero__actions">
-          <a href="air.html" class="btn btn--primary" data-en="Explore Systems">Sistemleri Keşfet</a>
-          <a href="iletisim.html" class="btn btn--ghost" data-en="Contact Us">İletişime Geç</a>
+        <p class="cine__sub" data-en="Engineering autonomous defense systems.">Otonom savunma sistemleri mühendisliği.</p>
+      </div>
+
+      <!-- Scroll cue -->
+      <div class="cine__scrollcue" id="cineScrollCue" aria-hidden="true">
+        <span class="scroll-cue__label" data-en="SCROLL TO BEGIN">KAYDIRARAK BAŞLA</span>
+        <span class="scroll-cue__line"></span>
+      </div>
+
+      <!-- Technical highlight callouts (orbit stage) -->
+      <div class="cine__label cine__label--1" id="cineLabel1">
+        <span class="cine__label-dot"></span>
+        <div class="cine__label-text">
+          <strong data-en="Multi-Spectral Sensors">Çoklu Spektrum Sensörler</strong>
+          <p data-en="Real-time ISR imaging payload">Gerçek zamanlı keşif görüntüleme</p>
+        </div>
+      </div>
+      <div class="cine__label cine__label--2" id="cineLabel2">
+        <span class="cine__label-dot"></span>
+        <div class="cine__label-text">
+          <strong data-en="Edge Avionics">Edge Aviyonik</strong>
+          <p data-en="On-board autonomous flight computer">Uçuş bilgisayarı, edge AI destekli</p>
+        </div>
+      </div>
+      <div class="cine__label cine__label--3" id="cineLabel3">
+        <span class="cine__label-dot"></span>
+        <div class="cine__label-text">
+          <strong data-en="Modular Payload Bay">Modüler Görev Yükü</strong>
+          <p data-en="Mission-configurable sensor &amp; payload deck">Göreve özel sensör ve yük yapılandırması</p>
         </div>
       </div>
 
       <!-- HUD bottom telemetry -->
-      <div class="hero__hud-bottom" aria-hidden="true">
-        <div class="hud-metric"><span class="hud-metric__label" data-en="ALT">İRT</span><span class="hud-metric__val">420 M</span></div>
-        <div class="hud-metric"><span class="hud-metric__label">SPD</span><span class="hud-metric__val">64 KT</span></div>
-        <div class="hud-metric"><span class="hud-metric__label" data-en="HDG">HED</span><span class="hud-metric__val">247°</span></div>
-        <div class="hud-metric"><span class="hud-metric__label">BATT</span><span class="hud-metric__val">98%</span></div>
-        <div class="hud-metric hud-metric--wide"><span class="hud-metric__label" data-en="MISSION">GÖREV</span><span class="hud-metric__val hud-metric__val--green" data-en="ACTIVE">AKTİF</span></div>
+      <div class="cine__hud-bottom" aria-hidden="true">
+        <div class="cine__metric"><span class="cine__metric-label" data-en="ALT">İRT</span><span class="cine__metric-val" id="cineAlt">0 M</span></div>
+        <div class="cine__metric"><span class="cine__metric-label">SPD</span><span class="cine__metric-val" id="cineSpd">0 KT</span></div>
+        <div class="cine__metric"><span class="cine__metric-label" data-en="HDG">HED</span><span class="cine__metric-val">247°</span></div>
+        <div class="cine__metric cine__metric--wide"><span class="cine__metric-label" data-en="MISSION">GÖREV</span><span class="cine__metric-val cine__metric-val--green" data-en="ACTIVE">AKTİF</span></div>
       </div>
 
-      <!-- Scroll cue -->
-      <div class="hero__scroll-cue" aria-hidden="true">
-        <span class="scroll-cue__label" data-en="SCROLL">KAYDIR</span>
-        <span class="scroll-cue__line"></span>
+      <!-- Final message -->
+      <div class="cine__final" id="cineFinal">
+        <h2>
+          <span data-en="THE FUTURE IS AUTONOMOUS">GELECEK OTONOM</span><br>
+          <span class="cine__final--accent" data-en="THE FUTURE IS ASCALON">GELECEK ASCALON</span>
+        </h2>
+        <div class="cine__final-actions">
+          <a href="air.html" class="btn btn--primary" data-en="Explore Systems">Sistemleri Keşfet</a>
+          <a href="iletisim.html" class="btn btn--ghost" data-en="Contact Us">İletişime Geç</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Mobile / reduced-motion fallback — static hero, no scroll-jack -->
+    <section class="cine-mobile" id="cineMobile">
+      <video class="cine-mobile__bg" autoplay muted loop playsinline src="images/air-hero.mp4"></video>
+      <div class="cine-mobile__overlay" aria-hidden="true"></div>
+      <div class="cine-mobile__content">
+        <p class="cine__eyebrow" data-en="Next-Generation Autonomous Systems">Yeni Nesil Otonom Sistemler</p>
+        <h1 class="cine-mobile__title">ASCALON <span data-en="DYNAMICS">DYNAMICS</span></h1>
+        <p class="cine__sub" data-en="Engineering autonomous defense systems.">Otonom savunma sistemleri mühendisliği.</p>
+        <div class="cine__final-actions">
+          <a href="air.html" class="btn btn--primary" data-en="Explore Systems">Sistemleri Keşfet</a>
+          <a href="iletisim.html" class="btn btn--ghost" data-en="Contact Us">İletişime Geç</a>
+        </div>
       </div>
     </section>
 
