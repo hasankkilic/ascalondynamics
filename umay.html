@@ -1,0 +1,1712 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>UMAY | Ascalon Dynamics</title>
+<meta name="description" content="Ascalon Dynamics UMAY — taktik AR muharebe sistemi canlı simülasyonu." />
+<link rel="icon" href="/images/logo.png" type="image/png" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;800;900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+<style>
+  html,body{margin:0;padding:0;background:#03060a;
+    font-family:Consolas,'Courier New',monospace;user-select:none;color:#9be8f7;}
+  body.umay-locked{overflow:hidden;}
+  .umay-stage{position:relative;width:100%;height:100vh;overflow:hidden;background:#03060a;}
+  canvas#gl{position:absolute;inset:0;display:block;}
+
+  /* ============ KASK VİZÖRÜ KATMANLARI ============ */
+  /* tarama tinti */
+  #scanfx{position:absolute;inset:0;z-index:4;pointer-events:none;opacity:0;transition:opacity .18s;
+    background:
+      repeating-linear-gradient(0deg, rgba(80,220,255,.05) 0 2px, transparent 2px 5px),
+      radial-gradient(ellipse at center, rgba(40,170,220,.06) 0%, rgba(20,120,180,.13) 100%);}
+  /* hasar kızıllığı */
+  #dmg{position:absolute;inset:0;z-index:5;pointer-events:none;opacity:0;
+    background:radial-gradient(ellipse at center, rgba(255,30,40,.10) 28%, rgba(255,20,30,.55) 100%);}
+  /* vizör camı yansıma/parlama (kafa ile paralaks kayar) */
+  #glass{position:absolute;inset:-6%;z-index:6;pointer-events:none;
+    background:
+      linear-gradient(123deg, rgba(255,255,255,0) 38%, rgba(190,225,255,.055) 46%, rgba(255,255,255,0) 53%),
+      linear-gradient(123deg, rgba(255,255,255,0) 57%, rgba(150,205,255,.035) 61%, rgba(255,255,255,0) 65%),
+      radial-gradient(120% 75% at 28% 8%, rgba(150,205,255,.07), transparent 52%),
+      radial-gradient(140% 90% at 78% 96%, rgba(20,70,110,.10), transparent 60%);
+    mix-blend-mode:screen;will-change:transform;}
+  /* AR kaplama hafif siyan tint + cam grenliliği */
+  #coat{position:absolute;inset:0;z-index:6;pointer-events:none;
+    background:radial-gradient(ellipse at center, rgba(60,180,220,.025) 0%, rgba(20,90,130,.06) 100%);
+    mix-blend-mode:screen;}
+  /* kask gövdesi (vizör açıklığı dışını kapatan SVG) */
+  #visor{position:absolute;inset:0;z-index:7;pointer-events:none;width:100%;height:100%;}
+
+  /* ============ HUD ============ */
+  #hud{position:absolute;inset:0;pointer-events:none;z-index:12;color:#9be8f7;}
+  #cross{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:26px;height:26px;}
+  #cross:before,#cross:after{content:'';position:absolute;background:#bfeffb;
+    box-shadow:0 0 5px rgba(120,230,255,.9);}
+  #cross:before{left:50%;top:0;width:1px;height:100%;transform:translateX(-50%);}
+  #cross:after{top:50%;left:0;height:1px;width:100%;transform:translateY(-50%);}
+  #cross.hit:before,#cross.hit:after{background:#ff4757;box-shadow:0 0 6px rgba(255,60,80,.9);}
+
+  #topleft{position:absolute;top:4.2%;left:8%;font-size:12px;letter-spacing:1px;
+    text-shadow:0 0 8px rgba(20,120,160,.6);}
+  #topleft .ttl{font-size:16px;color:#cdf6ff;font-weight:bold;letter-spacing:3px;}
+  #link{color:#69e6ff;}
+  #link.live{color:#7dffa9;}
+  .dot{display:inline-block;width:7px;height:7px;border-radius:50%;
+    background:#69e6ff;margin-right:5px;animation:blink 1.2s infinite;}
+  @keyframes blink{50%{opacity:.2}}
+  #topright{position:absolute;top:4.2%;right:8%;text-align:right;font-size:13px;letter-spacing:1px;
+    text-shadow:0 0 8px rgba(20,120,160,.6);}
+  #topright b{color:#ff8392;font-size:16px;}
+  #compass{position:absolute;top:3.4%;left:50%;transform:translateX(-50%);
+    filter:drop-shadow(0 0 6px rgba(40,160,210,.4));}
+
+  #bars{position:absolute;bottom:6%;left:50%;transform:translateX(-50%);
+    width:300px;font-size:10px;letter-spacing:2px;text-shadow:0 0 6px rgba(20,120,160,.6);}
+  .bar{height:8px;background:rgba(10,25,32,.6);border:1px solid rgba(105,230,255,.3);
+    margin:3px 0 8px;box-shadow:0 0 8px rgba(40,160,210,.15) inset;}
+  .bar i{display:block;height:100%;transition:width .1s;}
+  #hpfill{background:linear-gradient(90deg,#3dd97c,#9dff7a);width:100%;}
+  #enfill{background:#46c8f0;width:100%;}
+
+  #minimap{position:absolute;left:5%;bottom:6.5%;border-radius:50%;
+    border:1px solid rgba(105,230,255,.4);box-shadow:0 0 18px rgba(40,160,210,.3),
+    0 0 0 5px rgba(8,20,28,.5);}
+  #miniLabel{position:absolute;left:5%;bottom:calc(6.5% + 182px);font-size:10px;
+    letter-spacing:2px;color:#69e6ff;text-shadow:0 0 6px rgba(20,120,160,.6);}
+
+  .threat{position:absolute;border:1.5px solid rgba(255,70,90,.95);display:none;
+    box-shadow:0 0 10px rgba(255,60,80,.5), inset 0 0 8px rgba(255,60,80,.18);}
+  .threat span{position:absolute;top:101%;left:50%;transform:translateX(-50%);
+    color:#ff7585;font-size:10px;letter-spacing:1px;white-space:nowrap;
+    text-shadow:0 0 4px rgba(255,40,60,.9);}
+
+  #hint{position:absolute;bottom:6%;right:8%;font-size:11px;color:rgba(155,232,247,.7);
+    text-align:right;line-height:1.7;letter-spacing:.5px;text-shadow:0 0 6px rgba(20,120,160,.6);}
+  kbd{border:1px solid rgba(155,232,247,.4);border-radius:3px;padding:0 4px;font-size:10px;}
+
+  /* açılış kalibrasyon sweep */
+  #bootSweep{position:absolute;inset:0;z-index:8;pointer-events:none;opacity:0;
+    background:linear-gradient(90deg,transparent,rgba(120,230,255,.16),transparent);}
+  #bootSweep.run{animation:sweep 1.1s ease-out 1;}
+  @keyframes sweep{0%{opacity:1;transform:translateX(-100%)}100%{opacity:0;transform:translateX(100%)}}
+
+  /* overlays */
+  .overlay{position:absolute;inset:0;z-index:20;display:flex;align-items:center;justify-content:center;
+    background:rgba(3,8,11,.82);backdrop-filter:blur(2px);}
+  .panel{max-width:520px;padding:34px 44px;border:1px solid rgba(105,230,255,.35);
+    background:rgba(6,16,22,.9);color:#cdf6ff;box-shadow:0 0 40px rgba(40,160,210,.2);}
+  .panel h1{margin:0 0 4px;font-size:26px;letter-spacing:4px;color:#fff;}
+  .panel h1 em{color:#69e6ff;font-style:normal;}
+  .panel .sub{font-size:11px;color:#69e6ff;letter-spacing:3px;margin-bottom:18px;}
+  .panel p{font-size:13px;line-height:1.8;color:#a9d8e4;margin:14px 0;}
+  .panel .go{margin-top:22px;font-size:14px;color:#7dffa9;letter-spacing:2px;
+    animation:blink 1.4s infinite;text-align:center;}
+  .panel .ctl{font-size:12.5px;line-height:2.1;}
+  .panel .ctl b{color:#fff;display:inline-block;min-width:150px;}
+  #end{display:none;}
+  #end .panel{text-align:center;}
+  #endTitle{font-size:30px;letter-spacing:6px;margin-bottom:10px;}
+  #endTitle.win{color:#7dffa9;text-shadow:0 0 20px rgba(80,255,150,.5);}
+  #endTitle.lose{color:#ff4757;text-shadow:0 0 20px rgba(255,40,60,.5);}
+  #restart{pointer-events:auto;cursor:pointer;margin-top:18px;padding:10px 28px;
+    background:transparent;border:1px solid #69e6ff;color:#69e6ff;
+    font-family:inherit;font-size:13px;letter-spacing:3px;}
+  #restart:hover{background:rgba(105,230,255,.12);}
+  .note{font-size:10px;color:rgba(150,180,190,.5);margin-top:16px;}
+
+  /* ===== tarama süpürme bandı ===== */
+  #scanSweep{position:absolute;inset:0;z-index:5;pointer-events:none;opacity:0;
+    background:linear-gradient(100deg,transparent 43%,rgba(120,235,255,.16) 49%,
+      rgba(180,245,255,.28) 50%,rgba(120,235,255,.16) 51%,transparent 57%);}
+  #scanSweep.run{animation:scanWipe .62s ease-out 1;}
+  @keyframes scanWipe{0%{opacity:1;transform:translateX(-58%)}100%{opacity:0;transform:translateX(58%)}}
+
+  /* crosshair hedef kilidi durumu */
+  #cross.lock:before,#cross.lock:after{background:#ffc94a;box-shadow:0 0 6px rgba(255,190,50,.9);}
+
+  /* hedef kilidi kutusu */
+  #lock{position:absolute;border:1.5px solid rgba(255,201,74,.95);display:none;z-index:12;
+    box-shadow:0 0 9px rgba(255,180,40,.5), inset 0 0 7px rgba(255,180,40,.15);}
+  #lock.thermal{border-color:rgba(255,120,60,.95);box-shadow:0 0 11px rgba(255,90,40,.6);}
+  #lockInfo{position:absolute;left:50%;top:-4px;transform:translate(-50%,-100%);
+    white-space:nowrap;font-size:10px;letter-spacing:1px;color:#ffd86a;
+    text-shadow:0 0 4px rgba(0,0,0,.95);}
+  #lock.thermal #lockInfo{color:#ff9a6a;}
+
+  /* yönlü hasar göstergesi */
+  #dmgDir{position:absolute;left:50%;top:50%;width:240px;height:240px;
+    margin:-120px 0 0 -120px;pointer-events:none;opacity:0;transform-origin:50% 50%;z-index:12;}
+  #dmgDir:before{content:'';position:absolute;left:50%;top:-2px;transform:translateX(-50%);
+    border-left:24px solid transparent;border-right:24px solid transparent;
+    border-bottom:32px solid rgba(255,55,65,.9);filter:drop-shadow(0 0 7px rgba(255,40,50,.85));}
+
+  /* drone uplink paneli */
+  #dronePanel{position:absolute;top:9.6%;left:8%;font-size:11px;letter-spacing:1px;
+    line-height:1.8;text-shadow:0 0 6px rgba(20,120,160,.6);}
+  #dronePanel .sig i{display:inline-block;width:4px;margin-right:2px;background:#7dffa9;vertical-align:bottom;}
+  #dronePanel .lost{color:#ff6a6a;}
+  #dronePanel .sc{color:#7dffa9;}
+
+  /* tehdit listesi */
+  #threatList{position:absolute;top:9.6%;right:8%;font-size:11px;letter-spacing:1px;
+    line-height:1.95;text-align:right;text-shadow:0 0 6px rgba(20,120,160,.6);}
+  #threatList .tl{color:#5b7682;}
+  #threatList .tl.det{color:#ff9a5a;}
+  #threatList .tl.act{color:#ff5666;}
+  #threatList .tl.dn{color:#5fae7a;text-decoration:line-through;opacity:.8;}
+
+  /* mermi */
+  #ammo{position:absolute;bottom:13%;right:8%;text-align:right;font-size:13px;
+    letter-spacing:1px;text-shadow:0 0 6px rgba(20,120,160,.6);}
+  #ammo b{font-size:28px;color:#cdf6ff;letter-spacing:2px;}
+  #ammo .res{color:#69aebf;font-size:14px;}
+  #ammo .rl{color:#ffce5a;animation:blink .6s infinite;font-size:12px;}
+
+  /* öldürme akışı */
+  #killfeed{position:absolute;top:50%;left:50%;transform:translate(-50%,-150px);
+    width:0;text-align:center;pointer-events:none;z-index:12;}
+  #killfeed .kf{position:absolute;left:0;top:0;transform:translateX(-50%);white-space:nowrap;
+    font-size:14px;letter-spacing:3px;color:#9dff7a;text-shadow:0 0 10px rgba(80,255,150,.7);
+    opacity:0;transition:opacity .9s ease,transform .9s ease;}
+
+  /* ===== isabet işareti (hitmarker) ===== */
+  #hitmark{position:absolute;left:50%;top:50%;width:34px;height:34px;
+    transform:translate(-50%,-50%);opacity:0;pointer-events:none;z-index:12;}
+  #hitmark i{position:absolute;left:50%;top:50%;width:2px;height:11px;background:#fff;
+    box-shadow:0 0 5px rgba(255,255,255,.9);}
+  #hitmark i:nth-child(1){transform:translate(-50%,-50%) rotate(45deg) translateY(-11px);}
+  #hitmark i:nth-child(2){transform:translate(-50%,-50%) rotate(135deg) translateY(-11px);}
+  #hitmark i:nth-child(3){transform:translate(-50%,-50%) rotate(225deg) translateY(-11px);}
+  #hitmark i:nth-child(4){transform:translate(-50%,-50%) rotate(315deg) translateY(-11px);}
+  #hitmark.hs i{background:#ffc94a;box-shadow:0 0 7px rgba(255,190,50,.95);}
+  #hitmark.kill i{background:#ff4757;box-shadow:0 0 7px rgba(255,60,80,.95);}
+
+  /* ===== kritik can uyarısı ===== */
+  #lowhp{position:absolute;inset:0;z-index:5;pointer-events:none;opacity:0;
+    background:radial-gradient(ellipse at center, transparent 42%, rgba(255,25,35,.34) 100%);}
+
+  /* ===== kask boot sekansı ===== */
+  #boot{position:absolute;left:12%;top:20%;z-index:14;pointer-events:none;display:none;
+    font-size:12.5px;letter-spacing:1px;line-height:2.05;color:#8fd8ea;
+    text-shadow:0 0 7px rgba(30,140,180,.7);}
+  #boot .bl{opacity:0;transition:opacity .12s;}
+  #boot .bl.on{opacity:1;}
+  #boot .ok{color:#7dffa9;}
+  #boot .wr{color:#ffce5a;}
+  #boot .hd{color:#cdf6ff;letter-spacing:3px;font-size:13.5px;}
+
+  /* ===== görev bandı ===== */
+  #objBanner{position:absolute;top:19%;left:50%;transform:translateX(-50%);
+    text-align:center;opacity:0;pointer-events:none;z-index:13;
+    transition:opacity .5s ease;}
+  #objBanner .o1{font-size:11px;letter-spacing:6px;color:#69e6ff;
+    text-shadow:0 0 8px rgba(40,170,220,.7);}
+  #objBanner .o2{font-size:19px;letter-spacing:5px;color:#fff;margin-top:6px;
+    text-shadow:0 0 14px rgba(120,220,255,.55);}
+  #objBanner .o3{font-size:10px;letter-spacing:3px;color:#7dffa9;margin-top:8px;
+    text-shadow:0 0 7px rgba(60,220,130,.6);}
+
+  /* ===== görev raporu ===== */
+  .stats{display:grid;grid-template-columns:1fr 1fr;gap:9px 26px;margin:20px 0 4px;
+    text-align:left;font-size:11px;letter-spacing:2px;color:#69aebf;}
+  .stats b{float:right;color:#cdf6ff;font-size:13px;letter-spacing:1px;}
+  .stats .rank{grid-column:1/3;text-align:center;margin-top:10px;font-size:12px;
+    letter-spacing:4px;color:#69e6ff;}
+  .stats .rank b{float:none;font-size:30px;color:#ffc94a;
+    text-shadow:0 0 16px rgba(255,190,50,.6);margin-left:12px;}
+
+  /* intro logosu */
+  .panel .logo{display:block;margin:0 auto 10px;
+    filter:drop-shadow(0 0 12px rgba(105,230,255,.55));}
+  .panel .brief{text-align:left;}
+
+  /* ===== oyun sonrası: tanıtım videosu ===== */
+  .umay-showcase{position:relative;background:var(--surface-dark,#0c0d0f);
+    padding:clamp(64px,10vw,120px) clamp(20px,5vw,56px);}
+  .umay-showcase-inner{max-width:1100px;margin:0 auto;}
+  .umay-showcase-title{margin:0 0 14px;color:var(--text-white,#fff);
+    font-family:var(--font-display),'Orbitron',sans-serif;font-weight:800;
+    text-transform:uppercase;letter-spacing:.08em;font-size:clamp(1.4rem,3.2vw,2.2rem);}
+  .umay-showcase-lead{margin:0 0 40px;max-width:640px;color:var(--text-soft,#c7cbd0);
+    font-size:1rem;line-height:1.8;}
+  .umay-showcase-frame{position:relative;overflow:hidden;
+    border:1px solid rgba(105,230,255,.25);background:#05070a;}
+  .umay-showcase-video{display:block;width:100%;height:auto;max-height:640px;object-fit:cover;cursor:pointer;}
+  .umay-showcase-badge{position:absolute;right:44px;bottom:59px;z-index:2;
+    display:flex;align-items:center;justify-content:center;padding:20px 28px;
+    background:rgba(3,6,10,.88);border:1px solid rgba(105,230,255,.25);
+    backdrop-filter:blur(2px);}
+  .umay-showcase-badge img{display:block;height:56px;width:auto;}
+  .umay-showcase-features{display:flex;flex-wrap:wrap;gap:8px;margin:28px 0 0;}
+  .umay-showcase-links{display:flex;flex-wrap:wrap;gap:28px;margin:40px 0 0;}
+  .umay-showcase-link{display:inline-flex;align-items:center;gap:8px;
+    color:var(--accent-cyan,#69e6ff);text-decoration:none;
+    font-family:var(--font-body),'Inter',sans-serif;font-weight:600;font-size:.9rem;
+    letter-spacing:.05em;text-transform:uppercase;transition:opacity .2s ease;}
+  .umay-showcase-link:hover{opacity:.75;}
+  .umay-showcase-link span{transition:transform .25s ease;}
+  .umay-showcase-link:hover span{transform:translateX(6px);}
+  @media (max-width:640px){.umay-showcase-badge img{height:40px;}}
+
+  /* ===== UMAY anlatı bölümleri (arka plan videolu) ===== */
+  .umay-story{position:relative;min-height:70vh;display:flex;align-items:center;
+    overflow:hidden;background:#03060a;}
+  .umay-story-video{position:absolute;inset:0;z-index:0;width:100%;height:100%;
+    object-fit:cover;filter:brightness(.5) saturate(1.05);}
+  .umay-story-overlay{position:absolute;inset:0;z-index:1;
+    background:linear-gradient(90deg,rgba(3,6,10,.94) 0%,rgba(3,6,10,.6) 45%,rgba(3,6,10,.15) 100%);}
+  .umay-story--reverse{flex-direction:row-reverse;}
+  .umay-story--reverse .umay-story-overlay{
+    background:linear-gradient(270deg,rgba(3,6,10,.94) 0%,rgba(3,6,10,.6) 45%,rgba(3,6,10,.15) 100%);}
+  .umay-story-content{position:relative;z-index:2;max-width:620px;
+    padding:64px clamp(24px,6vw,80px);}
+  .umay-story--reverse .umay-story-content{margin-left:auto;text-align:right;}
+  .umay-story--reverse .umay-story-content .eyebrow-tag{justify-content:flex-end;}
+  .umay-story-title{margin:16px 0 20px;color:var(--text-white,#fff);
+    font-family:var(--font-display),'Orbitron',sans-serif;font-weight:800;
+    text-transform:uppercase;letter-spacing:.06em;font-size:clamp(1.6rem,4vw,2.8rem);
+    line-height:1.2;text-shadow:0 4px 30px rgba(0,0,0,.6);}
+  .umay-story-text{margin:0;color:var(--text-soft,#c7cbd0);
+    font-size:clamp(.95rem,1.4vw,1.1rem);line-height:1.85;}
+  @media (max-width:760px){
+    .umay-story{min-height:60vh;align-items:flex-end;}
+    .umay-story-overlay,.umay-story--reverse .umay-story-overlay{
+      background:linear-gradient(180deg,rgba(3,6,10,.15) 0%,rgba(3,6,10,.55) 55%,rgba(3,6,10,.95) 100%);}
+    .umay-story-content,.umay-story--reverse .umay-story-content{
+      max-width:100%;text-align:left;margin-left:0;padding:32px clamp(20px,6vw,40px) 48px;}
+    .umay-story-content .eyebrow-tag,
+    .umay-story--reverse .umay-story-content .eyebrow-tag{justify-content:flex-start;}
+  }
+
+  /* ===== simülatör başlık bloğu ===== */
+  .umay-sim-intro{position:relative;background:#03060a;text-align:center;
+    padding:clamp(56px,8vw,100px) clamp(20px,5vw,56px) clamp(32px,5vw,56px);}
+  .umay-sim-intro-inner{max-width:720px;margin:0 auto;}
+  .umay-sim-intro .eyebrow-tag{justify-content:center;}
+  .umay-sim-title{margin:16px 0 16px;color:var(--text-white,#fff);
+    font-family:var(--font-display),'Orbitron',sans-serif;font-weight:800;
+    text-transform:uppercase;letter-spacing:.08em;font-size:clamp(1.4rem,3.2vw,2.2rem);}
+  .umay-sim-text{margin:0;color:var(--text-soft,#c7cbd0);font-size:1rem;line-height:1.8;}
+</style>
+</head>
+<body>
+
+<div id="header-root"></div>
+
+<section class="umay-showcase reveal" id="umay-showcase" aria-labelledby="umay-showcase-title">
+  <div class="umay-showcase-inner">
+    <div class="eyebrow-tag">
+      <span class="eyebrow-tag-dot" aria-hidden="true"></span>
+      SİSTEM TANITIMI
+    </div>
+    <h2 class="umay-showcase-title" id="umay-showcase-title">UMAY — SAHA GÖRÜNTÜSÜ</h2>
+    <p class="umay-showcase-lead">Kask üstü AR-HUD sisteminin gerçek saha koşullarında canlı görüntüsü.</p>
+
+    <div class="umay-showcase-frame">
+      <span class="hud-corner hud-corner--tl" aria-hidden="true"></span>
+      <span class="hud-corner hud-corner--tr" aria-hidden="true"></span>
+      <span class="hud-corner hud-corner--bl" aria-hidden="true"></span>
+      <span class="hud-corner hud-corner--br" aria-hidden="true"></span>
+      <video
+        class="umay-showcase-video"
+        src="/images/showcase.mp4"
+        autoplay
+        muted
+        loop
+        playsinline
+        preload="metadata"
+      ></video>
+      <div class="umay-showcase-badge" aria-hidden="true">
+        <img src="/images/logo.png" alt="" />
+      </div>
+    </div>
+
+    <div class="umay-showcase-features">
+      <span class="uav-feature-tag">Çok-Spektrumlu Sensör</span>
+      <span class="uav-feature-tag">Otomatik Hedef Kilidi</span>
+      <span class="uav-feature-tag">UAV Entegrasyonu</span>
+      <span class="uav-feature-tag">Gerçek Zamanlı İskelet Görüntüleme</span>
+    </div>
+
+    <div class="umay-showcase-links">
+      <a class="umay-showcase-link" href="/">Ana Sayfaya Dön <span aria-hidden="true">→</span></a>
+      <a class="umay-showcase-link" href="/insansiz-araclar.html">İnsansız Araçları İncele <span aria-hidden="true">→</span></a>
+    </div>
+  </div>
+</section>
+
+<section class="umay-story reveal" aria-labelledby="umay-story-1-title">
+  <video
+    class="umay-story-video"
+    src="/images/umay-hero-bg.mp4"
+    autoplay
+    muted
+    loop
+    playsinline
+    preload="metadata"
+  ></video>
+  <div class="umay-story-overlay" aria-hidden="true"></div>
+  <div class="umay-story-content">
+    <div class="eyebrow-tag">
+      <span class="eyebrow-tag-dot" aria-hidden="true"></span>
+      VİZYON
+    </div>
+    <h2 class="umay-story-title" id="umay-story-1-title">GÖRÜNMEYENİ GÖRÜNÜR KIL</h2>
+    <p class="umay-story-text">Karar anı saniyelerle ölçülür. UMAY, sahadaki her sinyali —termal, optik, UAV beslemesi— tek bir görüş alanında birleştirir; operatör düşünmeden önce sistem zaten tarıyor, kilitliyor, uyarıyor.</p>
+  </div>
+</section>
+
+<section class="umay-story umay-story--reverse reveal" aria-labelledby="umay-story-2-title">
+  <video
+    class="umay-story-video"
+    src="/images/umay-control.mp4"
+    autoplay
+    muted
+    loop
+    playsinline
+    preload="metadata"
+  ></video>
+  <div class="umay-story-overlay" aria-hidden="true"></div>
+  <div class="umay-story-content">
+    <div class="eyebrow-tag">
+      <span class="eyebrow-tag-dot" aria-hidden="true"></span>
+      KUMANDA KATMANI
+    </div>
+    <h2 class="umay-story-title" id="umay-story-2-title">OPERATÖR VE UAV, TEK SİSTEM</h2>
+    <p class="umay-story-text">UMAY, tepede devriye gezen UAV ile kasktaki operatörü canlı bir bağla birbirine kilitler. UAV'ın gördüğü, operatörün gördüğü olur; hedef tespit edildiği anda otomatik kilit devreye girer.</p>
+  </div>
+</section>
+
+<section class="umay-sim-intro reveal" aria-labelledby="umay-sim-title">
+  <div class="umay-sim-intro-inner">
+    <div class="eyebrow-tag">
+      <span class="eyebrow-tag-dot" aria-hidden="true"></span>
+      CANLI DENEYİM
+    </div>
+    <h2 class="umay-sim-title" id="umay-sim-title">TAKTİK SİMÜLATÖR</h2>
+    <p class="umay-sim-text">Anlattıklarımızı kendin dene — UMAY'ın AR-HUD arayüzünü canlı bir saha senaryosunda kontrol et.</p>
+  </div>
+</section>
+
+<div class="umay-stage" id="umayStage">
+<canvas id="gl"></canvas>
+
+<!-- ===== kask vizörü katmanları ===== -->
+<div id="scanfx"></div>
+<div id="scanSweep"></div>
+<div id="dmg"></div>
+<div id="lowhp"></div>
+<div id="glass"></div>
+<div id="coat"></div>
+<div id="bootSweep"></div>
+
+<!-- kask gövdesi: vizör açıklığı dışındaki her şeyi kapatır -->
+<svg id="visor" viewBox="0 0 1920 1080" preserveAspectRatio="none"
+     xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- vizör açıklığı: tek tanım, her yerde tekrar kullanılır -->
+    <path id="apPath" d="M 340 78 L 1580 78 Q 1770 78 1770 268 L 1770 768
+        Q 1770 1006 1546 1006 L 1052 1006 Q 1008 1006 988 980
+        Q 966 956 944 980 Q 924 1006 880 1006 L 374 1006
+        Q 150 1006 150 768 L 150 268 Q 150 78 340 78 Z"/>
+    <!-- vizör açıklığı maskesi: beyaz=görünür kask, siyah=cam (delik) -->
+    <mask id="aperture">
+      <rect x="0" y="0" width="1920" height="1080" fill="#fff"/>
+      <use href="#apPath" fill="#000"/>
+    </mask>
+    <!-- iç kenar yumuşatma için blur -->
+    <filter id="soft"><feGaussianBlur stdDeviation="9"/></filter>
+    <filter id="soft2"><feGaussianBlur stdDeviation="26"/></filter>
+    <radialGradient id="rimGlow" cx="50%" cy="50%" r="70%">
+      <stop offset="60%" stop-color="rgba(0,0,0,0)"/>
+      <stop offset="100%" stop-color="rgba(40,150,200,.10)"/>
+    </radialGradient>
+    <linearGradient id="helmetSheen" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#222b34"/>
+      <stop offset="0.5" stop-color="#141b22"/>
+      <stop offset="1" stop-color="#080c11"/>
+    </linearGradient>
+  </defs>
+
+  <!-- kask gövdesi (açıklık dışı opak gunmetal) -->
+  <rect x="0" y="0" width="1920" height="1080" fill="url(#helmetSheen)" mask="url(#aperture)"/>
+  <!-- gövde üzerinde hafif polimer dokusu/parlama -->
+  <rect x="0" y="0" width="1920" height="1080" fill="url(#rimGlow)" mask="url(#aperture)" opacity="0.6"/>
+
+  <!-- camın kenara doğru kararması (vizör eğriliği) -->
+  <use href="#apPath" fill="none" stroke="rgba(0,0,0,.85)" stroke-width="90" filter="url(#soft2)"/>
+  <!-- vizör çerçevesi: kalın iç bevel (kask kabuğu kalınlığı) -->
+  <use href="#apPath" fill="none" stroke="rgba(95,120,140,.4)" stroke-width="18" filter="url(#soft)"/>
+  <!-- parlak rim glow -->
+  <use href="#apPath" fill="none" stroke="rgba(120,210,245,.5)" stroke-width="3.5" filter="url(#soft)"/>
+  <use href="#apPath" fill="none" stroke="rgba(165,235,255,.75)" stroke-width="1.6"/>
+
+  <!-- kask donanım detayları: vidalar -->
+  <g fill="#0a0f14" stroke="rgba(120,160,180,.18)" stroke-width="1.5">
+    <circle cx="46" cy="540" r="11"/><circle cx="1874" cy="540" r="11"/>
+    <circle cx="960" cy="22" r="9"/>
+  </g>
+  <g stroke="rgba(90,130,150,.25)" stroke-width="1.5">
+    <line x1="40" y1="540" x2="52" y2="540"/><line x1="46" y1="534" x2="46" y2="546"/>
+    <line x1="1868" y1="540" x2="1880" y2="540"/><line x1="1874" y1="534" x2="1874" y2="546"/>
+  </g>
+
+  <!-- kask iç etiketi -->
+  <text x="1740" y="1052" text-anchor="end" fill="rgba(120,180,200,.34)"
+        font-family="Consolas,monospace" font-size="16" letter-spacing="3">ASCALON HMD MK-II</text>
+  <text x="180" y="1052" fill="rgba(120,180,200,.26)"
+        font-family="Consolas,monospace" font-size="14" letter-spacing="2">OPTIC: MULTI-SPECTRAL · GEN-4</text>
+
+  <!-- cam çizikleri / lekeler -->
+  <g stroke="rgba(180,215,235,.05)" stroke-width="1" fill="none">
+    <path d="M 480 220 q 240 40 470 -10"/>
+    <path d="M 1300 760 q -180 -60 -360 -30"/>
+    <path d="M 700 880 q 120 -200 360 -240"/>
+  </g>
+
+  <!-- iç köşe gölgeleri (yanak/alın pedi hissi) -->
+  <ellipse cx="250" cy="960" rx="340" ry="250" fill="rgba(0,0,0,.55)" filter="url(#soft2)"/>
+  <ellipse cx="1670" cy="960" rx="340" ry="250" fill="rgba(0,0,0,.55)" filter="url(#soft2)"/>
+  <!-- alın gölgesi -->
+  <ellipse cx="960" cy="120" rx="900" ry="160" fill="rgba(0,0,0,.4)" filter="url(#soft2)"/>
+  <rect x="0" y="0" width="1920" height="1080" fill="url(#rimGlow)"/>
+</svg>
+
+<div id="hud">
+  <canvas id="compass" width="440" height="34"></canvas>
+  <div id="topleft">
+    <div class="ttl"><svg width="15" height="15" viewBox="0 0 24 24" style="vertical-align:-1px;margin-right:6px"><path d="M12 1 L20 16 L12 12.5 L4 16 Z" fill="#69e6ff"/><path d="M12 14.5 L17 22 L12 19.5 L7 22 Z" fill="rgba(105,230,255,.45)"/></svg>ASCALON</div>
+    <div style="font-size:9px;letter-spacing:3px;color:#4d93a8;margin:1px 0 4px">TACTICAL AR COMBAT SYSTEM</div>
+    <div><span class="dot"></span><span id="link">UAV LINK: STANDBY</span></div>
+  </div>
+  <div id="topright">
+    THREATS <b id="tcount">5</b>/5<br>
+    <span id="clock" style="font-size:11px;color:#69e6ff">00:00</span><br>
+    <span style="font-size:9px;letter-spacing:2px;color:#4d93a8">GRID 38S-MB · SYS NOMINAL</span>
+  </div>
+  <div id="dronePanel"></div>
+  <div id="threatList"></div>
+  <div id="ammo"></div>
+  <div id="killfeed"></div>
+  <div id="cross"></div>
+  <div id="hitmark"><i></i><i></i><i></i><i></i></div>
+  <div id="lock"><div id="lockInfo"></div></div>
+  <div id="dmgDir"></div>
+  <div id="boot"></div>
+  <div id="objBanner">
+    <div class="o1">— OPERASYON: DEMİR MIZRAK —</div>
+    <div class="o2">5 TEHDİDİ ETKİSİZ HALE GETİR</div>
+    <div class="o3">UAV DESTEĞİ AKTİF · ÇOK-SPEKTRUMLU TARAMA HAZIR</div>
+  </div>
+  <div id="bars">
+    VITALS<div class="bar"><i id="hpfill"></i></div>
+    UAV SCAN<div class="bar"><i id="enfill"></i></div>
+  </div>
+  <div id="miniLabel">UAV TOP-DOWN</div>
+  <canvas id="minimap" width="170" height="170"></canvas>
+  <div id="threats"></div>
+  <div id="hint">
+    <kbd>W A S D</kbd> / <kbd>orta tık</kbd> hareket &nbsp; <kbd>Shift</kbd> koş<br>
+    <kbd>Sol tık</kbd> ateş &nbsp; <kbd>R</kbd> şarjör &nbsp; <kbd>Sağ tık</kbd>/<kbd>Q</kbd> UAV tarama
+  </div>
+</div>
+
+<div id="intro" class="overlay">
+  <div class="panel">
+    <svg class="logo" width="64" height="64" viewBox="0 0 24 24">
+      <path d="M12 1 L20 16 L12 12.5 L4 16 Z" fill="#69e6ff"/>
+      <path d="M12 14.5 L17 22 L12 19.5 L7 22 Z" fill="rgba(105,230,255,.45)"/>
+    </svg>
+    <h1>ASCA<em>LON</em></h1>
+    <div class="sub">TACTICAL AR COMBAT SYSTEM — CANLI SİMÜLASYON</div>
+    <p class="brief"><b style="color:#69e6ff">GÖREV BRİFİNGİ:</b> Bölgede <b style="color:#ff7585">5 silahlı
+    tehdit</b> duvarların arkasında konuşlanmış durumda. Tepende devriye uçan ASCALON UAV'ının
+    çok-spektrumlu sensör verisi kaskına gerçek zamanlı yansır: <b style="color:#69e6ff">sağ tık ile
+    tarama</b> yap, tehditleri <b style="color:#69e6ff">duvarların İÇİNDEN iskelet görüntüsüyle</b>
+    tespit et. UAV, tespit ettiği son hedefe <b style="color:#ffc94a">otomatik kilitlenir</b> ve
+    canlı takip eder — pozisyon avantajıyla etkisiz hale getir.</p>
+    <div class="ctl">
+      <b>Fare</b> bak / nişan al<br>
+      <b>Sol tık</b> ateş et &nbsp;·&nbsp; <b>R</b> şarjör değiştir<br>
+      <b>Sağ tık veya Q (basılı)</b> UAV taraması — duvar arkasını gör<br>
+      <b>W A S D / orta tık</b> hareket &nbsp;·&nbsp; <b>Shift</b> koş
+    </div>
+    <div class="go">▶ SİSTEMİ BAŞLATMAK İÇİN TIKLA</div>
+    <div class="note">ASCALON PROJESİ — İNTERAKTİF KONSEPT DEMOSU · Tüm sistemler simülasyondur.</div>
+  </div>
+</div>
+
+<div id="end" class="overlay">
+  <div class="panel">
+    <div id="endTitle"></div>
+    <p id="endText"></p>
+    <button id="restart">YENİDEN BAŞLAT [R]</button>
+  </div>
+</div>
+</div>
+
+<div id="footer-root"></div>
+
+<script type="module" src="/src/pages/umay.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+(function(){
+'use strict';
+const T = THREE;
+
+/* ============ render + gerçekçi boru hattı ============ */
+const PR = Math.min(devicePixelRatio||1, 1.5);
+const renderer = new T.WebGLRenderer({antialias:true});
+renderer.setPixelRatio(PR);
+renderer.setSize(innerWidth,innerHeight);
+renderer.shadowMap.enabled=true;
+renderer.shadowMap.type=T.PCFSoftShadowMap;
+renderer.outputEncoding=T.sRGBEncoding;
+renderer.toneMapping=T.ACESFilmicToneMapping;
+renderer.toneMappingExposure=1.22;
+const glCanvas=renderer.domElement; glCanvas.id='gl';
+document.getElementById('gl').replaceWith(glCanvas);
+
+const scene = new T.Scene();
+scene.background = new T.Color(0x05080d);
+scene.fog = new T.FogExp2(0x070b12, 0.0145);
+
+const camera = new T.PerspectiveCamera(72, innerWidth/innerHeight, 0.05, 400);
+camera.rotation.order='YXZ';
+scene.add(camera);
+
+/* ---------- prosedürel dokular ---------- */
+function noiseCanvas(fn,s){const c=document.createElement('canvas');c.width=c.height=s||1024;
+  fn(c.getContext('2d'),c.width);return c;}
+
+const concreteCv=noiseCanvas((x,S)=>{
+  x.fillStyle='#84868a';x.fillRect(0,0,S,S);
+  for(let i=0;i<46;i++){const r=120+Math.random()*420,cx=Math.random()*S,cy=Math.random()*S;
+    const g=x.createRadialGradient(cx,cy,0,cx,cy,r);const d=Math.random()<.5;
+    g.addColorStop(0,d?'rgba(58,60,58,.10)':'rgba(168,168,160,.08)');
+    g.addColorStop(1,'rgba(0,0,0,0)');x.fillStyle=g;x.beginPath();x.arc(cx,cy,r,0,7);x.fill();}
+  for(let i=0;i<22000;i++){const g=105+Math.random()*70;
+    x.fillStyle=`rgba(${g},${g},${g-3},${Math.random()*.08})`;
+    x.fillRect(Math.random()*S,Math.random()*S,1+Math.random()*5,1+Math.random()*5);}
+  for(let i=0;i<26000;i++){const g=80+Math.random()*110;
+    x.fillStyle=`rgba(${g},${g},${g},${Math.random()*.06})`;
+    x.fillRect(Math.random()*S,Math.random()*S,1,1+Math.random());}
+  for(let i=0;i<22;i++){const wx=Math.random()*S,w=5+Math.random()*22,len=S*(.2+Math.random()*.7);
+    for(let y=0;y<len;y+=5){x.fillStyle=`rgba(42,41,38,${.045*(1-y/len)*(.5+Math.random())})`;
+      x.fillRect(wx+Math.sin(y*.03)*4,y,w*(1-y/len*.5),5);}}
+  function joint(vert,p){x.fillStyle='rgba(26,26,25,.55)';
+    if(vert)x.fillRect(p-3,0,6,S);else x.fillRect(0,p-3,S,6);
+    x.fillStyle='rgba(215,215,208,.16)';
+    if(vert)x.fillRect(p+3,0,2,S);else x.fillRect(0,p+3,S,2);}
+  joint(false,S/3);joint(false,2*S/3);joint(true,1);joint(true,S/2);joint(true,S-1);
+  for(let i=0;i<4;i++)for(let j=0;j<6;j++){
+    const hx=S*(.13+(i%2)*.24)+Math.floor(i/2)*S/2,hy=S/12+j*S/6;
+    x.fillStyle='rgba(38,37,34,.7)';x.beginPath();x.arc(hx,hy,12,0,7);x.fill();
+    x.fillStyle='rgba(205,205,198,.22)';x.beginPath();x.arc(hx,hy-5,11,Math.PI*1.1,Math.PI*1.9);x.fill();}
+  const dg=x.createLinearGradient(0,S*.72,0,S);
+  dg.addColorStop(0,'rgba(0,0,0,0)');dg.addColorStop(1,'rgba(28,27,24,.4)');
+  x.fillStyle=dg;x.fillRect(0,0,S,S);
+},1024);
+
+const asphaltCv=noiseCanvas((x,S)=>{
+  x.fillStyle='#2c2c2b';x.fillRect(0,0,S,S);
+  for(let i=0;i<34000;i++){const g=32+Math.random()*46;
+    x.fillStyle=`rgba(${g},${g},${g-2},${.2+Math.random()*.4})`;
+    x.fillRect(Math.random()*S,Math.random()*S,1+Math.random()*2.5,1+Math.random()*2.5);}
+  for(let i=0;i<9000;i++){const g=90+Math.random()*75;
+    x.fillStyle=`rgba(${g},${g},${g-4},${Math.random()*.14})`;
+    x.fillRect(Math.random()*S,Math.random()*S,1,1+Math.random());}
+  for(let i=0;i<28;i++){const r=60+Math.random()*240,cx=Math.random()*S,cy=Math.random()*S;
+    const g=x.createRadialGradient(cx,cy,0,cx,cy,r);
+    g.addColorStop(0,'rgba(16,16,15,.2)');g.addColorStop(1,'rgba(0,0,0,0)');
+    x.fillStyle=g;x.beginPath();x.arc(cx,cy,r,0,7);x.fill();}
+  x.strokeStyle='rgba(14,13,12,.5)';x.lineWidth=1;
+  for(let i=0;i<10;i++){let px=Math.random()*S,py=Math.random()*S;
+    x.beginPath();x.moveTo(px,py);
+    for(let k=0;k<24;k++){px+=(Math.random()-.5)*44;py+=(Math.random()-.4)*36;x.lineTo(px,py);}
+    x.stroke();}
+},1024);
+
+const woodCv=noiseCanvas((x,S)=>{
+  x.fillStyle='#5a4326';x.fillRect(0,0,S,S);
+  for(let i=0;i<S;i+=Math.floor(S/5)){
+    x.fillStyle='rgba(20,14,8,.5)';x.fillRect(0,i-1,S,2);}
+  for(let i=0;i<8000;i++){const g=Math.random();
+    x.fillStyle=`rgba(${80+g*60},${56+g*44},${28+g*26},${Math.random()*.25})`;
+    x.fillRect(Math.random()*S,Math.random()*S,2+Math.random()*30,1+Math.random()*2);}
+  x.strokeStyle='rgba(140,110,70,.25)';x.lineWidth=3;
+  x.strokeRect(8,8,S-16,S-16);
+},256);
+
+function tex(cv,rx,ry){const t=new T.CanvasTexture(cv);
+  t.wrapS=t.wrapT=T.RepeatWrapping;t.repeat.set(rx,ry);
+  t.anisotropy=renderer.capabilities.getMaxAnisotropy();return t;}
+
+/* ---------- zemin (asfalt PBR) ---------- */
+const ground = new T.Mesh(new T.PlaneGeometry(300,300),
+  new T.MeshStandardMaterial({map:tex(asphaltCv,40,40),bumpMap:tex(asphaltCv,40,40),
+    bumpScale:.04,roughness:.97,metalness:0,color:0xb9bdc2}));
+ground.rotation.x=-Math.PI/2; ground.receiveShadow=true; scene.add(ground);
+
+/* ---------- gökyüzü + atmosfer ---------- */
+{
+  const sky=new T.Mesh(new T.SphereGeometry(360,32,16),new T.ShaderMaterial({
+    side:T.BackSide,depthWrite:false,fog:false,
+    vertexShader:`varying vec3 vP;void main(){vP=position;
+      gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}`,
+    fragmentShader:`varying vec3 vP;
+    void main(){float h=normalize(vP).y;
+      vec3 zen=vec3(.010,.018,.040);vec3 hor=vec3(.075,.092,.125);vec3 glow=vec3(.16,.11,.05);
+      vec3 c=mix(hor,zen,smoothstep(0.,.5,h));
+      c+=glow*pow(max(0.,1.-h*2.6),3.)*.6;
+      gl_FragColor=vec4(c,1.);}`}));
+  sky.renderOrder=-2; scene.add(sky);
+}
+{
+  const pos=[];for(let i=0;i<460;i++){
+    const a=Math.random()*Math.PI*2,e=.12+Math.random()*1.3,r=300;
+    pos.push(r*Math.cos(e)*Math.cos(a),r*Math.sin(e),r*Math.cos(e)*Math.sin(a));}
+  const g=new T.BufferGeometry();
+  g.setAttribute('position',new T.Float32BufferAttribute(pos,3));
+  scene.add(new T.Points(g,new T.PointsMaterial({color:0x9fb6cc,size:1.4,
+    sizeAttenuation:false,transparent:true,opacity:.6,fog:false})));
+}
+const hazeCv=noiseCanvas((x,S)=>{
+  const g=x.createRadialGradient(S/2,S/2,0,S/2,S/2,S/2);
+  g.addColorStop(0,'rgba(54,70,88,.5)');g.addColorStop(.55,'rgba(40,52,66,.2)');
+  g.addColorStop(1,'rgba(0,0,0,0)');x.fillStyle=g;x.fillRect(0,0,S,S);},256);
+const hazeTex=new T.CanvasTexture(hazeCv);
+[[0,3,-70,90,22,.12],[-40,4,-95,120,30,.10],[55,3.5,-80,100,26,.09],
+ [-70,3,40,110,28,.08],[70,3,60,110,28,.08]].forEach(h=>{
+  const sp=new T.Sprite(new T.SpriteMaterial({map:hazeTex,transparent:true,
+    opacity:h[5],depthWrite:false}));
+  sp.position.set(h[0],h[1],h[2]);sp.scale.set(h[3],h[4],1);scene.add(sp);});
+
+/* ---------- ışıklar ---------- */
+scene.add(new T.HemisphereLight(0x33455a,0x12110d,.62));
+const moon=new T.DirectionalLight(0x9ab2d6,1.05);
+moon.position.set(-46,80,-30);moon.castShadow=true;
+moon.shadow.mapSize.set(2048,2048);moon.shadow.bias=-.0004;
+moon.shadow.camera.near=10;moon.shadow.camera.far=220;
+moon.shadow.camera.left=-60;moon.shadow.camera.right=60;
+moon.shadow.camera.top=60;moon.shadow.camera.bottom=-60;
+scene.add(moon);
+
+/* sıcak sokak lambaları (atmosfer havuzları) */
+const glowCv=noiseCanvas((x,S)=>{const g=x.createRadialGradient(S/2,S/2,0,S/2,S/2,S/2);
+  g.addColorStop(0,'rgba(255,190,115,.9)');g.addColorStop(.35,'rgba(255,150,70,.25)');
+  g.addColorStop(1,'rgba(0,0,0,0)');x.fillStyle=g;x.fillRect(0,0,S,S);},128);
+const glowTex=new T.CanvasTexture(glowCv);
+const poleMat=new T.MeshStandardMaterial({color:0x23262a,roughness:.6,metalness:.6});
+function lamp(x,z){
+  const L=new T.PointLight(0xffa860,1.0,34,1.9);
+  L.position.set(x,5.0,z); scene.add(L);
+  const pole=new T.Mesh(new T.CylinderGeometry(.08,.1,5.0,10),poleMat);
+  pole.position.set(x,2.5,z+.3); pole.castShadow=true; scene.add(pole);
+  const g=new T.Sprite(new T.SpriteMaterial({map:glowTex,transparent:true,opacity:.6,depthWrite:false}));
+  g.scale.set(3,3,1); g.position.copy(L.position); scene.add(g);
+}
+lamp(-26,18); lamp(34,-8); lamp(8,-34); lamp(-34,-22);
+
+/* ---------- temas gölgesi dokusu (sahte AO) ---------- */
+const aoCv=noiseCanvas((x,S)=>{const g=x.createRadialGradient(S/2,S/2,0,S/2,S/2,S/2);
+  g.addColorStop(0,'rgba(0,0,0,.8)');g.addColorStop(.6,'rgba(0,0,0,.3)');
+  g.addColorStop(1,'rgba(0,0,0,0)');x.fillStyle=g;x.fillRect(0,0,S,S);},128);
+const aoTex=new T.CanvasTexture(aoCv);
+function contactShadow(x,z,w,d,op){
+  const m=new T.Mesh(new T.PlaneGeometry(w,d),
+    new T.MeshBasicMaterial({map:aoTex,transparent:true,opacity:op,depthWrite:false}));
+  m.rotation.x=-Math.PI/2; m.position.set(x,.02,z); scene.add(m);
+}
+
+/* ---------- duvarlar (beton PBR) ---------- */
+const wallMeshes=[], rects=[];
+const wallMat = new T.MeshStandardMaterial({map:tex(concreteCv,1,1),
+  bumpMap:tex(concreteCv,1,1),bumpScale:.05,roughness:.95,metalness:0,color:0xc6ccd2});
+const crateMat = new T.MeshStandardMaterial({map:tex(woodCv,1,1),
+  bumpMap:tex(woodCv,1,1),bumpScale:.03,roughness:.8,metalness:.05,color:0xb88f55});
+function block(x,z,w,d,h,mat){
+  const g=new T.BoxGeometry(w,h,d);
+  const m=new T.Mesh(g, mat||wallMat);
+  m.position.set(x,h/2,z); m.castShadow=true; m.receiveShadow=true; scene.add(m);
+  wallMeshes.push(m);
+  rects.push({x0:x-w/2,x1:x+w/2,z0:z-d/2,z1:z+d/2});
+  contactShadow(x,z,Math.max(w,1.4)+1.2,Math.max(d,1.4)+1.2,.45);
+}
+/* çevre */
+block(0,-50,100,1,3.2); block(0,50,100,1,3.2);
+block(-50,0,1,100,3.2); block(50,0,1,100,3.2);
+/* iç yapılar */
+block(-20,-10,16,1,3.2); block(-20,2,16,1,3.2); block(-28,-4,1,13,3.2);
+block(10,-18,1,20,3.2);
+block(22,8,18,1,3.5);
+block(0,20,24,1,3.2);
+block(-15,28,1,14,3.2);
+block(30,-25,12,1,3.2);
+block(35,25,1,16,3.2);
+block(0,-2,6,6,4);
+/* kasalar */
+[[-5,32],[6,30],[18,22],[-30,15],[-12,-20],[25,-5]].forEach(c=>block(c[0],c[1],1.5,1.5,1.3,crateMat));
+
+/* moloz taşları */
+const rubbleMat=new T.MeshStandardMaterial({color:0x5e5c55,roughness:.97});
+for(let i=0;i<26;i++){
+  const geo=new T.IcosahedronGeometry(.07+Math.random()*.16,0);
+  const r=new T.Mesh(geo,rubbleMat);
+  r.position.set((Math.random()-.5)*80,.05,(Math.random()-.5)*80);
+  r.scale.y=.5+Math.random()*.3; r.rotation.y=Math.random()*3;
+  r.castShadow=true; scene.add(r);
+}
+
+/* ---------- termal (multi-spektral) malzeme: duvar arkası görüntü ---------- */
+const thermalVS=`varying vec3 vN;varying vec3 vW;
+  void main(){vN=normalize(mat3(modelMatrix)*normal);
+    vec4 w=modelMatrix*vec4(position,1.);vW=w.xyz;
+    gl_Position=projectionMatrix*viewMatrix*w;}`;
+const thermalFS=`uniform float uTime,uHeat,uReveal;varying vec3 vN;varying vec3 vW;
+  void main(){
+    vec3 V=normalize(cameraPosition-vW);
+    float ndv=abs(dot(normalize(vN),V));
+    float heat=uHeat*mix(0.40,1.0,ndv);
+    vec3 cold=vec3(0.10,0.02,0.20);
+    vec3 mid=vec3(1.0,0.36,0.05);
+    vec3 hot=vec3(1.0,0.92,0.74);
+    vec3 col=heat<0.5?mix(cold,mid,heat*2.0):mix(mid,hot,(heat-0.5)*2.0);
+    float flick=0.92+0.08*sin(uTime*9.0+vW.y*5.0);
+    float scan=0.84+0.16*sin(vW.y*42.0-uTime*5.0);
+    float edge=pow(1.0-ndv,2.0)*0.55;
+    gl_FragColor=vec4((col*flick*scan+edge)*1.45,uReveal);}`;
+const thermalMats=[];
+function makeThermal(heat){
+  const m=new T.ShaderMaterial({vertexShader:thermalVS,fragmentShader:thermalFS,
+    uniforms:{uTime:{value:0},uHeat:{value:heat},uReveal:{value:0}},
+    transparent:true,depthTest:false,depthWrite:false,
+    blending:T.AdditiveBlending,side:T.DoubleSide});
+  thermalMats.push(m);return m;}
+
+/* ---------- iskelet röntgen malzemesi (duvar arkası kemik görüntüsü) ---------- */
+const boneFS=`uniform float uTime,uReveal;varying vec3 vN;varying vec3 vW;
+  void main(){
+    vec3 V=normalize(cameraPosition-vW);
+    float ndv=abs(dot(normalize(vN),V));
+    vec3 col=mix(vec3(0.30,0.70,0.95),vec3(0.90,0.98,1.0),pow(ndv,1.5));
+    float pulse=0.88+0.12*sin(uTime*6.5);
+    float scan=0.86+0.14*sin(vW.y*55.0-uTime*7.0);
+    float edge=pow(1.0-ndv,2.0)*0.45;
+    gl_FragColor=vec4((col*pulse*scan+edge)*1.75,uReveal);}`;
+function makeBoneMat(){
+  const m=new T.ShaderMaterial({vertexShader:thermalVS,fragmentShader:boneFS,
+    uniforms:{uTime:{value:0},uReveal:{value:0}},
+    transparent:true,depthTest:false,depthWrite:false,
+    blending:T.AdditiveBlending,side:T.DoubleSide});
+  thermalMats.push(m);return m;}
+
+/* ---------- düşmanlar: eklemli asker modeli + iskelet röntgeni ---------- */
+const enemies=[], enemyMeshes=[];
+function makeEnemy(wps){
+  const g=new T.Group();
+  const clothMat=new T.MeshStandardMaterial({color:0x3d3a31,roughness:.9});
+  const vestMat=new T.MeshStandardMaterial({color:0x2e3328,roughness:.85});
+  const skinMat=new T.MeshStandardMaterial({color:0x8a6f58,roughness:.75});
+  const helmMat=new T.MeshStandardMaterial({color:0x24281f,roughness:.6,metalness:.15});
+  const gunMat=new T.MeshStandardMaterial({color:0x191c20,roughness:.45,metalness:.75});
+  const xmat=makeThermal(.5);   /* loş vücut silüeti */
+  const bmat=makeBoneMat();     /* parlak iskelet */
+  const e={group:g,wps:wps,wp:0,hp:100,alive:true,shootT:1+Math.random()*2,
+           mats:[clothMat,vestMat,skinMat,helmMat],xmat:xmat,bmat:bmat,xparts:[],
+           lastSeen:-99,seenPos:new T.Vector3(),reveal:0,pinged:false,detTime:-99,
+           animT:Math.random()*7,alertT:-99,alertPos:new T.Vector3()};
+  function flesh(parent,geo,x,y,z,m,name){
+    const mesh=new T.Mesh(geo,m); mesh.position.set(x,y,z);
+    mesh.castShadow=true; mesh.userData={enemy:e,part:name};
+    parent.add(mesh); enemyMeshes.push(mesh);
+    const xm=new T.Mesh(geo,xmat); xm.position.set(x,y,z);
+    xm.renderOrder=998; xm.visible=false; parent.add(xm); e.xparts.push(xm);
+    return mesh;}
+  function bone(parent,geo,x,y,z,rx,rz){
+    const b=new T.Mesh(geo,bmat); b.position.set(x,y,z);
+    if(rx)b.rotation.x=rx; if(rz)b.rotation.z=rz;
+    b.renderOrder=999; b.visible=false; parent.add(b); e.xparts.push(b); return b;}
+  function limb(px,py){const p=new T.Group(); p.position.set(px,py,0); g.add(p); return p;}
+
+  /* gövde: taktik yelek + bel */
+  flesh(g,new T.BoxGeometry(.5,.56,.3),0,1.16,0,vestMat,'torso');
+  flesh(g,new T.BoxGeometry(.46,.14,.26),0,.82,0,clothMat,'torso');
+  /* kafa + kask */
+  flesh(g,new T.BoxGeometry(.23,.24,.24),0,1.58,0,skinMat,'head');
+  flesh(g,new T.BoxGeometry(.3,.13,.3),0,1.72,0,helmMat,'head');
+  /* iskelet — kafatası, çene, omurga, kaburga kafesi, leğen, omuz kemeri */
+  bone(g,new T.SphereGeometry(.115,10,8),0,1.60,0);
+  bone(g,new T.BoxGeometry(.09,.06,.07),0,1.50,.03);
+  bone(g,new T.CylinderGeometry(.024,.024,.64,6),0,1.12,0);
+  for(let i=0;i<4;i++){
+    const rib=new T.Mesh(new T.TorusGeometry(.155-.009*i,.015,5,14),bmat);
+    rib.position.set(0,1.37-.09*i,0); rib.scale.y=.72; rib.rotation.x=Math.PI/2;
+    rib.renderOrder=999; rib.visible=false; g.add(rib); e.xparts.push(rib);}
+  bone(g,new T.BoxGeometry(.24,.09,.15),0,.84,0);
+  bone(g,new T.CylinderGeometry(.019,.019,.5,6),0,1.44,0,0,Math.PI/2);
+  /* kollar (omuz pivotlu) */
+  const armL=limb(-.31,1.42), armR=limb(.31,1.42);
+  [armL,armR].forEach(a=>{
+    flesh(a,new T.BoxGeometry(.1,.3,.1),0,-.16,0,clothMat,'arm');
+    flesh(a,new T.BoxGeometry(.09,.28,.09),0,-.45,0,skinMat,'arm');
+    bone(a,new T.CylinderGeometry(.017,.017,.28,6),0,-.16,0);
+    bone(a,new T.CylinderGeometry(.014,.014,.26,6),0,-.44,0);
+  });
+  /* bacaklar (kalça pivotlu) */
+  const legL=limb(-.13,.88), legR=limb(.13,.88);
+  [legL,legR].forEach(l=>{
+    flesh(l,new T.BoxGeometry(.13,.4,.13),0,-.2,0,clothMat,'legs');
+    flesh(l,new T.BoxGeometry(.12,.38,.12),0,-.6,0,clothMat,'legs');
+    flesh(l,new T.BoxGeometry(.13,.09,.22),0,-.82,.04,helmMat,'legs');
+    bone(l,new T.CylinderGeometry(.02,.02,.38,6),0,-.2,0);
+    bone(l,new T.CylinderGeometry(.016,.016,.36,6),0,-.6,0);
+  });
+  /* tüfek — sağ kola bağlı; nişan pozunda öne doğrulur */
+  const rifle=flesh(armR,new T.BoxGeometry(.06,.08,.58),-.03,-.5,-.14,gunMat,'gun');
+  e.armL=armL; e.armR=armR; e.legL=legL; e.legR=legR; e.rifle=rifle;
+  g.position.set(wps[0][0],0,wps[0][1]);
+  scene.add(g); enemies.push(e);
+  return e;
+}
+makeEnemy([[-24,-6],[-16,-2]]);
+makeEnemy([[13,-12],[13,-24]]);
+makeEnemy([[20,5],[28,5]]);
+makeEnemy([[-6,16],[6,16]]);
+makeEnemy([[27,-28],[33,-28]]);
+const TOTAL=enemies.length;
+
+/* ---------- drone ---------- */
+const drone=new T.Group();
+{
+  const body=new T.Mesh(new T.BoxGeometry(.8,.2,.8),
+    new T.MeshStandardMaterial({color:0x20262c,roughness:.5,metalness:.6}));
+  body.castShadow=true; drone.add(body);
+  const beacon=new T.Mesh(new T.SphereGeometry(.09,8,8),
+    new T.MeshBasicMaterial({color:0x69e6ff})); beacon.position.y=.2;
+  drone.add(beacon); drone.userData.beacon=beacon;
+  for(let i=0;i<4;i++){
+    const a=i*Math.PI/2+Math.PI/4;
+    const arm=new T.Mesh(new T.BoxGeometry(.7,.05,.08),
+      new T.MeshStandardMaterial({color:0x2a3138,roughness:.6,metalness:.5}));
+    arm.position.set(Math.cos(a)*.5,0,Math.sin(a)*.5); arm.rotation.y=-a; drone.add(arm);
+    const rot=new T.Mesh(new T.CylinderGeometry(.3,.3,.02,12),
+      new T.MeshBasicMaterial({color:0x3c4750,transparent:true,opacity:.5}));
+    rot.position.set(Math.cos(a)*.78,.06,Math.sin(a)*.78); drone.add(rot);
+    (drone.userData.rotors=drone.userData.rotors||[]).push(rot);
+  }
+}
+scene.add(drone);
+const beam=new T.Mesh(new T.ConeGeometry(14,26,28,1,true),
+  new T.MeshBasicMaterial({color:0x39d6ff,transparent:true,opacity:.045,
+    side:T.DoubleSide,depthWrite:false}));
+beam.visible=false; scene.add(beam);
+/* drone hedef takibi: kilitlenilen düşmanın altında dönen işaret halkası */
+let droneTarget=null;
+const droneDest=new T.Vector3();
+const droneMark=new T.Mesh(new T.RingGeometry(.55,.75,40),
+  new T.MeshBasicMaterial({color:0xffb84a,transparent:true,opacity:.6,
+    side:T.DoubleSide,depthTest:false,depthWrite:false}));
+droneMark.rotation.x=-Math.PI/2; droneMark.renderOrder=997;
+droneMark.visible=false; scene.add(droneMark);
+
+/* ---------- silah (viewmodel) ---------- */
+const gun=new T.Group();
+const gmMat=new T.MeshStandardMaterial({color:0x23282e,roughness:.45,metalness:.7});
+const barrel=new T.Mesh(new T.BoxGeometry(.04,.05,.3),gmMat); barrel.position.set(0,.02,-.14);
+const body2=new T.Mesh(new T.BoxGeometry(.07,.1,.22),gmMat); body2.position.set(0,-.01,.02);
+const grip=new T.Mesh(new T.BoxGeometry(.045,.12,.07),gmMat); grip.position.set(0,-.08,.05);
+const sight=new T.Mesh(new T.BoxGeometry(.015,.015,.015),
+  new T.MeshBasicMaterial({color:0x69e6ff})); sight.position.set(0,.06,-.06);
+gun.add(barrel,body2,grip,sight); gun.position.set(.26,-.22,-.42); gun.rotation.y=.04;
+camera.add(gun);
+let recoil=0;
+const muzzle=new T.PointLight(0xffce8c,0,9,2); muzzle.position.set(.24,-.16,-.7);
+camera.add(muzzle);
+
+/* ============ post-process: bloom + film ============ */
+function bufSize(){return [Math.floor(innerWidth*PR), Math.floor(innerHeight*PR)];}
+let [BW,BH]=bufSize();
+const rt =new T.WebGLRenderTarget(BW,BH,{minFilter:T.LinearFilter,magFilter:T.LinearFilter});
+const rtB1=new T.WebGLRenderTarget(BW>>2,BH>>2,{minFilter:T.LinearFilter,magFilter:T.LinearFilter});
+const rtB2=new T.WebGLRenderTarget(BW>>2,BH>>2,{minFilter:T.LinearFilter,magFilter:T.LinearFilter});
+const postCam=new T.OrthographicCamera(-1,1,1,-1,0,1);
+const POSTVS='varying vec2 vUv;void main(){vUv=uv;gl_Position=vec4(position.xy,0.,1.);}';
+function quadPass(frag,uni){const s=new T.Scene();
+  s.add(new T.Mesh(new T.PlaneGeometry(2,2),
+    new T.ShaderMaterial({uniforms:uni,vertexShader:POSTVS,fragmentShader:frag})));
+  return s;}
+const brightS=quadPass(`uniform sampler2D tDiffuse;varying vec2 vUv;
+  void main(){vec3 c=texture2D(tDiffuse,vUv).rgb;
+    float l=dot(c,vec3(.299,.587,.114));
+    gl_FragColor=vec4(c*smoothstep(.6,1.05,l),1.);}`,{tDiffuse:{value:rt.texture}});
+const BLURFS=`uniform sampler2D tDiffuse;uniform vec2 uDir;varying vec2 vUv;
+  void main(){float w0=.227,w1=.194,w2=.121,w3=.054,w4=.016;
+    vec3 a=texture2D(tDiffuse,vUv).rgb*w0;
+    a+=(texture2D(tDiffuse,vUv+uDir).rgb+texture2D(tDiffuse,vUv-uDir).rgb)*w1;
+    a+=(texture2D(tDiffuse,vUv+uDir*2.).rgb+texture2D(tDiffuse,vUv-uDir*2.).rgb)*w2;
+    a+=(texture2D(tDiffuse,vUv+uDir*3.).rgb+texture2D(tDiffuse,vUv-uDir*3.).rgb)*w3;
+    a+=(texture2D(tDiffuse,vUv+uDir*4.).rgb+texture2D(tDiffuse,vUv-uDir*4.).rgb)*w4;
+    gl_FragColor=vec4(a,1.);}`;
+const blurHU={tDiffuse:{value:rtB1.texture},uDir:{value:new T.Vector2(1.3/(BW>>2),0)}};
+const blurVU={tDiffuse:{value:rtB2.texture},uDir:{value:new T.Vector2(0,1.3/(BH>>2))}};
+const blurHS=quadPass(BLURFS,blurHU);
+const blurVS=quadPass(BLURFS,blurVU);
+const postU={tDiffuse:{value:rt.texture},tBloom:{value:rtB1.texture},
+  uTime:{value:0},uRes:{value:new T.Vector2(BW,BH)},uVig:{value:.34}};
+const finalS=quadPass(`
+  uniform sampler2D tDiffuse;uniform sampler2D tBloom;
+  uniform float uTime,uVig;uniform vec2 uRes;varying vec2 vUv;
+  float hash(vec2 p){return fract(sin(dot(p,vec2(12.9898,78.233)))*43758.5453);}
+  void main(){
+    vec2 cc=vUv-0.5;float r2=dot(cc,cc);
+    vec2 uv=0.5+cc*(1.0+0.05*r2);
+    float ca=0.0019*(0.25+r2*3.5);
+    vec3 col;
+    col.r=texture2D(tDiffuse,uv+vec2(ca,0.)).r;
+    col.g=texture2D(tDiffuse,uv).g;
+    col.b=texture2D(tDiffuse,uv-vec2(ca,0.)).b;
+    col+=texture2D(tBloom,uv).rgb*0.8;
+    col=pow(col,vec3(1.05));
+    float luma=dot(col,vec3(.299,.587,.114));
+    col=mix(col,vec3(luma),0.10);
+    col+=vec3(0.03,0.055,0.085)*(1.0-luma)*0.55;
+    float g=hash(uv*uRes+fract(uTime)*61.7);
+    col+=(g-0.5)*0.06*(1.35-luma);
+    col*=1.0-0.035*sin(uv.y*uRes.y*3.14159);
+    col*=1.0-uVig*smoothstep(0.34,0.95,length(cc)*1.35);
+    gl_FragColor=vec4(col,1.0);
+  }`,postU);
+function renderPost(){
+  renderer.setRenderTarget(rtB1);renderer.render(brightS,postCam);
+  renderer.setRenderTarget(rtB2);renderer.render(blurHS,postCam);
+  renderer.setRenderTarget(rtB1);renderer.render(blurVS,postCam);
+  renderer.setRenderTarget(null);renderer.render(finalS,postCam);
+}
+
+/* ---------- ses ---------- */
+let AC=null, noiseBuf=null;
+function sfx(f0,f1,dur,type,vol){
+  if(!AC)return;
+  try{const o=AC.createOscillator(),g=AC.createGain();
+    o.type=type; o.frequency.setValueAtTime(f0,AC.currentTime);
+    o.frequency.exponentialRampToValueAtTime(Math.max(f1,1),AC.currentTime+dur);
+    g.gain.setValueAtTime(vol,AC.currentTime);
+    g.gain.exponentialRampToValueAtTime(.001,AC.currentTime+dur);
+    o.connect(g); g.connect(AC.destination);
+    o.start(); o.stop(AC.currentTime+dur);
+  }catch(err){}
+}
+/* beyaz gürültü patlaması — silah sesine gövde katar */
+function noise(dur,vol,freq){
+  if(!AC)return;
+  try{
+    if(!noiseBuf){
+      noiseBuf=AC.createBuffer(1,AC.sampleRate*0.5,AC.sampleRate);
+      const d=noiseBuf.getChannelData(0);
+      for(let i=0;i<d.length;i++)d[i]=Math.random()*2-1;
+    }
+    const s=AC.createBufferSource(),g=AC.createGain(),f=AC.createBiquadFilter();
+    s.buffer=noiseBuf; f.type='lowpass'; f.frequency.value=freq||2400; f.Q.value=.8;
+    g.gain.setValueAtTime(vol,AC.currentTime);
+    g.gain.exponentialRampToValueAtTime(.001,AC.currentTime+dur);
+    s.connect(f); f.connect(g); g.connect(AC.destination);
+    s.start(); s.stop(AC.currentTime+dur);
+  }catch(err){}
+}
+/* sürekli ortam sesi: alçak rüzgar uğultusu */
+function startAmbience(){
+  if(!AC||startAmbience.done)return; startAmbience.done=true;
+  try{
+    const b=AC.createBuffer(1,AC.sampleRate*3,AC.sampleRate);
+    const d=b.getChannelData(0);
+    let last=0;
+    for(let i=0;i<d.length;i++){last=last*.985+(Math.random()*2-1)*.015; d[i]=last*8;}
+    const s=AC.createBufferSource(),g=AC.createGain(),f=AC.createBiquadFilter();
+    s.buffer=b; s.loop=true;
+    f.type='lowpass'; f.frequency.value=340;
+    g.gain.value=.05;
+    s.connect(f); f.connect(g); g.connect(AC.destination); s.start();
+    const lfo=AC.createOscillator(),lg=AC.createGain();
+    lfo.frequency.value=.13; lg.gain.value=.02;
+    lfo.connect(lg); lg.connect(g.gain); lfo.start();
+  }catch(err){}
+}
+
+/* ---------- durum ---------- */
+const player={pos:new T.Vector3(0,0,42),hp:100};
+let yaw=0, pitch=0;
+let energy=100, scanHeld=false, keyQ=false, scanCool=false, scanActive=false, wasScan=false;
+let scanCharge=0, scanContacts=0;
+let killed=0, running=false, over=false, startT=0, elapsed=0;
+let fireHeld=false, midHeld=false, lastShot=0, hitFlash=0, dmgFlash=0;
+let aimOnTarget=false, dmgDirT=0, lastDmgDeg=0;
+let booted=false, hbT=0, hitmarkT=0;
+let swayY=0, swayP=0, prevYaw=0, prevPitch=0, stepD=0;
+const stats={shots:0,hits:0,headshots:0,dmgTaken:0,hitsTaken:0,scans:0};
+const MAGSIZE=30; let mag=MAGSIZE, reserve=150, reloading=false, reloadEnd=0;
+const keys={};
+const R=.45, raycaster=new T.Raycaster();
+const CENTER={x:0,y:0};
+const effects=[];
+const smoothstep=(a,b,x)=>{const t=Math.min(1,Math.max(0,(x-a)/(b-a)));return t*t*(3-2*t);};
+
+/* ---------- HUD referansları ---------- */
+const $=id=>document.getElementById(id);
+const hpfill=$('hpfill'), enfill=$('enfill'), tcount=$('tcount'), linkEl=$('link'),
+      clockEl=$('clock'), scanfx=$('scanfx'), dmgEl=$('dmg'), crossEl=$('cross'),
+      glassEl=$('glass'), intro=$('intro'), endEl=$('end'), endTitle=$('endTitle'),
+      endText=$('endText'), bootSweep=$('bootSweep'), scanSweep=$('scanSweep'),
+      dronePanel=$('dronePanel'), threatList=$('threatList'), ammoEl=$('ammo'),
+      killfeed=$('killfeed'), lockEl=$('lock'), lockInfo=$('lockInfo'), dmgDirEl=$('dmgDir'),
+      lowhpEl=$('lowhp'), bootEl=$('boot'), objBanner=$('objBanner'), hitmarkEl=$('hitmark');
+const compass=$('compass').getContext('2d');
+const mini=$('minimap').getContext('2d');
+const threatBox=$('threats');
+const tdivs=enemies.map(()=>{
+  const d=document.createElement('div'); d.className='threat';
+  d.appendChild(document.createElement('span'));
+  threatBox.appendChild(d); return d;
+});
+/* tehdit listesi satırları */
+const tlRows=enemies.map((_,i)=>{
+  const d=document.createElement('div'); d.className='tl';
+  d.textContent='TGT-0'+(i+1)+'  — ???'; threatList.appendChild(d); return d;
+});
+/* öldürme akışı */
+function feed(msg){
+  const d=document.createElement('div'); d.className='kf'; d.textContent=msg;
+  killfeed.appendChild(d);
+  requestAnimationFrame(()=>{d.style.opacity='1';});
+  setTimeout(()=>{d.style.opacity='0';d.style.transform='translate(-50%,-16px)';},750);
+  setTimeout(()=>{if(d.parentNode)d.parentNode.removeChild(d);},1750);
+}
+
+/* ---------- girişler ---------- */
+addEventListener('contextmenu',e=>e.preventDefault());
+addEventListener('keydown',e=>{keys[e.code]=true;
+  if(e.code==='KeyQ')keyQ=true;
+  if(e.code==='KeyR'){ if(over)location.reload(); else if(running)startReload(); }});
+addEventListener('keyup',e=>{keys[e.code]=false; if(e.code==='KeyQ')keyQ=false;});
+addEventListener('mousedown',e=>{
+  if(!running)return;
+  if(e.button===0)fireHeld=true;
+  if(e.button===1){midHeld=true;e.preventDefault();}
+  if(e.button===2)scanHeld=true;});
+addEventListener('mouseup',e=>{
+  if(e.button===0)fireHeld=false;
+  if(e.button===1)midHeld=false;
+  if(e.button===2)scanHeld=false;});
+addEventListener('mousemove',e=>{
+  if(!running)return;
+  yaw   -= e.movementX*.0023;
+  pitch -= e.movementY*.0023;
+  pitch=Math.max(-1.45,Math.min(1.45,pitch));});
+/* ---------- kask boot sekansı ---------- */
+const BOOTLINES=[
+  ['hd','ASCALON OS v3.1.7 — SİSTEM ÖNYÜKLEMESİ'],
+  ['','SENSÖR DİZİSİ ................ <span class="ok">AKTİF</span>'],
+  ['','ÇOK-SPEKTRUMLU OPTİK ......... <span class="ok">AKTİF · GEN-4</span>'],
+  ['','BALİSTİK BİLGİSAYAR .......... <span class="ok">HAZIR</span>'],
+  ['','UAV VERİ BAĞLANTISI .......... <span class="ok">KURULDU · ASC-1</span>'],
+  ['','BİYOMETRİK İZLEME ............ <span class="ok">NORMAL</span>'],
+  ['','ANGAJMAN İZNİ ................ <span class="wr">SERBEST</span>']];
+function runBoot(){
+  bootEl.style.display='block'; bootEl.style.opacity='1'; bootEl.innerHTML='';
+  BOOTLINES.forEach((ln,i)=>{
+    const d=document.createElement('div');
+    d.className='bl'+(ln[0]?' '+ln[0]:''); d.innerHTML=ln[1];
+    bootEl.appendChild(d);
+    setTimeout(()=>{d.classList.add('on'); sfx(880+i*95,1080+i*95,.04,'square',.035);},280+i*240);
+  });
+  const tEnd=280+BOOTLINES.length*240;
+  setTimeout(()=>{bootEl.style.transition='opacity .6s'; bootEl.style.opacity='0';},tEnd+800);
+  setTimeout(()=>{bootEl.style.display='none'; showObjective();},tEnd+1450);
+}
+function showObjective(){
+  objBanner.style.opacity='1'; sfx(520,780,.28,'sine',.09);
+  setTimeout(()=>{objBanner.style.opacity='0';},4200);
+}
+
+intro.addEventListener('click',()=>{
+  if(!AC){try{AC=new (window.AudioContext||window.webkitAudioContext)();}catch(e){}}
+  if(AC&&AC.state==='suspended')AC.resume();
+  window.scrollTo(0,0);
+  glCanvas.requestPointerLock();});
+document.addEventListener('pointerlockchange',()=>{
+  const locked=document.pointerLockElement===glCanvas;
+  document.body.classList.toggle('umay-locked',locked);
+  if(locked){
+    running=true; intro.style.display='none';
+    bootSweep.classList.remove('run'); void bootSweep.offsetWidth; bootSweep.classList.add('run');
+    sfx(280,920,.3,'sine',.08); startAmbience();
+    if(!startT)startT=performance.now();
+    if(!booted){booted=true; runBoot();}
+  }else{
+    running=false; fireHeld=midHeld=scanHeld=false;
+    if(!over){intro.style.display='flex';
+      intro.querySelector('.go').textContent='▶ DEVAM ETMEK İÇİN TIKLA';}
+  }});
+$('restart').addEventListener('click',()=>location.reload());
+addEventListener('resize',()=>{
+  camera.aspect=innerWidth/innerHeight; camera.updateProjectionMatrix();
+  renderer.setSize(innerWidth,innerHeight);
+  [BW,BH]=bufSize();
+  rt.setSize(BW,BH); rtB1.setSize(BW>>2,BH>>2); rtB2.setSize(BW>>2,BH>>2);
+  blurHU.uDir.value.set(1.3/(BW>>2),0); blurVU.uDir.value.set(0,1.3/(BH>>2));
+  postU.uRes.value.set(BW,BH);});
+
+/* ---------- yardımcılar ---------- */
+function collideBody(pos,rad){
+  for(const r of rects){
+    if(pos.x>r.x0-rad&&pos.x<r.x1+rad&&pos.z>r.z0-rad&&pos.z<r.z1+rad){
+      const dx1=pos.x-(r.x0-rad), dx2=(r.x1+rad)-pos.x;
+      const dz1=pos.z-(r.z0-rad), dz2=(r.z1+rad)-pos.z;
+      const m=Math.min(dx1,dx2,dz1,dz2);
+      if(m===dx1)pos.x=r.x0-rad; else if(m===dx2)pos.x=r.x1+rad;
+      else if(m===dz1)pos.z=r.z0-rad; else pos.z=r.z1+rad;
+    }
+  }
+}
+function collide(){collideBody(player.pos,R);}
+function tracer(a,b,color){
+  const g=new T.BufferGeometry().setFromPoints([a,b]);
+  const l=new T.Line(g,new T.LineBasicMaterial({color:color,transparent:true,opacity:.9}));
+  scene.add(l); effects.push({m:l,life:.18});
+}
+function spark(p,color){
+  const s=new T.Mesh(new T.SphereGeometry(.07,6,6),
+    new T.MeshBasicMaterial({color:color,transparent:true,opacity:1}));
+  s.position.copy(p); scene.add(s); effects.push({m:s,life:.3,grow:6});
+}
+/* mermi çarpma tozu — betondan kalkan gri duman */
+function puff(p){
+  const s=new T.Sprite(new T.SpriteMaterial({map:hazeTex,color:0x9aa0a8,
+    transparent:true,opacity:.3,depthWrite:false}));
+  s.position.copy(p); s.scale.set(.4,.4,1);
+  scene.add(s); effects.push({m:s,life:.45,grow:3.2,rise:.55,op0:.3});
+}
+function losBlocked(from,to){
+  const dir=to.clone().sub(from), dist=dir.length();
+  raycaster.set(from,dir.normalize());
+  raycaster.far=dist-.4;
+  return raycaster.intersectObjects(wallMeshes,false).length>0;
+}
+/* drone tarama yer halkası (sensör süpürmesi) */
+function ringPing(){
+  const m=new T.Mesh(new T.RingGeometry(.4,.62,44),
+    new T.MeshBasicMaterial({color:0x6fe0ff,transparent:true,opacity:.55,
+      side:T.DoubleSide,depthWrite:false}));
+  m.rotation.x=-Math.PI/2; m.position.set(player.pos.x,.06,player.pos.z);
+  scene.add(m); effects.push({m:m,life:.85,grow:11});
+}
+/* şarjör değiştir */
+function startReload(){
+  if(reloading||mag>=MAGSIZE||reserve<=0)return;
+  reloading=true; reloadEnd=elapsed+1.5;
+  sfx(430,300,.12,'sawtooth',.07);
+  setTimeout(()=>sfx(600,460,.08,'square',.05),650);
+}
+const aimV=new T.Vector3();
+/* nişangah hedef kilidi okuması */
+function updateAim(){
+  aimOnTarget=false;
+  let lockE=null, thermal=false, dist=0;
+  raycaster.setFromCamera(CENTER,camera); raycaster.far=200;
+  const alive=enemyMeshes.filter(m=>m.userData.enemy.alive);
+  const hits=raycaster.intersectObjects(wallMeshes.concat(alive),false);
+  if(hits.length&&hits[0].object.userData.enemy){
+    lockE=hits[0].object.userData.enemy; dist=hits[0].distance; aimOnTarget=true;
+  }else if(scanCharge>.3){
+    let best=.16;
+    for(const e of enemies){
+      if(!e.alive||e.reveal<.4)continue;
+      aimV.copy(e.group.position); aimV.y+=1.1;
+      const d=aimV.distanceTo(camera.position); aimV.project(camera);
+      if(aimV.z>1)continue;
+      const r=Math.hypot(aimV.x,aimV.y);
+      if(r<best){best=r; lockE=e; thermal=true; dist=d;}
+    }
+  }
+  if(lockE){
+    aimV.copy(lockE.group.position); aimV.y+=1.05; aimV.project(camera);
+    const sx=(aimV.x*.5+.5)*innerWidth, sy=(-aimV.y*.5+.5)*innerHeight;
+    const s=Math.max(26,Math.min(130,1300/dist));
+    lockEl.style.display='block'; lockEl.className=thermal?'thermal':'';
+    lockEl.style.width=(s*.62)+'px'; lockEl.style.height=s+'px';
+    lockEl.style.left=sx+'px'; lockEl.style.top=sy+'px';
+    lockEl.style.transform='translate(-50%,-50%)';
+    const idx=enemies.indexOf(lockE)+1;
+    const conf=(thermal?86:94)+Math.round(2+Math.sin(elapsed*3+idx)*2);
+    lockInfo.textContent='TGT-0'+idx+' · '+Math.round(dist)+'m · ARMED · CONF '+conf+'%';
+  }else lockEl.style.display='none';
+}
+
+/* ---------- ateş ---------- */
+function showHitmark(cls){
+  hitmarkT=.22; hitmarkEl.className=cls||''; hitmarkEl.style.opacity='1';
+}
+function shoot(){
+  recoil=.09; muzzle.intensity=7; stats.shots++;
+  sfx(750,110,.09,'square',.11); sfx(2200,400,.05,'sawtooth',.035);
+  noise(.13,.17,3600); noise(.3,.05,850);
+  /* hareket halinde hafif saçılma — daha gerçekçi atış hissi */
+  const mov=keys['KeyW']||keys['KeyA']||keys['KeyS']||keys['KeyD']||midHeld;
+  const sp=mov?.011:.004;
+  raycaster.setFromCamera({x:(Math.random()-.5)*sp,y:(Math.random()-.5)*sp},camera);
+  raycaster.far=200;
+  const alive=enemyMeshes.filter(m=>m.userData.enemy.alive);
+  const hits=raycaster.intersectObjects(wallMeshes.concat(alive,[ground]),false);
+  const muzzleP=camera.localToWorld(new T.Vector3(.24,-.16,-.7));
+  if(hits.length){
+    const h=hits[0]; tracer(muzzleP,h.point,0xffe9a8);
+    const ud=h.object.userData;
+    if(ud&&ud.enemy){
+      const e=ud.enemy; const head=ud.part==='head';
+      const dmg=head?100:50; e.hp-=dmg;
+      stats.hits++; if(head)stats.headshots++;
+      spark(h.point,0xff4050); hitFlash=.12; sfx(1300,1700,.05,'sine',.1);
+      showHitmark(head?'hs':'');
+      e.mats.forEach(m=>m.emissive.setHex(0x7a1515));
+      setTimeout(()=>e.mats.forEach(m=>m.emissive.setHex(0x000000)),90);
+      /* vurulan düşman alarma geçer, son bilinen konumuna ilerler */
+      e.alertT=elapsed; e.alertPos.copy(player.pos);
+      if(e.hp<=0&&e.alive){
+        e.alive=false; e.dieT=elapsed; killed++;
+        tcount.textContent=(TOTAL-killed);
+        feed('TGT-0'+(enemies.indexOf(e)+1)+' NEUTRALIZED'+(head?' — HEADSHOT':''));
+        sfx(500,950,.18,'triangle',.14); showHitmark('kill');
+        /* yakındaki düşmanlar silah sesiyle alarma geçer */
+        enemies.forEach(o=>{if(o.alive&&o!==e&&
+          o.group.position.distanceTo(e.group.position)<16){
+          o.alertT=elapsed; o.alertPos.copy(player.pos);}});
+        if(killed===TOTAL)setTimeout(()=>end(true),900);
+      }
+    }else{spark(h.point,0x9fb8c4); puff(h.point);}
+  }else{
+    const far=raycaster.ray.at(120,new T.Vector3());
+    tracer(muzzleP,far,0xffe9a8);
+  }
+}
+
+/* ---------- bitiş ---------- */
+function end(win){
+  if(over)return;
+  over=true; running=false; document.exitPointerLock();
+  intro.style.display='none'; endEl.style.display='flex';
+  endTitle.className=win?'win':'lose';
+  endTitle.textContent=win?'GÖREV TAMAMLANDI':'OPERATÖR DÜŞTÜ';
+  const t=Math.floor(elapsed);
+  const acc=stats.shots?Math.round(stats.hits/stats.shots*100):0;
+  const rank=!win?'—':(acc>=60&&stats.dmgTaken<=35?'S':acc>=45?'A':acc>=30?'B':'C');
+  const msg=win
+    ? 'Tüm '+TOTAL+' tehdit etkisiz hale getirildi. ASCALON bağlantısı güvenli şekilde sonlandırılıyor.'
+    : killed+'/'+TOTAL+' tehdit indirildi. UAV taramasını daha sık kullan — köşelere körlemesine girme.';
+  endText.innerHTML=msg+
+    '<span class="stats">'+
+    '<span>GÖREV SÜRESİ<b>'+Math.floor(t/60)+':'+String(t%60).padStart(2,'0')+'</b></span>'+
+    '<span>İSABET ORANI<b>%'+acc+'</b></span>'+
+    '<span>HEADSHOT<b>'+stats.headshots+'</b></span>'+
+    '<span>ETKİSİZ TEHDİT<b>'+killed+'/'+TOTAL+'</b></span>'+
+    '<span>ALINAN HASAR<b>'+Math.round(stats.dmgTaken)+'</b></span>'+
+    '<span>UAV TARAMASI<b>'+stats.scans+'</b></span>'+
+    (win?'<span class="rank">OPERATÖR SINIFI<b>'+rank+'</b></span>':'')+
+    '</span>';
+  sfx(win?440:200,win?880:60,.6,win?'triangle':'sawtooth',.18);
+}
+
+/* ---------- HUD çizimleri ---------- */
+const DIRS={0:'K',45:'KD',90:'D',135:'GD',180:'G',225:'GB',270:'B',315:'KB'};
+function drawCompass(){
+  const W=440,H=34,c=compass; c.clearRect(0,0,W,H);
+  c.fillStyle='rgba(6,14,18,.5)'; c.fillRect(0,0,W,H);
+  let hdg=((-yaw*180/Math.PI)%360+360)%360;
+  c.textAlign='center'; c.font='10px Consolas';
+  for(let d=Math.ceil((hdg-65)/5)*5; d<=hdg+65; d+=5){
+    const x=(d-hdg)/130*W+W/2; const deg=((d%360)+360)%360; const major=deg%45===0;
+    c.strokeStyle=major?'rgba(155,232,247,.95)':'rgba(105,200,220,.4)';
+    c.beginPath(); c.moveTo(x,H); c.lineTo(x,H-(major?12:6)); c.stroke();
+    if(major){c.fillStyle='#bfeffb'; c.fillText(DIRS[deg]||deg,x,12);}
+  }
+  /* tespit edilen tehditlerin kerterizi */
+  const Af=Math.atan2(-Math.sin(yaw),-Math.cos(yaw));
+  enemies.forEach((e,i)=>{
+    if(!e.alive)return;
+    const det=e.reveal>.4, act=elapsed-e.lastSeen<3;
+    if(!det&&!act)return;
+    const p=det?e.group.position:e.seenPos;
+    const ang=Math.atan2(p.x-player.pos.x,p.z-player.pos.z);
+    let rel=((ang-Af)*180/Math.PI); rel=((rel+540)%360)-180;
+    if(Math.abs(rel)>64)return;
+    const x=rel/130*W+W/2;
+    c.strokeStyle=det?'rgba(255,150,80,.95)':'rgba(255,80,95,.9)'; c.lineWidth=2;
+    c.beginPath(); c.moveTo(x,H); c.lineTo(x,H-15); c.stroke();
+    c.fillStyle=det?'#ff9a5a':'#ff7585';
+    c.beginPath(); c.moveTo(x,H-15); c.lineTo(x-4,H-21); c.lineTo(x+4,H-21); c.fill();
+  });
+  c.fillStyle='#7dffa9';
+  c.beginPath(); c.moveTo(W/2,H-2); c.lineTo(W/2-5,H-12); c.lineTo(W/2+5,H-12); c.fill();
+}
+function drawMini(){
+  const S=170,c=mini,sc=S/132,off=66, R0=83;
+  c.clearRect(0,0,S,S);
+  c.save();
+  c.beginPath(); c.arc(S/2,S/2,R0,0,7); c.clip();
+  c.fillStyle='rgba(5,12,16,.8)'; c.fillRect(0,0,S,S);
+  /* menzil halkaları */
+  c.strokeStyle='rgba(105,230,255,.18)'; c.lineWidth=1;
+  [R0,R0*.66,R0*.33].forEach(r=>{c.beginPath();c.arc(S/2,S/2,r,0,7);c.stroke();});
+  c.beginPath(); c.moveTo(S/2,2); c.lineTo(S/2,S-2);
+  c.moveTo(2,S/2); c.lineTo(S-2,S/2); c.stroke();
+  /* duvarlar */
+  c.fillStyle='rgba(60,150,180,.32)';
+  for(const r of rects){
+    c.fillRect((r.x0+off)*sc,(r.z0+off)*sc,(r.x1-r.x0)*sc,(r.z1-r.z0)*sc);}
+  /* tarama süpürmesi */
+  if(scanActive){
+    const a=elapsed*2.4%(Math.PI*2);
+    c.save(); c.translate(S/2,S/2);
+    const grad=c.createLinearGradient(0,0,Math.cos(a)*S,Math.sin(a)*S);
+    grad.addColorStop(0,'rgba(105,230,255,.5)'); grad.addColorStop(1,'rgba(105,230,255,0)');
+    c.strokeStyle=grad; c.lineWidth=2;
+    c.beginPath(); c.moveTo(0,0); c.lineTo(Math.cos(a)*S,Math.sin(a)*S); c.stroke();
+    c.restore();
+  }
+  /* drone */
+  c.fillStyle='#69e6ff';
+  c.beginPath(); c.arc((drone.position.x+off)*sc,(drone.position.z+off)*sc,3,0,7); c.fill();
+  /* düşmanlar (3 sn hafıza) */
+  for(const e of enemies){
+    if(!e.alive)continue;
+    const age=elapsed-e.lastSeen;
+    if(age<3){
+      const al=1-age/3;
+      c.fillStyle=`rgba(255,60,80,${al})`;
+      c.beginPath(); c.arc((e.seenPos.x+off)*sc,(e.seenPos.z+off)*sc,3.2,0,7); c.fill();
+      c.strokeStyle=`rgba(255,60,80,${al*.5})`;
+      c.beginPath(); c.arc((e.seenPos.x+off)*sc,(e.seenPos.z+off)*sc,3.2+3*Math.sin(elapsed*5),0,7); c.stroke();
+    }
+  }
+  /* oyuncu */
+  const px=(player.pos.x+off)*sc, pz=(player.pos.z+off)*sc;
+  const fx=-Math.sin(yaw), fz=-Math.cos(yaw);
+  c.save(); c.translate(px,pz); c.rotate(Math.atan2(fz,fx));
+  c.fillStyle='#fff';
+  c.beginPath(); c.moveTo(6,0); c.lineTo(-4,-4); c.lineTo(-4,4); c.fill();
+  c.restore();
+  c.restore();
+}
+const tmpV=new T.Vector3();
+function drawThreats(){
+  enemies.forEach((e,i)=>{
+    const d=tdivs[i];
+    if(e.reveal<.12||!e.alive){d.style.display='none';return;}
+    tmpV.copy(e.group.position); tmpV.y+=1.1;
+    const dist=tmpV.distanceTo(camera.position);
+    tmpV.project(camera);
+    if(tmpV.z>1){d.style.display='none';return;}
+    const sx=(tmpV.x*.5+.5)*innerWidth, sy=(-tmpV.y*.5+.5)*innerHeight;
+    const s=Math.max(22,Math.min(95,1100/dist));
+    d.style.display='block'; d.style.opacity=Math.min(1,e.reveal*1.4);
+    d.style.width=s*.7+'px'; d.style.height=s+'px';
+    d.style.left=sx+'px'; d.style.top=sy+'px';
+    d.style.transform='translate(-50%,-50%)';
+    d.firstElementChild.textContent='TGT-0'+(i+1)+' · '+Math.round(dist)+'m · ARMED';
+  });
+}
+
+/* ---------- ana döngü ---------- */
+const clock=new T.Clock();
+const pChest=new T.Vector3(), eChest=new T.Vector3();
+
+function update(dt){
+  elapsed=(performance.now()-startT)/1000;
+
+  /* tarama durumu + multi-spektral süpürme */
+  const wantScan=(scanHeld||keyQ);
+  if(energy<=0)scanCool=true;
+  if(scanCool&&energy>18)scanCool=false;
+  scanActive=wantScan&&!scanCool&&energy>0;
+  if(scanActive)energy=Math.max(0,energy-24*dt);
+  else energy=Math.min(100,energy+16*dt);
+  scanCharge+=((scanActive?1:0)-scanCharge)*Math.min(1,dt*(scanActive?2.6:6));
+  if(scanActive&&!wasScan){
+    enemies.forEach(e=>e.pinged=false); scanContacts=0; stats.scans++;
+    scanSweep.classList.remove('run'); void scanSweep.offsetWidth; scanSweep.classList.add('run');
+    ringPing(); sfx(240,1320,.5,'sine',.09); sfx(1300,1700,.18,'sine',.05);
+  }
+  if(!scanActive&&wasScan)sfx(1100,260,.22,'sine',.06);
+  if(scanActive&&energy<22&&elapsed%0.4<dt)sfx(2000,1500,.05,'square',.05);
+  if(wasScan&&!scanActive&&energy<=0)sfx(900,170,.3,'sawtooth',.1);
+  thermalMats.forEach(m=>m.uniforms.uTime.value=elapsed);
+  wasScan=scanActive;
+
+  /* hareket */
+  const run=keys['ShiftLeft']||keys['ShiftRight'];
+  const spd=(run?8:4.6)*dt;
+  let mx=0,mz=0;
+  if(keys['KeyW']||keys['ArrowUp']||midHeld)mz-=1;
+  if(keys['KeyS']||keys['ArrowDown'])mz+=1;
+  if(keys['KeyA']||keys['ArrowLeft'])mx-=1;
+  if(keys['KeyD']||keys['ArrowRight'])mx+=1;
+  const moving=mx||mz;
+  if(moving){
+    const l=Math.hypot(mx,mz); mx/=l; mz/=l;
+    const s=Math.sin(yaw),c=Math.cos(yaw);
+    player.pos.x+=( mx*c + mz*s)*spd;
+    player.pos.z+=(-mx*s + mz*c)*spd;
+    collide();
+    /* ayak sesleri */
+    stepD+=spd;
+    if(stepD>2.1){stepD=0;
+      noise(.06,run?.065:.04,850+Math.random()*350); sfx(95,55,.05,'sine',.035);}
+  }
+  const bob=moving?Math.sin(elapsed*(run?13:9))*.035:0;
+  const breathe=Math.sin(elapsed*1.5)*.004;
+  camera.position.set(player.pos.x,1.7+bob+breathe,player.pos.z);
+  camera.rotation.set(pitch,yaw,0);
+  /* silah salınımı: bakış hızına gecikmeli tepki */
+  const vy=yaw-prevYaw, vp=pitch-prevPitch; prevYaw=yaw; prevPitch=pitch;
+  swayY+=(Math.max(-.045,Math.min(.045,vy))-swayY)*Math.min(1,dt*7);
+  swayP+=(Math.max(-.045,Math.min(.045,vp))-swayP)*Math.min(1,dt*7);
+  /* koşarken hafif FOV genişlemesi — hız hissi */
+  const fovT=(moving&&run)?76:72;
+  if(Math.abs(camera.fov-fovT)>.05){
+    camera.fov+=(fovT-camera.fov)*Math.min(1,dt*6);
+    camera.updateProjectionMatrix();
+  }
+
+  /* vizör cam paralaksı (kafa hareketiyle yansıma kayar) */
+  glassEl.style.transform='translate('+(-yaw*60).toFixed(1)+'px,'+(pitch*60).toFixed(1)+'px)';
+
+  /* ateş + şarjör */
+  if(reloading&&elapsed>=reloadEnd){
+    const need=MAGSIZE-mag, take=Math.min(need,reserve);
+    mag+=take; reserve-=take; reloading=false; sfx(720,900,.05,'square',.06);
+  }
+  if(fireHeld&&!reloading){
+    if(mag>0&&elapsed-lastShot>.16){lastShot=elapsed; mag--; shoot();}
+    else if(mag<=0&&elapsed-lastShot>.35){lastShot=elapsed; sfx(170,120,.04,'square',.05);
+      if(reserve>0)startReload();}
+  }
+  recoil=Math.max(0,recoil-dt*.6);
+  muzzle.intensity=Math.max(0,muzzle.intensity-dt*40);
+  gun.position.z=-.42+recoil;
+  /* salınım + şarjör değiştirme animasyonu (silah aşağı iner, yana yatar) */
+  gun.rotation.x+=((recoil*1.4+(reloading?.55:0)+swayP*4)-gun.rotation.x)*Math.min(1,dt*12);
+  gun.rotation.y+=((.04+swayY*5)-gun.rotation.y)*Math.min(1,dt*12);
+  gun.rotation.z+=((reloading?.3:0)-gun.rotation.z)*Math.min(1,dt*8);
+  gun.position.y+=(((reloading?-.34:-.22)+breathe+bob*.3)-gun.position.y)*Math.min(1,dt*9);
+  gun.position.x=.26+swayY*1.1;
+
+  /* drone: tespit edilen hedefe kilitlenir, yoksa devriye uçuşu */
+  if(droneTarget&&(!droneTarget.alive||scanCool))droneTarget=null;
+  if(!droneTarget){
+    let best=null,bt=-1;
+    for(const en of enemies)
+      if(en.alive&&elapsed-en.lastSeen<6&&en.lastSeen>bt){bt=en.lastSeen;best=en;}
+    droneTarget=best;
+  }
+  if(droneTarget){
+    const tp=droneTarget.group.position;
+    /* drone hedefi havadan izlediği sürece konum bilgisi taze kalır */
+    droneTarget.lastSeen=elapsed; droneTarget.seenPos.copy(tp);
+    droneDest.set(tp.x+3.5,15,tp.z+2.5);
+    drone.position.lerp(droneDest,Math.min(1,dt*1.4));
+    drone.rotation.y=Math.atan2(tp.x-drone.position.x,tp.z-drone.position.z);
+    beam.visible=true; beam.scale.set(.34,1,.34);
+    beam.material.color.setHex(0xffb060);
+    beam.material.opacity=.09+.04*Math.sin(elapsed*9)+scanCharge*.05;
+    beam.position.set(tp.x,13,tp.z);
+    droneMark.visible=true; droneMark.position.set(tp.x,.06,tp.z);
+    droneMark.rotation.z=elapsed*1.6;
+    const mp=1+.14*Math.sin(elapsed*6);
+    droneMark.scale.set(mp,mp,1);
+    droneMark.material.opacity=.5+.25*Math.sin(elapsed*6);
+  }else{
+    const da=elapsed*.22;
+    droneDest.set(Math.cos(da)*30,24+Math.sin(elapsed*.7)*.8,Math.sin(da)*30);
+    drone.position.lerp(droneDest,Math.min(1,dt*1.4));
+    drone.rotation.y=-da;
+    beam.scale.set(1,1,1); beam.material.color.setHex(0x39d6ff);
+    beam.visible=scanCharge>.02;
+    beam.material.opacity=scanCharge*(.05+.035*(.5+.5*Math.sin(elapsed*8)));
+    beam.position.copy(drone.position); beam.position.y-=13;
+    droneMark.visible=false;
+  }
+  drone.userData.rotors.forEach(r=>r.rotation.y+=dt*40);
+  drone.userData.beacon.material.color.set(droneTarget?0xffb84a:(scanActive?0x7dffa9:0x69e6ff));
+  drone.userData.beacon.scale.setScalar((scanActive||droneTarget)?(1+.7*Math.abs(Math.sin(elapsed*12))):1);
+
+  /* düşman AI */
+  pChest.copy(player.pos); pChest.y=1.4;
+  for(const e of enemies){
+    if(!e.alive){
+      if(e.dieT!==undefined){
+        const k=Math.min(1,(elapsed-e.dieT)*3);
+        e.group.rotation.x=-k*Math.PI/2; e.group.position.y=k*.2;
+        [e.armL,e.armR,e.legL,e.legR].forEach(p=>p.rotation.x*=.9);
+        if(elapsed-e.dieT>2)e.group.visible=false;
+      }
+      e.reveal=0; e.xmat.uniforms.uReveal.value=0; e.bmat.uniforms.uReveal.value=0;
+      e.xparts.forEach(x=>x.visible=false);
+      continue;
+    }
+    e.animT+=dt;
+    /* termal reveal — süpürme geçtikçe belirir; drone kilidindeki hedef sürekli görünür */
+    let rT=0;
+    if(scanActive){
+      tmpV.copy(e.group.position); tmpV.y+=1.0; tmpV.project(camera);
+      const sx01=tmpV.z<1?(tmpV.x*.5+.5):0.5;
+      rT=smoothstep(sx01-.14,sx01+.05,scanCharge*1.3);
+    }
+    if(droneTarget===e)rT=Math.max(rT,.55);
+    e.reveal+=(rT-e.reveal)*Math.min(1,dt*9);
+    e.xmat.uniforms.uReveal.value=e.reveal*.55;
+    e.bmat.uniforms.uReveal.value=Math.min(1,e.reveal*1.3);
+    e.xparts.forEach(x=>x.visible=e.reveal>.015);
+    if(e.reveal>.4){
+      e.lastSeen=elapsed; e.seenPos.copy(e.group.position);
+      if(!e.pinged){e.pinged=true; e.detTime=elapsed; scanContacts++;
+        sfx(1650,1950,.06,'sine',.08);}
+    }
+
+    eChest.copy(e.group.position); eChest.y=1.4;
+    const dist=eChest.distanceTo(pChest);
+    const blocked=dist>40?true:losBlocked(eChest,pChest);
+
+    if(!blocked&&dist<32){
+      e.group.rotation.y=Math.atan2(pChest.x-eChest.x,pChest.z-eChest.z);
+      /* nişan pozu: tüfek omuza kalkar, bacaklar durur */
+      const aim=-1.36+Math.sin(e.animT*2.2)*.03;
+      e.armR.rotation.x+=(aim-e.armR.rotation.x)*Math.min(1,dt*8);
+      e.armL.rotation.x+=((aim+.15)-e.armL.rotation.x)*Math.min(1,dt*8);
+      e.legL.rotation.x*=Math.max(0,1-dt*8);
+      e.legR.rotation.x*=Math.max(0,1-dt*8);
+      e.shootT-=dt;
+      if(e.shootT<=0){
+        e.shootT=1.2+Math.random()*.6;
+        sfx(420,90,.12,'sawtooth',.09); noise(.1,.06,2000);
+        const tip=e.rifle.localToWorld(new T.Vector3(0,0,-.34));
+        spark(tip,0xffc06a);
+        const hitP=Math.max(.15,.6-dist*.012);
+        if(Math.random()<hitP){
+          tracer(tip.clone(),pChest.clone(),0xff5560);
+          const dmg=5+Math.random()*9; player.hp-=dmg; dmgFlash=.85;
+          stats.dmgTaken+=dmg; stats.hitsTaken++; noise(.2,.1,600);
+          const ang=Math.atan2(eChest.x-pChest.x,eChest.z-pChest.z);
+          const fwd=Math.atan2(-Math.sin(yaw),-Math.cos(yaw));
+          lastDmgDeg=((ang-fwd)*180/Math.PI); dmgDirT=1.2;
+          sfx(160,55,.18,'sawtooth',.2);
+          if(player.hp<=0){player.hp=0; end(false);}
+        }else{
+          const missAt=pChest.clone().add(new T.Vector3(
+            (Math.random()-.5)*2.4,(Math.random()-.5)*1.6,(Math.random()-.5)*2.4));
+          tracer(tip.clone(),missAt,0xff5560);
+        }
+      }
+    }else{
+      /* alarmda: oyuncunun son bilinen konumuna koşar; değilse devriye */
+      let tx,tz,speed=1.8;
+      const alerted=elapsed-e.alertT<14;
+      if(alerted){tx=e.alertPos.x; tz=e.alertPos.z; speed=3.0;}
+      else{const wp=e.wps[e.wp]; tx=wp[0]; tz=wp[1];}
+      const dx=tx-e.group.position.x, dz=tz-e.group.position.z;
+      const wd=Math.hypot(dx,dz);
+      if(wd<.45){if(alerted)e.alertT=-99; else e.wp=(e.wp+1)%e.wps.length;}
+      else{
+        e.group.position.x+=dx/wd*speed*dt;
+        e.group.position.z+=dz/wd*speed*dt;
+        collideBody(e.group.position,.35);
+        e.group.rotation.y=Math.atan2(dx,dz);
+      }
+      /* yürüyüş animasyonu: bacak/kol salınımı, tüfek alçak-hazır pozda */
+      const sw=wd<.45?0:Math.sin(e.animT*(alerted?9:6))*(alerted?.6:.45);
+      e.legL.rotation.x+=(sw-e.legL.rotation.x)*Math.min(1,dt*10);
+      e.legR.rotation.x+=(-sw-e.legR.rotation.x)*Math.min(1,dt*10);
+      e.armL.rotation.x+=(-sw*.5-e.armL.rotation.x)*Math.min(1,dt*8);
+      e.armR.rotation.x+=((-.5+sw*.15)-e.armR.rotation.x)*Math.min(1,dt*8);
+    }
+  }
+
+  /* efektler */
+  for(let i=effects.length-1;i>=0;i--){
+    const f=effects[i]; f.life-=dt;
+    if(f.m.material)f.m.material.opacity=Math.max(0,Math.min(f.op0||1,f.life*5));
+    if(f.grow)f.m.scale.multiplyScalar(1+f.grow*dt);
+    if(f.rise)f.m.position.y+=f.rise*dt;
+    if(f.life<=0){scene.remove(f.m);
+      if(!f.m.isSprite)f.m.geometry.dispose();
+      f.m.material.dispose(); effects.splice(i,1);}
+  }
+
+  /* HUD */
+  updateAim();
+  hpfill.style.width=player.hp+'%';
+  hpfill.style.background=player.hp>40
+    ?'linear-gradient(90deg,#3dd97c,#9dff7a)':'linear-gradient(90deg,#d93d3d,#ff7a7a)';
+  enfill.style.width=energy+'%';
+  enfill.style.background=scanCool?'#d9743d':'#46c8f0';
+  scanfx.style.opacity=scanActive?Math.min(1,.4+scanCharge):0;
+  linkEl.textContent=scanActive?'UAV LINK: STREAMING':'UAV LINK: STANDBY';
+  linkEl.className=scanActive?'live':'';
+  hitFlash=Math.max(0,hitFlash-dt);
+  crossEl.className=hitFlash>0?'hit':(aimOnTarget?'lock':'');
+  dmgFlash=Math.max(0,dmgFlash-dt*1.4); dmgEl.style.opacity=dmgFlash;
+  /* isabet işareti sönümü */
+  hitmarkT=Math.max(0,hitmarkT-dt);
+  hitmarkEl.style.opacity=hitmarkT>0?Math.min(1,hitmarkT*8):0;
+  /* kritik can: nabız vinyeti + kalp atışı */
+  if(player.hp<35&&!over){
+    lowhpEl.style.opacity=Math.min(.85,.4+.25*Math.sin(elapsed*5.5)+(35-player.hp)*.008);
+    hbT-=dt;
+    if(hbT<=0){hbT=Math.max(.55,player.hp*.024);
+      sfx(70,45,.09,'sine',.22); setTimeout(()=>sfx(60,40,.08,'sine',.16),140);}
+  }else lowhpEl.style.opacity=0;
+  dmgDirT=Math.max(0,dmgDirT-dt*1.1);
+  if(dmgDirT>0){dmgDirEl.style.opacity=Math.min(1,dmgDirT);
+    dmgDirEl.style.transform='rotate('+lastDmgDeg.toFixed(0)+'deg)';}
+  else dmgDirEl.style.opacity=0;
+  /* mermi */
+  ammoEl.innerHTML='<b>'+mag+'</b> <span class="res">/ '+reserve+'</span>'+
+    (reloading?'<br><span class="rl">RELOADING…</span>':(mag===0?'<br><span class="rl">RELOAD [R]</span>':''));
+  /* drone uplink paneli */
+  const bn=Math.round(energy/20);let bars='';
+  for(let i=0;i<5;i++)bars+='<i style="height:'+(4+i*2)+'px;opacity:'+(i<bn?1:.22)+'"></i>';
+  dronePanel.innerHTML='ASC-1 ▲142m &nbsp; '+
+    (scanCool?'<span class="lost">SİNYAL YOK</span>':'LINK '+Math.round(energy)+'%')+
+    '<br><span class="sig">'+bars+'</span> &nbsp;<span class="sc">SCAN '+Math.round(scanCharge*100)+'%</span>'+
+    (droneTarget?'<br><span style="color:#ffc94a">◎ TRACKING TGT-0'+
+      (enemies.indexOf(droneTarget)+1)+'</span>':'');
+  /* tehdit listesi */
+  enemies.forEach((e,i)=>{const row=tlRows[i];let cls,txt;
+    if(!e.alive){cls='dn';txt='TGT-0'+(i+1)+'  ✓ DOWN';}
+    else if(e.reveal>.4){cls='det';txt='TGT-0'+(i+1)+'  ▲ '+Math.round(camera.position.distanceTo(e.group.position))+'m';}
+    else if(elapsed-e.lastSeen<3){cls='act';txt='TGT-0'+(i+1)+'  ● '+Math.round(Math.hypot(e.seenPos.x-player.pos.x,e.seenPos.z-player.pos.z))+'m';}
+    else{cls='';txt='TGT-0'+(i+1)+'  — ???';}
+    row.className='tl '+cls; row.textContent=txt;});
+  const t=Math.floor(elapsed);
+  clockEl.textContent=String(Math.floor(t/60)).padStart(2,'0')+':'+String(t%60).padStart(2,'0');
+  drawCompass(); drawMini(); drawThreats();
+}
+
+function loop(){
+  requestAnimationFrame(loop);
+  const dt=Math.min(clock.getDelta(),.05);
+  if(running&&!over)update(dt);
+  postU.uTime.value=performance.now()/1000;
+  renderer.setRenderTarget(rt);
+  renderer.render(scene,camera);
+  renderPost();
+}
+camera.position.set(player.pos.x,1.7,player.pos.z);
+camera.rotation.set(0,0,0);
+drawCompass(); drawMini();
+loop();
+})();
+</script>
+</body>
+</html>
