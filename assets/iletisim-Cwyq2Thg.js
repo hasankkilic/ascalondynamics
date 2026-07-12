@@ -1,4 +1,4 @@
-import{t as a,r as m,a as u,b as p,i as v}from"./reveal-BbobXqw1.js";const t="hasankilic@ascalondynamics.com";function f(e){e.innerHTML=`
+import{t as a,r as m,a as u,b as p,i as v}from"./reveal-CflYcNCV.js";const t="hasankilic@ascalondynamics.com";function f(e){e.innerHTML=`
     <section class="contact-panel reveal" id="contact-panel" aria-labelledby="contact-panel-title">
       <div class="contact-panel-inner">
         <div class="contact-info">
@@ -44,7 +44,6 @@ import{t as a,r as m,a as u,b as p,i as v}from"./reveal-BbobXqw1.js";const t="ha
         </form>
       </div>
     </section>
-  `,b(e)}function b(e){const n=e.querySelector("#contact-form"),l=e.querySelector("[data-contact-status]");n&&n.addEventListener("submit",c=>{c.preventDefault();const s=n.name.value.trim(),o=n.message.value.trim();if(!s||!o){l.textContent=a("Lütfen ad soyad ve mesaj alanlarını doldurun.","Please fill in the name and message fields.");return}const i=a(`Web Sitesi İletişim Formu — ${s}`,`Website Contact Form — ${s}`),d=`${o}
+  `,b(e)}function b(e){const n=e.querySelector("#contact-form"),l=e.querySelector("[data-contact-status]");n&&n.addEventListener("submit",c=>{c.preventDefault();const s=n.name.value.trim(),o=n.message.value.trim();if(!s||!o){l.textContent=a("Lütfen ad soyad ve mesaj alanlarını doldurun.","Please fill in the name and message fields.");return}const i=a(`Web Sitesi İletişim Formu: ${s}`,`Website Contact Form: ${s}`),d=`${o}
 
-—
 ${s}`,r=`mailto:${t}?subject=${encodeURIComponent(i)}&body=${encodeURIComponent(d)}`;window.location.href=r,l.textContent=a("Mail uygulamanız açılıyor…","Opening your mail app…")})}m(document.getElementById("header-root"));u(document.getElementById("footer-root"));f(document.getElementById("contact-panel-root"));p(document);v(document);
