@@ -1,4 +1,4 @@
-import{t as a,r as m,a as u,b as p,i as v}from"./reveal-CflYcNCV.js";const t="hasankilic@ascalondynamics.com";function f(e){e.innerHTML=`
+import{t as a,r as m,a as u,b as p,i as v}from"./reveal-ByZRB2aG.js";const t="hasankilic@ascalondynamics.com";function f(e){e.innerHTML=`
     <section class="contact-panel reveal" id="contact-panel" aria-labelledby="contact-panel-title">
       <div class="contact-panel-inner">
         <div class="contact-info">

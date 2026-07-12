@@ -1,4 +1,4 @@
-import{t as e,c as d,r as c,a as u,b as p,i as m}from"./reveal-CflYcNCV.js";function h(a){a.innerHTML=`
+import{t as e,c as d,r as c,a as u,b as p,i as m}from"./reveal-ByZRB2aG.js";function h(a){a.innerHTML=`
     <section class="value-prop reveal" id="value-prop" aria-labelledby="value-prop-statement">
       <div class="value-prop-inner">
         <p class="value-prop-statement" id="value-prop-statement">${e("Operasyonel ihtiyaçları, yapay zekâ destekli otonom sistemlere dönüştürüyoruz.","We turn operational needs into AI-powered autonomous systems.")}</p>
