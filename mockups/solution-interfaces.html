@@ -1,0 +1,874 @@
+<!doctype html>
+<html lang="tr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Ascalon Dynamics Solution Interface Mockups</title>
+    <style>
+      :root {
+        --bg: #060a0f;
+        --panel: rgba(9, 15, 23, 0.94);
+        --panel-2: rgba(13, 21, 31, 0.92);
+        --line: rgba(255, 255, 255, 0.11);
+        --line-strong: rgba(249, 115, 22, 0.46);
+        --text: #eef3f8;
+        --soft: #aab5c2;
+        --muted: #687586;
+        --orange: #f97316;
+        --green: #35d07f;
+        --blue: #4eb3ff;
+        --red: #ff5d5d;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html,
+      body,
+      #app {
+        width: 100%;
+        height: 100%;
+        margin: 0;
+      }
+
+      body {
+        overflow: hidden;
+        background: var(--bg);
+        color: var(--text);
+        font-family: "Segoe UI", Arial, sans-serif;
+      }
+
+      .screen {
+        position: relative;
+        width: 1920px;
+        height: 1080px;
+        overflow: hidden;
+        background:
+          linear-gradient(rgba(255, 255, 255, 0.026) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(255, 255, 255, 0.026) 1px, transparent 1px),
+          radial-gradient(circle at 68% 28%, rgba(249, 115, 22, 0.1), transparent 32%),
+          #060a0f;
+        background-size: 48px 48px, 48px 48px, auto, auto;
+      }
+
+      .screen::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background:
+          linear-gradient(90deg, rgba(6, 10, 15, 0.26), transparent 42%, rgba(6, 10, 15, 0.5)),
+          repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.018), rgba(255, 255, 255, 0.018) 1px, transparent 1px, transparent 4px);
+        pointer-events: none;
+      }
+
+      .topbar {
+        position: absolute;
+        inset: 0 0 auto 0;
+        height: 78px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 34px 0 36px;
+        border-bottom: 1px solid var(--line);
+        background: rgba(6, 10, 15, 0.9);
+        z-index: 4;
+      }
+
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 18px;
+        font-weight: 800;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+      }
+
+      .mark {
+        width: 34px;
+        height: 34px;
+        clip-path: polygon(50% 0, 94% 82%, 67% 82%, 50% 48%, 33% 82%, 6% 82%);
+        background: var(--orange);
+      }
+
+      .top-meta {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        color: var(--soft);
+        font-family: Consolas, monospace;
+        font-size: 13px;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      .status-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        height: 34px;
+        padding: 0 14px;
+        border: 1px solid rgba(53, 208, 127, 0.36);
+        color: #87f7b5;
+        background: rgba(53, 208, 127, 0.07);
+      }
+
+      .status-pill::before {
+        content: "";
+        width: 8px;
+        height: 8px;
+        border-radius: 999px;
+        background: var(--green);
+        box-shadow: 0 0 18px rgba(53, 208, 127, 0.72);
+      }
+
+      .side {
+        position: absolute;
+        inset: 78px auto 0 0;
+        width: 88px;
+        display: grid;
+        grid-template-rows: repeat(6, 1fr);
+        border-right: 1px solid var(--line);
+        background: rgba(7, 11, 17, 0.88);
+        z-index: 3;
+      }
+
+      .side span {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--muted);
+        font-family: Consolas, monospace;
+        font-size: 12px;
+        letter-spacing: 0.12em;
+        writing-mode: vertical-rl;
+        transform: rotate(180deg);
+        border-bottom: 1px solid var(--line);
+      }
+
+      .side span.active {
+        color: var(--orange);
+        background: rgba(249, 115, 22, 0.08);
+      }
+
+      .workspace {
+        position: absolute;
+        inset: 78px 0 0 88px;
+        display: grid;
+        gap: 18px;
+        padding: 22px;
+        z-index: 2;
+      }
+
+      .layout-3 {
+        grid-template-columns: 1.12fr 0.88fr 0.62fr;
+        grid-template-rows: 1fr 292px;
+      }
+
+      .layout-4 {
+        grid-template-columns: 0.82fr 1fr 0.72fr;
+        grid-template-rows: 1fr 260px;
+      }
+
+      .panel {
+        position: relative;
+        overflow: hidden;
+        border: 1px solid var(--line);
+        background: var(--panel);
+        box-shadow: 0 18px 80px rgba(0, 0, 0, 0.28);
+      }
+
+      .panel-head {
+        height: 54px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 18px;
+        border-bottom: 1px solid var(--line);
+        color: var(--soft);
+        font-family: Consolas, monospace;
+        font-size: 13px;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+      }
+
+      .panel-title {
+        color: var(--text);
+        font-weight: 700;
+      }
+
+      .panel-body {
+        height: calc(100% - 54px);
+        padding: 18px;
+      }
+
+      .map {
+        position: absolute;
+        inset: 54px 0 0 0;
+        background:
+          linear-gradient(rgba(78, 179, 255, 0.08) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(78, 179, 255, 0.08) 1px, transparent 1px),
+          radial-gradient(circle at 22% 62%, rgba(78, 179, 255, 0.16), transparent 18%),
+          radial-gradient(circle at 72% 38%, rgba(249, 115, 22, 0.16), transparent 22%),
+          #071019;
+        background-size: 58px 58px, 58px 58px, auto, auto, auto;
+      }
+
+      .route {
+        position: absolute;
+        inset: 112px 70px 70px 74px;
+      }
+
+      .route svg,
+      .graph svg {
+        width: 100%;
+        height: 100%;
+      }
+
+      .marker {
+        position: absolute;
+        width: 16px;
+        height: 16px;
+        border: 2px solid var(--orange);
+        background: rgba(249, 115, 22, 0.18);
+        transform: translate(-50%, -50%) rotate(45deg);
+      }
+
+      .marker.blue {
+        border-color: var(--blue);
+        background: rgba(78, 179, 255, 0.18);
+      }
+
+      .tag {
+        position: absolute;
+        padding: 7px 10px;
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        background: rgba(6, 10, 15, 0.76);
+        color: var(--soft);
+        font-family: Consolas, monospace;
+        font-size: 12px;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      .video-feed {
+        position: relative;
+        height: 100%;
+        background:
+          linear-gradient(180deg, rgba(255, 255, 255, 0.06), transparent 46%),
+          linear-gradient(90deg, rgba(255, 255, 255, 0.05), transparent 18%, rgba(255, 255, 255, 0.04) 68%, transparent),
+          #111820;
+      }
+
+      .thermal {
+        background:
+          radial-gradient(circle at 46% 52%, rgba(255, 133, 52, 0.9), transparent 6%),
+          radial-gradient(circle at 51% 55%, rgba(255, 255, 174, 0.74), transparent 5%),
+          linear-gradient(110deg, rgba(24, 45, 68, 0.96), rgba(7, 11, 17, 0.96) 52%, rgba(56, 31, 18, 0.92));
+      }
+
+      .crosshair {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        width: 118px;
+        height: 118px;
+        transform: translate(-50%, -50%);
+        border: 1px solid rgba(249, 115, 22, 0.6);
+      }
+
+      .crosshair::before,
+      .crosshair::after {
+        content: "";
+        position: absolute;
+        background: rgba(249, 115, 22, 0.7);
+      }
+
+      .crosshair::before {
+        left: 50%;
+        top: -34px;
+        width: 1px;
+        height: 186px;
+      }
+
+      .crosshair::after {
+        left: -34px;
+        top: 50%;
+        width: 186px;
+        height: 1px;
+      }
+
+      .metric-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
+      }
+
+      .metric {
+        min-height: 100px;
+        padding: 14px;
+        border: 1px solid var(--line);
+        background: var(--panel-2);
+      }
+
+      .metric small {
+        display: block;
+        color: var(--muted);
+        font-family: Consolas, monospace;
+        font-size: 12px;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+      }
+
+      .metric strong {
+        display: block;
+        margin-top: 10px;
+        color: var(--text);
+        font-size: 30px;
+        letter-spacing: -0.02em;
+      }
+
+      .bar {
+        height: 8px;
+        margin-top: 12px;
+        background: rgba(255, 255, 255, 0.08);
+      }
+
+      .bar span {
+        display: block;
+        height: 100%;
+        background: linear-gradient(90deg, var(--orange), #ffd08a);
+      }
+
+      .list {
+        display: grid;
+        gap: 10px;
+      }
+
+      .row {
+        display: grid;
+        grid-template-columns: auto 1fr auto;
+        align-items: center;
+        gap: 12px;
+        min-height: 48px;
+        padding: 0 12px;
+        border: 1px solid var(--line);
+        background: rgba(255, 255, 255, 0.025);
+        color: var(--soft);
+        font-size: 14px;
+      }
+
+      .row b {
+        color: var(--text);
+      }
+
+      .dot {
+        width: 9px;
+        height: 9px;
+        border-radius: 999px;
+        background: var(--green);
+        box-shadow: 0 0 14px rgba(53, 208, 127, 0.7);
+      }
+
+      .dot.warn {
+        background: var(--orange);
+        box-shadow: 0 0 14px rgba(249, 115, 22, 0.72);
+      }
+
+      .dot.red {
+        background: var(--red);
+        box-shadow: 0 0 14px rgba(255, 93, 93, 0.72);
+      }
+
+      .timeline {
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        gap: 14px;
+      }
+
+      .step {
+        min-height: 168px;
+        padding: 16px;
+        border: 1px solid var(--line);
+        background: rgba(255, 255, 255, 0.025);
+      }
+
+      .step small {
+        color: var(--orange);
+        font-family: Consolas, monospace;
+        letter-spacing: 0.12em;
+      }
+
+      .step h3 {
+        margin: 16px 0 8px;
+        font-size: 19px;
+      }
+
+      .step p {
+        margin: 0;
+        color: var(--soft);
+        line-height: 1.5;
+        font-size: 14px;
+      }
+
+      .hero-label {
+        position: absolute;
+        left: 36px;
+        bottom: 30px;
+        max-width: 740px;
+        z-index: 2;
+      }
+
+      .hero-label small {
+        color: var(--orange);
+        font-family: Consolas, monospace;
+        font-size: 14px;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+      }
+
+      .hero-label h1 {
+        margin: 14px 0 12px;
+        font-size: 56px;
+        line-height: 1;
+        letter-spacing: -0.03em;
+        text-transform: uppercase;
+      }
+
+      .hero-label p {
+        margin: 0;
+        color: var(--soft);
+        font-size: 18px;
+        line-height: 1.62;
+      }
+
+      .chip-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+
+      .chip {
+        display: inline-flex;
+        align-items: center;
+        height: 36px;
+        padding: 0 12px;
+        border: 1px solid var(--line);
+        background: rgba(255, 255, 255, 0.03);
+        color: var(--soft);
+        font-family: Consolas, monospace;
+        font-size: 12px;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      .wide {
+        grid-column: span 2;
+      }
+
+      .full {
+        grid-column: 1 / -1;
+      }
+
+      .h-full {
+        grid-row: span 2;
+      }
+
+      .matrix {
+        display: grid;
+        grid-template-columns: 1.2fr repeat(4, 1fr);
+        border-top: 1px solid var(--line);
+        border-left: 1px solid var(--line);
+      }
+
+      .cell {
+        min-height: 56px;
+        display: flex;
+        align-items: center;
+        padding: 0 14px;
+        border-right: 1px solid var(--line);
+        border-bottom: 1px solid var(--line);
+        color: var(--soft);
+        font-size: 14px;
+      }
+
+      .cell.head {
+        color: var(--text);
+        background: rgba(255, 255, 255, 0.035);
+        font-family: Consolas, monospace;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+      }
+
+      .cell.ok {
+        color: #92f7bb;
+      }
+
+      .cell.warn {
+        color: #ffd08a;
+      }
+
+      .radar {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        border: 1px solid rgba(78, 179, 255, 0.24);
+        background:
+          radial-gradient(circle, transparent 0 18%, rgba(78, 179, 255, 0.05) 18% 19%, transparent 19% 38%, rgba(78, 179, 255, 0.06) 38% 39%, transparent 39% 62%, rgba(78, 179, 255, 0.07) 62% 63%, transparent 63%),
+          conic-gradient(from 38deg, rgba(78, 179, 255, 0.18), transparent 28%, transparent 100%);
+      }
+
+      .radar .marker {
+        width: 13px;
+        height: 13px;
+      }
+
+      .gauge {
+        display: grid;
+        grid-template-columns: 88px 1fr;
+        gap: 14px;
+        align-items: center;
+        padding: 12px;
+        border: 1px solid var(--line);
+      }
+
+      .gauge-ring {
+        width: 74px;
+        height: 74px;
+        border-radius: 50%;
+        display: grid;
+        place-items: center;
+        color: var(--text);
+        font-weight: 800;
+        background:
+          radial-gradient(circle at center, var(--panel) 0 57%, transparent 58%),
+          conic-gradient(var(--orange) var(--value), rgba(255, 255, 255, 0.1) 0);
+      }
+
+      .graph {
+        position: relative;
+        height: 100%;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="app"></div>
+    <script>
+      const lineSvg = `
+        <svg viewBox="0 0 760 520" fill="none" aria-hidden="true">
+          <path d="M48 424 C148 370 170 272 276 286 C386 300 406 152 520 168 C626 184 650 92 718 104" stroke="rgba(249,115,22,.72)" stroke-width="3" stroke-dasharray="10 10"/>
+          <path d="M82 116 L228 206 L358 146 L530 280 L690 224" stroke="rgba(78,179,255,.42)" stroke-width="2"/>
+          <circle cx="276" cy="286" r="9" fill="#f97316"/><circle cx="520" cy="168" r="9" fill="#f97316"/>
+          <circle cx="228" cy="206" r="7" fill="#4eb3ff"/><circle cx="690" cy="224" r="7" fill="#4eb3ff"/>
+        </svg>`;
+
+      function chrome(title, status = "LINK AKTIF") {
+        return `
+          <div class="topbar">
+            <div class="brand"><span class="mark"></span><span>ASCALON DYNAMICS</span><span style="color:var(--muted)">/ ${title}</span></div>
+            <div class="top-meta"><span class="status-pill">${status}</span><span>UTC+03 21:42:18</span><span>SESSION ADX-074</span></div>
+          </div>
+          <nav class="side"><span class="active">OPERASYON</span><span>HARITA</span><span>SENSOR</span><span>VIDEO</span><span>KOMUT</span><span>KAYIT</span></nav>
+        `;
+      }
+
+      const screens = {
+        umay: `
+          <section class="screen">
+            ${chrome("UMAY AR")}
+            <main class="workspace layout-3">
+              <section class="panel wide h-full">
+                <div class="panel-head"><span class="panel-title">Kask Üstü AR Görüş Alanı</span><span>OPTIK + TERMAL + IHA</span></div>
+                <div class="video-feed thermal">
+                  <div class="crosshair"></div>
+                  <span class="tag" style="left:72px;top:96px">TERMAL: 62%</span>
+                  <span class="tag" style="right:96px;top:128px">IHA FEED / 1.8 KM</span>
+                  <span class="tag" style="left:44%;top:37%">TRACK AD-31 / 0.82</span>
+                  <div class="marker" style="left:48%;top:54%"></div>
+                  <div class="marker blue" style="left:64%;top:41%"></div>
+                  <div class="hero-label">
+                    <small>UMAY Giyilebilir AR Muharebe Sistemi</small>
+                    <h1>Tek Görüş Alanında Birleşik Operasyon Resmi</h1>
+                    <p>Termal, optik ve İHA beslemelerini operatörün görüş alanında hizalayan konsept görev arayüzü.</p>
+                  </div>
+                </div>
+              </section>
+              <section class="panel">
+                <div class="panel-head"><span class="panel-title">Operatör Durumu</span><span>LIVE</span></div>
+                <div class="panel-body metric-grid">
+                  <div class="metric"><small>Batarya</small><strong>78%</strong><div class="bar"><span style="width:78%"></span></div></div>
+                  <div class="metric"><small>Link</small><strong>91%</strong><div class="bar"><span style="width:91%"></span></div></div>
+                  <div class="metric"><small>Gecikme</small><strong>42 ms</strong><div class="bar"><span style="width:42%"></span></div></div>
+                  <div class="metric"><small>Algılama</small><strong>0.86</strong><div class="bar"><span style="width:86%"></span></div></div>
+                </div>
+              </section>
+              <section class="panel">
+                <div class="panel-head"><span class="panel-title">Görev Akışı</span><span>SON 5 KAYIT</span></div>
+                <div class="panel-body list">
+                  <div class="row"><span class="dot"></span><b>EO/IR hizalandı</b><span>21:40</span></div>
+                  <div class="row"><span class="dot warn"></span><b>Yeni iz önerisi</b><span>21:41</span></div>
+                  <div class="row"><span class="dot"></span><b>İHA görüntüsü kilitli</b><span>21:41</span></div>
+                  <div class="row"><span class="dot"></span><b>Komuta katmanı eşlendi</b><span>21:42</span></div>
+                </div>
+              </section>
+              <section class="panel full">
+                <div class="panel-head"><span class="panel-title">AR Katmanları</span><span>KONTROL</span></div>
+                <div class="panel-body chip-row">
+                  <span class="chip">Termal Overlay</span><span class="chip">Optik Netleme</span><span class="chip">İHA Pin</span><span class="chip">Dost Unsur</span><span class="chip">Rota</span><span class="chip">Sessiz Mod</span><span class="chip">Kayıt</span>
+                </div>
+              </section>
+            </main>
+          </section>`,
+
+        iha: `
+          <section class="screen">
+            ${chrome("IHA Filo Yönetimi")}
+            <main class="workspace layout-4">
+              <section class="panel h-full">
+                <div class="panel-head"><span class="panel-title">Platform Envanteri</span><span>6 AKTIF</span></div>
+                <div class="panel-body list">
+                  <div class="row"><span class="dot"></span><b>ADX-12 Keşif</b><span>EO/IR</span></div>
+                  <div class="row"><span class="dot"></span><b>ADX-18 Röle</b><span>COMMS</span></div>
+                  <div class="row"><span class="dot warn"></span><b>ADX-21 Haritalama</b><span>LIDAR</span></div>
+                  <div class="row"><span class="dot"></span><b>ADX-25 Destek</b><span>CARGO</span></div>
+                </div>
+              </section>
+              <section class="panel h-full">
+                <div class="panel-head"><span class="panel-title">Görev Planlama Haritası</span><span>MODÜLER ROTA</span></div>
+                <div class="map">
+                  <div class="route">${lineSvg}</div>
+                  <span class="tag" style="left:70px;top:86px">KATMAN: IHA / ROTA / PAYLOAD</span>
+                  <span class="tag" style="right:72px;bottom:72px">GÜVENLİ DÖNÜŞ: HAZIR</span>
+                </div>
+              </section>
+              <section class="panel">
+                <div class="panel-head"><span class="panel-title">Payload Konfigürasyonu</span><span>HOT-SWAP</span></div>
+                <div class="panel-body list">
+                  <div class="gauge"><div class="gauge-ring" style="--value:82%">82</div><div><b>EO/IR Kamera</b><br /><span style="color:var(--soft)">Görev uyumu yüksek</span></div></div>
+                  <div class="gauge"><div class="gauge-ring" style="--value:64%">64</div><div><b>Röle Modülü</b><br /><span style="color:var(--soft)">Kapsama genişletildi</span></div></div>
+                  <div class="gauge"><div class="gauge-ring" style="--value:71%">71</div><div><b>Haritalama</b><br /><span style="color:var(--soft)">Alan tarama hazır</span></div></div>
+                </div>
+              </section>
+              <section class="panel full">
+                <div class="panel-head"><span class="panel-title">Görev Zaman Çizgisi</span><span>PLANLANAN UÇUŞ</span></div>
+                <div class="panel-body timeline">
+                  <div class="step"><small>00:00</small><h3>Kalkış</h3><p>Otonom ön kontrol ve güvenli yükseliş.</p></div>
+                  <div class="step"><small>03:20</small><h3>Keşif</h3><p>EO/IR tarama, rota üstü pinler.</p></div>
+                  <div class="step"><small>09:45</small><h3>Röle</h3><p>Bağlantı kalitesi güçlendirme.</p></div>
+                  <div class="step"><small>16:10</small><h3>Veri Aktarım</h3><p>GCS ve UMAY katmanı ile paylaşım.</p></div>
+                  <div class="step"><small>21:30</small><h3>Dönüş</h3><p>Güvenli iniş koridoru.</p></div>
+                </div>
+              </section>
+            </main>
+          </section>`,
+
+        ai: `
+          <section class="screen">
+            ${chrome("AI Yazılım Katmanı")}
+            <main class="workspace layout-3">
+              <section class="panel wide">
+                <div class="panel-head"><span class="panel-title">Algılama ve Karar Destek Akışı</span><span>MODEL v3.7.2</span></div>
+                <div class="panel-body graph">
+                  <svg viewBox="0 0 1100 510" fill="none">
+                    <path d="M80 258 H230 C300 258 300 142 370 142 H520 C590 142 590 258 660 258 H1020" stroke="rgba(249,115,22,.72)" stroke-width="3"/>
+                    <path d="M80 358 H266 C330 358 330 432 408 432 H580 C642 432 642 324 716 324 H1020" stroke="rgba(78,179,255,.55)" stroke-width="2"/>
+                    <g fill="rgba(12,18,26,.96)" stroke="rgba(255,255,255,.16)">
+                      <rect x="52" y="218" width="150" height="80"/><rect x="332" y="102" width="190" height="80"/><rect x="626" y="218" width="190" height="80"/><rect x="884" y="218" width="168" height="80"/>
+                      <rect x="248" y="318" width="190" height="80"/><rect x="520" y="392" width="190" height="80"/>
+                    </g>
+                    <g fill="#eef3f8" font-family="Segoe UI" font-size="18" font-weight="700">
+                      <text x="82" y="266">SENSOR</text><text x="370" y="150">FUSION</text><text x="670" y="266">AI SCORE</text><text x="920" y="266">DECISION</text><text x="286" y="366">DATASET</text><text x="562" y="440">UPDATE</text>
+                    </g>
+                  </svg>
+                  <div class="hero-label">
+                    <small>Yapay Zeka & Yazılım Katmanı</small>
+                    <h1>Donanımı Değiştirmeden Sahada Güncellenebilir Kabiliyet</h1>
+                    <p>Algılama, veri füzyonu ve karar desteği için sürüm kontrollü operasyon yazılım katmanı.</p>
+                  </div>
+                </div>
+              </section>
+              <section class="panel">
+                <div class="panel-head"><span class="panel-title">Model Sağlığı</span><span>CANLI</span></div>
+                <div class="panel-body metric-grid">
+                  <div class="metric"><small>Algılama</small><strong>94%</strong><div class="bar"><span style="width:94%"></span></div></div>
+                  <div class="metric"><small>Yanıt</small><strong>38 ms</strong><div class="bar"><span style="width:38%"></span></div></div>
+                  <div class="metric"><small>Füzyon</small><strong>0.91</strong><div class="bar"><span style="width:91%"></span></div></div>
+                  <div class="metric"><small>Dağıtım</small><strong>12/12</strong><div class="bar"><span style="width:100%"></span></div></div>
+                </div>
+              </section>
+              <section class="panel">
+                <div class="panel-head"><span class="panel-title">Öneri Kuyruğu</span><span>4 OLAY</span></div>
+                <div class="panel-body list">
+                  <div class="row"><span class="dot"></span><b>Rota riski düşük</b><span>0.92</span></div>
+                  <div class="row"><span class="dot warn"></span><b>Yeni sınıflandırma</b><span>0.84</span></div>
+                  <div class="row"><span class="dot"></span><b>Video pin eşleşti</b><span>0.89</span></div>
+                  <div class="row"><span class="dot"></span><b>Güncelleme hazır</b><span>v3.8</span></div>
+                </div>
+              </section>
+              <section class="panel full">
+                <div class="panel-head"><span class="panel-title">Saha Güncelleme Paketleri</span><span>ROLLBACK HAZIR</span></div>
+                <div class="panel-body chip-row">
+                  <span class="chip">Detection Core</span><span class="chip">Fusion Rules</span><span class="chip">GCS Plugin</span><span class="chip">UMAY Overlay</span><span class="chip">Vehicle Adapter</span><span class="chip">Telemetry Parser</span>
+                </div>
+              </section>
+            </main>
+          </section>`,
+
+        fusion: `
+          <section class="screen">
+            ${chrome("Sensör Füzyonu")}
+            <main class="workspace layout-4">
+              <section class="panel h-full">
+                <div class="panel-head"><span class="panel-title">Spektrum Katmanları</span><span>FUSION ON</span></div>
+                <div class="panel-body list">
+                  <div class="gauge"><div class="gauge-ring" style="--value:88%">88</div><div><b>Optik</b><br /><span style="color:var(--soft)">Görsel iz doğrulama</span></div></div>
+                  <div class="gauge"><div class="gauge-ring" style="--value:74%">74</div><div><b>Termal</b><br /><span style="color:var(--soft)">Isı imzası eşleşti</span></div></div>
+                  <div class="gauge"><div class="gauge-ring" style="--value:91%">91</div><div><b>Telemetri</b><br /><span style="color:var(--soft)">Platform konumu net</span></div></div>
+                  <div class="gauge"><div class="gauge-ring" style="--value:67%">67</div><div><b>İHA Video</b><br /><span style="color:var(--soft)">Besleme stabil</span></div></div>
+                </div>
+              </section>
+              <section class="panel h-full">
+                <div class="panel-head"><span class="panel-title">Tek Harekât Resmi</span><span>COP-21</span></div>
+                <div class="map">
+                  <div class="route">${lineSvg}</div>
+                  <div class="marker" style="left:58%;top:48%"></div>
+                  <div class="marker blue" style="left:36%;top:62%"></div>
+                  <span class="tag" style="left:90px;top:96px">TRACK F-042 / BIRLESTIRILDI</span>
+                  <span class="tag" style="right:74px;top:168px">KOMUTA GÖRÜNÜMÜ: SENKRON</span>
+                  <span class="tag" style="left:44%;bottom:86px">OPERATÖR VE KOMUTA AYNI RESIM</span>
+                </div>
+              </section>
+              <section class="panel">
+                <div class="panel-head"><span class="panel-title">İz Kartları</span><span>12 TRACK</span></div>
+                <div class="panel-body list">
+                  <div class="row"><span class="dot"></span><b>F-042</b><span>0.93</span></div>
+                  <div class="row"><span class="dot warn"></span><b>F-051</b><span>0.71</span></div>
+                  <div class="row"><span class="dot"></span><b>F-063</b><span>0.88</span></div>
+                  <div class="row"><span class="dot red"></span><b>F-078</b><span>0.64</span></div>
+                </div>
+              </section>
+              <section class="panel full">
+                <div class="panel-head"><span class="panel-title">Kaynak Eşleştirme</span><span>GERÇEK ZAMANLI</span></div>
+                <div class="panel-body timeline">
+                  <div class="step"><small>EO</small><h3>Optik İz</h3><p>Görüntü üstünden hedef dikdörtgeni.</p></div>
+                  <div class="step"><small>IR</small><h3>Termal İmza</h3><p>Isı yoğunluğu ve süreklilik skoru.</p></div>
+                  <div class="step"><small>UAV</small><h3>Üst Görünüm</h3><p>Video pini coğrafi koordinata bağlandı.</p></div>
+                  <div class="step"><small>GCS</small><h3>Telemetri</h3><p>Platform konum ve yön bilgisi.</p></div>
+                  <div class="step"><small>COP</small><h3>Tek Resim</h3><p>Operatör ve komuta katmanı senkron.</p></div>
+                </div>
+              </section>
+            </main>
+          </section>`,
+
+        training: `
+          <section class="screen">
+            ${chrome("Simülasyon Eğitim")}
+            <main class="workspace layout-3">
+              <section class="panel wide">
+                <div class="panel-head"><span class="panel-title">Senaryo Yönetim Ekranı</span><span>TRAINING MODE</span></div>
+                <div class="panel-body graph">
+                  <svg viewBox="0 0 1100 510" fill="none">
+                    <path d="M80 402 C180 320 188 190 302 210 C412 230 410 116 532 134 C652 152 702 288 818 242 C910 206 960 146 1030 166" stroke="rgba(249,115,22,.72)" stroke-width="3" stroke-dasharray="9 9"/>
+                    <path d="M94 98 H1010" stroke="rgba(255,255,255,.14)"/><path d="M94 260 H1010" stroke="rgba(255,255,255,.08)"/>
+                    <g fill="rgba(12,18,26,.96)" stroke="rgba(255,255,255,.16)">
+                      <rect x="130" y="70" width="168" height="74"/><rect x="390" y="202" width="180" height="74"/><rect x="690" y="318" width="188" height="74"/>
+                    </g>
+                    <g fill="#eef3f8" font-family="Segoe UI" font-size="18" font-weight="700">
+                      <text x="158" y="116">KEŞİF</text><text x="428" y="248">KARAR</text><text x="728" y="364">AAR</text>
+                    </g>
+                  </svg>
+                  <div class="hero-label">
+                    <small>Simülasyon & Eğitim</small>
+                    <h1>Gerçek Görev Senaryoları İçin Operatör Eğitim Konsolu</h1>
+                    <p>UMAY ve GCS akışlarını eğitim modunda deneyimleyen, karar ve tepki sürelerini olay bazlı kaydeden konsept arayüz.</p>
+                  </div>
+                </div>
+              </section>
+              <section class="panel">
+                <div class="panel-head"><span class="panel-title">Kursiyer Metrikleri</span><span>CANLI</span></div>
+                <div class="panel-body metric-grid">
+                  <div class="metric"><small>Karar</small><strong>7.4 sn</strong><div class="bar"><span style="width:74%"></span></div></div>
+                  <div class="metric"><small>İsabet</small><strong>86%</strong><div class="bar"><span style="width:86%"></span></div></div>
+                  <div class="metric"><small>Prosedür</small><strong>92%</strong><div class="bar"><span style="width:92%"></span></div></div>
+                  <div class="metric"><small>Uyarı</small><strong>3</strong><div class="bar"><span style="width:30%"></span></div></div>
+                </div>
+              </section>
+              <section class="panel">
+                <div class="panel-head"><span class="panel-title">Eğitmen Komutları</span><span>SENARYO</span></div>
+                <div class="panel-body list">
+                  <div class="row"><span class="dot"></span><b>Yeni hedef ekle</b><span>HAZIR</span></div>
+                  <div class="row"><span class="dot warn"></span><b>Link kesintisi</b><span>SIM</span></div>
+                  <div class="row"><span class="dot"></span><b>Gece modu</b><span>ON</span></div>
+                  <div class="row"><span class="dot"></span><b>AAR kaydı</b><span>REC</span></div>
+                </div>
+              </section>
+              <section class="panel full">
+                <div class="panel-head"><span class="panel-title">After Action Review</span><span>OLAY AKIŞI</span></div>
+                <div class="panel-body timeline">
+                  <div class="step"><small>01</small><h3>Başlangıç</h3><p>Operatör sistemi senaryoya bağladı.</p></div>
+                  <div class="step"><small>02</small><h3>Algılama</h3><p>Termal ve İHA beslemesi eşleşti.</p></div>
+                  <div class="step"><small>03</small><h3>Karar</h3><p>Öneri kartı onay akışına alındı.</p></div>
+                  <div class="step"><small>04</small><h3>Komut</h3><p>GCS görevi yeniden planladı.</p></div>
+                  <div class="step"><small>05</small><h3>Değerlendirme</h3><p>Eğitmen notları rapora işlendi.</p></div>
+                </div>
+              </section>
+            </main>
+          </section>`,
+
+        modernization: `
+          <section class="screen">
+            ${chrome("Modernizasyon Entegrasyon")}
+            <main class="workspace layout-4">
+              <section class="panel h-full">
+                <div class="panel-head"><span class="panel-title">Eski Donanım Bağdaştırıcıları</span><span>ADAPTER BUS</span></div>
+                <div class="panel-body list">
+                  <div class="row"><span class="dot"></span><b>Serial Telemetry</b><span>OK</span></div>
+                  <div class="row"><span class="dot"></span><b>CAN Gateway</b><span>OK</span></div>
+                  <div class="row"><span class="dot warn"></span><b>Analog Video</b><span>SYNC</span></div>
+                  <div class="row"><span class="dot"></span><b>Payload API</b><span>OK</span></div>
+                  <div class="row"><span class="dot"></span><b>GCS Bridge</b><span>OK</span></div>
+                </div>
+              </section>
+              <section class="panel h-full">
+                <div class="panel-head"><span class="panel-title">Saha Güncelleme ve Entegrasyon Panosu</span><span>ROLLING UPDATE</span></div>
+                <div class="panel-body">
+                  <div class="matrix">
+                    <div class="cell head">Platform</div><div class="cell head">AI</div><div class="cell head">GCS</div><div class="cell head">Video</div><div class="cell head">Füzyon</div>
+                    <div class="cell">Legacy UAV-01</div><div class="cell ok">Hazır</div><div class="cell ok">Bağlı</div><div class="cell warn">Dönüşüm</div><div class="cell ok">Aktif</div>
+                    <div class="cell">Vehicle Kit-04</div><div class="cell ok">Hazır</div><div class="cell ok">Bağlı</div><div class="cell ok">Aktif</div><div class="cell ok">Aktif</div>
+                    <div class="cell">Sensor Pod-12</div><div class="cell warn">Test</div><div class="cell ok">Bağlı</div><div class="cell ok">Aktif</div><div class="cell warn">Kalibrasyon</div>
+                    <div class="cell">Command Node-2</div><div class="cell ok">Hazır</div><div class="cell ok">Bağlı</div><div class="cell ok">Aktif</div><div class="cell ok">Aktif</div>
+                    <div class="cell">Training Rig</div><div class="cell ok">Hazır</div><div class="cell warn">Sandbox</div><div class="cell ok">Aktif</div><div class="cell ok">Aktif</div>
+                  </div>
+                </div>
+              </section>
+              <section class="panel">
+                <div class="panel-head"><span class="panel-title">Dağıtım Sağlığı</span><span>12 NODE</span></div>
+                <div class="panel-body metric-grid">
+                  <div class="metric"><small>Başarılı</small><strong>11</strong><div class="bar"><span style="width:92%"></span></div></div>
+                  <div class="metric"><small>Rollback</small><strong>0</strong><div class="bar"><span style="width:4%"></span></div></div>
+                  <div class="metric"><small>Uyumluluk</small><strong>89%</strong><div class="bar"><span style="width:89%"></span></div></div>
+                  <div class="metric"><small>Kesinti</small><strong>0 dk</strong><div class="bar"><span style="width:8%"></span></div></div>
+                </div>
+              </section>
+              <section class="panel full">
+                <div class="panel-head"><span class="panel-title">Modernizasyon Akışı</span><span>YAZILIM TABANLI</span></div>
+                <div class="panel-body timeline">
+                  <div class="step"><small>01</small><h3>Envanter</h3><p>Mevcut donanım ve protokol haritası çıkarılır.</p></div>
+                  <div class="step"><small>02</small><h3>Adaptör</h3><p>Telemetri, video ve payload köprüleri bağlanır.</p></div>
+                  <div class="step"><small>03</small><h3>AI Katmanı</h3><p>Algılama ve karar desteği yazılımla eklenir.</p></div>
+                  <div class="step"><small>04</small><h3>Saha Update</h3><p>Kabiliyet güncellemesi kontrollü dağıtılır.</p></div>
+                  <div class="step"><small>05</small><h3>Operasyon</h3><p>GCS ve UMAY arayüzleri aynı resmi görür.</p></div>
+                </div>
+              </section>
+            </main>
+          </section>`
+      };
+
+      const params = new URLSearchParams(window.location.search);
+      const key = params.get("screen") || "umay";
+      document.getElementById("app").innerHTML = screens[key] || screens.umay;
+    </script>
+  </body>
+</html>

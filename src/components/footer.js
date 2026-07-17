@@ -53,7 +53,7 @@ export function renderFooter(container) {
 
       <div class="footer-bottom">
         <hr class="footer-divider" />
-        <p>© 2026 Ascalon Dynamics. Tüm hakları saklıdır.</p>
+        <p>© ${new Date().getFullYear()} Ascalon Dynamics. Tüm hakları saklıdır.</p>
       </div>
     </footer>
   `;

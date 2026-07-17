@@ -19,8 +19,6 @@ export function renderIntro(container) {
         <div class="hud-grid">
           <article class="hud-card hud-card--problem" data-hud-card>
             <span class="hud-corner hud-corner--tl" aria-hidden="true"></span>
-            <span class="hud-corner hud-corner--tr" aria-hidden="true"></span>
-            <span class="hud-corner hud-corner--bl" aria-hidden="true"></span>
             <span class="hud-corner hud-corner--br" aria-hidden="true"></span>
 
             <div class="hud-card-head">
@@ -37,8 +35,6 @@ export function renderIntro(container) {
 
           <article class="hud-card hud-card--solution" data-hud-card>
             <span class="hud-corner hud-corner--tl" aria-hidden="true"></span>
-            <span class="hud-corner hud-corner--tr" aria-hidden="true"></span>
-            <span class="hud-corner hud-corner--bl" aria-hidden="true"></span>
             <span class="hud-corner hud-corner--br" aria-hidden="true"></span>
 
             <div class="hud-card-head">

@@ -14,7 +14,8 @@ export function renderVehiclePanel(container) {
           <span class="eyebrow-tag-dot" aria-hidden="true"></span>
           FİLO KATALOĞU
         </div>
-        <h2 class="uav-panel-title reveal" id="uav-panel-title">İNSANSIZ ARAÇLAR</h2>
+        <h2 class="uav-panel-title reveal" id="uav-panel-title">İNSANSIZ HAVA SİSTEMLERİ</h2>
+        <p class="uav-panel-lead reveal">Keşif, gözetleme ve saha desteği için modüler platformlar. Her yapılandırma, görev tipine ve mevcut komuta kontrol ekosistemine uyum odağıyla ele alınır.</p>
 
         <div class="uav-list">
           ${vehicles
@@ -26,7 +27,7 @@ export function renderVehiclePanel(container) {
                 <span class="hud-corner hud-corner--tr" aria-hidden="true"></span>
                 <span class="hud-corner hud-corner--bl" aria-hidden="true"></span>
                 <span class="hud-corner hud-corner--br" aria-hidden="true"></span>
-                <img class="uav-visual-img" src="${v.image}" alt="${v.codeName} — ${v.model}" loading="lazy" />
+                <img class="uav-visual-img" src="${v.image}" alt="${v.codeName} (${v.model})" loading="lazy" />
                 <span class="uav-visual-sweep" data-uav-sweep aria-hidden="true"></span>
               </div>
 
@@ -35,6 +36,14 @@ export function renderVehiclePanel(container) {
                   <span class="uav-detail-label">0${i + 1} / Kod Adı</span>
                   <span class="uav-detail-value uav-detail-value--code">${v.codeName}</span>
                 </div>
+                ${
+                  v.status
+                    ? `<div class="uav-detail-row">
+                  <span class="uav-detail-label">Geliştirme Durumu</span>
+                  <span class="uav-detail-value">${v.status}</span>
+                </div>`
+                    : ''
+                }
                 <div class="uav-detail-row">
                   <span class="uav-detail-label">Model</span>
                   <span class="uav-detail-value">${v.model}</span>

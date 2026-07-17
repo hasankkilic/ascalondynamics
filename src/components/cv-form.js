@@ -68,7 +68,7 @@ function initCvForm(container) {
     event.preventDefault();
 
     if (WEB3FORMS_ACCESS_KEY === 'REPLACE_WITH_WEB3FORMS_ACCESS_KEY') {
-      status.textContent = 'Form henüz bağlanmadı — web3forms.com üzerinden access key alınıp eklenmesi gerekiyor.';
+      status.textContent = 'Form henüz bağlanmadı, web3forms.com üzerinden access key alınıp eklenmesi gerekiyor.';
       return;
     }
 
@@ -78,7 +78,7 @@ function initCvForm(container) {
 
     const formData = new FormData(form);
     formData.append('access_key', WEB3FORMS_ACCESS_KEY);
-    formData.append('subject', `Kariyer Başvurusu — ${formData.get('position')}`);
+    formData.append('subject', `Kariyer Başvurusu: ${formData.get('position')}`);
 
     try {
       const res = await fetch('https://api.web3forms.com/submit', {

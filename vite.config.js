@@ -40,6 +40,8 @@ export default defineConfig(() => {
           main: r('./index.html'),
           umay: r('./umay.html'),
           insansizAraclar: r('./insansiz-araclar.html'),
+          gcs: r('./gcs.html'),
+          yapayZekaYazilim: r('./yapay-zeka-yazilim.html'),
           iletisim: r('./iletisim.html'),
           kariyer: r('./kariyer.html'),
         },

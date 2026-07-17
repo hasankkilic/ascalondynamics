@@ -1,0 +1,720 @@
+<!doctype html>
+<html lang="tr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Ascalon GCS Interface Mockups</title>
+    <style>
+      :root {
+        --bg: #06090d;
+        --panel: rgba(12, 17, 24, 0.94);
+        --panel-2: rgba(16, 23, 31, 0.96);
+        --line: rgba(255, 255, 255, 0.12);
+        --line-strong: rgba(249, 115, 22, 0.46);
+        --text: #e9edf1;
+        --muted: #8b96a3;
+        --soft: #b7c1ca;
+        --orange: #f97316;
+        --orange-2: #ffb15f;
+        --green: #65d98b;
+        --cyan: #67d7ff;
+        --red: #ff5d6c;
+        --yellow: #ffd166;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        background: #101318;
+        font-family: Inter, "Segoe UI", Arial, sans-serif;
+        color: var(--text);
+      }
+
+      .screen {
+        position: relative;
+        width: 1920px;
+        height: 1080px;
+        overflow: hidden;
+        background:
+          radial-gradient(circle at 78% 18%, rgba(249, 115, 22, 0.12), transparent 34%),
+          radial-gradient(circle at 12% 85%, rgba(103, 215, 255, 0.1), transparent 32%),
+          linear-gradient(135deg, #070a0e 0%, #111820 48%, #070a0e 100%);
+      }
+
+      .screen::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        background:
+          linear-gradient(rgba(255, 255, 255, 0.025) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+        background-size: 24px 24px;
+        mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.65), transparent 92%);
+      }
+
+      .topbar {
+        position: absolute;
+        inset: 28px 34px auto;
+        height: 74px;
+        display: grid;
+        grid-template-columns: 370px 1fr 430px;
+        align-items: center;
+        gap: 22px;
+        padding: 0 24px;
+        border: 1px solid var(--line);
+        background: rgba(5, 8, 12, 0.84);
+        box-shadow: 0 14px 60px rgba(0, 0, 0, 0.28);
+      }
+
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        font-weight: 800;
+      }
+
+      .mark {
+        width: 34px;
+        height: 34px;
+        clip-path: polygon(50% 0, 92% 76%, 50% 58%, 8% 76%);
+        background: linear-gradient(180deg, var(--orange-2), var(--orange));
+        box-shadow: 0 0 24px rgba(249, 115, 22, 0.55);
+      }
+
+      .nav {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+      }
+
+      .nav span,
+      .chip {
+        border: 1px solid var(--line);
+        padding: 9px 13px;
+        color: var(--muted);
+        font-family: Consolas, monospace;
+        font-size: 13px;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      .nav .active,
+      .chip.good {
+        border-color: rgba(101, 217, 139, 0.45);
+        color: var(--green);
+        background: rgba(101, 217, 139, 0.08);
+      }
+
+      .top-status {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        gap: 12px;
+      }
+
+      .dot {
+        display: inline-block;
+        width: 8px;
+        height: 8px;
+        margin-right: 7px;
+        border-radius: 999px;
+        background: currentColor;
+        box-shadow: 0 0 10px currentColor;
+      }
+
+      .content {
+        position: absolute;
+        inset: 124px 34px 34px;
+        display: grid;
+        gap: 18px;
+      }
+
+      .layout-main {
+        grid-template-columns: 1.38fr 0.9fr 0.72fr;
+        grid-template-rows: 1fr 300px;
+      }
+
+      .layout-cbs {
+        grid-template-columns: 1.22fr 0.92fr 0.62fr;
+      }
+
+      .layout-sensors {
+        grid-template-columns: 0.84fr 1.1fr 0.84fr;
+        grid-template-rows: 1fr 1fr;
+      }
+
+      .layout-commands {
+        grid-template-columns: 0.86fr 1.08fr 0.78fr;
+        grid-template-rows: 1fr 350px;
+      }
+
+      .panel {
+        position: relative;
+        overflow: hidden;
+        border: 1px solid var(--line);
+        background: var(--panel);
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04), 0 16px 50px rgba(0, 0, 0, 0.26);
+      }
+
+      .panel::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        border: 1px solid transparent;
+        background:
+          linear-gradient(90deg, var(--line-strong), transparent 22%) top left / 100% 1px no-repeat,
+          linear-gradient(180deg, var(--line-strong), transparent 24%) top left / 1px 100% no-repeat;
+        opacity: 0.7;
+      }
+
+      .panel-head {
+        height: 54px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 18px;
+        border-bottom: 1px solid var(--line);
+        background: rgba(255, 255, 255, 0.025);
+      }
+
+      .panel-title {
+        margin: 0;
+        font-size: 13px;
+        letter-spacing: 0.15em;
+        text-transform: uppercase;
+      }
+
+      .panel-kicker {
+        color: var(--muted);
+        font-family: Consolas, monospace;
+        font-size: 12px;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      .map {
+        position: absolute;
+        inset: 54px 0 0;
+        background:
+          radial-gradient(circle at 42% 38%, rgba(101, 217, 139, 0.08), transparent 24%),
+          radial-gradient(circle at 68% 62%, rgba(249, 115, 22, 0.08), transparent 26%),
+          linear-gradient(135deg, rgba(35, 54, 54, 0.9), rgba(19, 29, 35, 0.96));
+      }
+
+      .map svg {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+      }
+
+      .map-label {
+        position: absolute;
+        padding: 8px 10px;
+        border: 1px solid rgba(103, 215, 255, 0.28);
+        background: rgba(4, 8, 12, 0.78);
+        color: var(--cyan);
+        font-family: Consolas, monospace;
+        font-size: 12px;
+        letter-spacing: 0.08em;
+      }
+
+      .m1 { left: 13%; top: 18%; }
+      .m2 { left: 58%; top: 38%; color: var(--orange); border-color: rgba(249, 115, 22, 0.32); }
+      .m3 { left: 32%; top: 72%; color: var(--green); border-color: rgba(101, 217, 139, 0.32); }
+
+      .map-tools {
+        position: absolute;
+        left: 18px;
+        bottom: 18px;
+        display: grid;
+        grid-template-columns: repeat(4, auto);
+        gap: 8px;
+      }
+
+      .map-tools span,
+      .layer-list span {
+        padding: 9px 11px;
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        background: rgba(0, 0, 0, 0.28);
+        color: var(--soft);
+        font-family: Consolas, monospace;
+        font-size: 12px;
+      }
+
+      .layer-list {
+        position: absolute;
+        right: 18px;
+        top: 72px;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      .video-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+        padding: 14px;
+      }
+
+      .video-tile {
+        position: relative;
+        min-height: 190px;
+        overflow: hidden;
+        border: 1px solid rgba(255, 255, 255, 0.13);
+        background:
+          linear-gradient(125deg, rgba(103, 215, 255, 0.16), transparent 40%),
+          radial-gradient(circle at 70% 48%, rgba(249, 115, 22, 0.16), transparent 22%),
+          #111820;
+      }
+
+      .video-tile.large {
+        grid-column: span 2;
+        min-height: 332px;
+      }
+
+      .video-tile::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background:
+          linear-gradient(transparent 49%, rgba(255, 255, 255, 0.055) 50%, transparent 51%),
+          repeating-linear-gradient(90deg, transparent 0 22px, rgba(255, 255, 255, 0.035) 23px 24px);
+        opacity: 0.6;
+      }
+
+      .video-tile .horizon {
+        position: absolute;
+        left: -10%;
+        right: -10%;
+        top: 48%;
+        height: 24%;
+        background: linear-gradient(180deg, rgba(130, 142, 126, 0.75), rgba(36, 45, 40, 0.95));
+        transform: rotate(-2deg);
+      }
+
+      .reticle {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        width: 88px;
+        height: 88px;
+        transform: translate(-50%, -50%);
+        border: 1px solid rgba(249, 115, 22, 0.72);
+        box-shadow: 0 0 18px rgba(249, 115, 22, 0.24);
+      }
+
+      .reticle::before,
+      .reticle::after {
+        content: "";
+        position: absolute;
+        background: rgba(249, 115, 22, 0.75);
+      }
+
+      .reticle::before {
+        width: 1px;
+        height: 122px;
+        left: 50%;
+        top: -17px;
+      }
+
+      .reticle::after {
+        height: 1px;
+        width: 122px;
+        left: -17px;
+        top: 50%;
+      }
+
+      .caption {
+        position: absolute;
+        left: 12px;
+        right: 12px;
+        bottom: 12px;
+        display: flex;
+        justify-content: space-between;
+        color: var(--soft);
+        font-family: Consolas, monospace;
+        font-size: 12px;
+      }
+
+      .table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 13px;
+      }
+
+      .table th,
+      .table td {
+        padding: 13px 14px;
+        border-bottom: 1px solid var(--line);
+        text-align: left;
+      }
+
+      .table th {
+        color: var(--muted);
+        font-family: Consolas, monospace;
+        font-size: 11px;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+      }
+
+      .ok { color: var(--green); }
+      .warn { color: var(--yellow); }
+      .danger { color: var(--red); }
+      .accent { color: var(--orange); }
+      .cyan { color: var(--cyan); }
+
+      .metrics {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+        padding: 14px;
+      }
+
+      .metric {
+        padding: 15px;
+        border: 1px solid var(--line);
+        background: rgba(255, 255, 255, 0.035);
+      }
+
+      .metric small {
+        display: block;
+        color: var(--muted);
+        font-family: Consolas, monospace;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+      }
+
+      .metric b {
+        display: block;
+        margin-top: 8px;
+        font-size: 28px;
+      }
+
+      .bar {
+        height: 8px;
+        margin-top: 13px;
+        background: rgba(255, 255, 255, 0.08);
+      }
+
+      .bar i {
+        display: block;
+        height: 100%;
+        background: linear-gradient(90deg, var(--orange), var(--orange-2));
+      }
+
+      .wide { grid-column: span 2; }
+      .tall { grid-row: span 2; }
+      .span2 { grid-column: span 2; }
+
+      .sensor-ring {
+        position: relative;
+        width: 260px;
+        height: 260px;
+        margin: 36px auto 22px;
+        border-radius: 50%;
+        background:
+          conic-gradient(var(--green) 0 82%, rgba(255, 255, 255, 0.07) 82% 100%);
+      }
+
+      .sensor-ring::after {
+        content: "82%";
+        position: absolute;
+        inset: 22px;
+        display: grid;
+        place-items: center;
+        border-radius: 50%;
+        background: #0c1218;
+        color: var(--text);
+        font-size: 42px;
+        font-weight: 800;
+      }
+
+      .wave {
+        height: 210px;
+        margin: 20px;
+        border: 1px solid var(--line);
+        background:
+          linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+          rgba(255, 255, 255, 0.025);
+        background-size: 28px 28px;
+      }
+
+      .wave svg {
+        width: 100%;
+        height: 100%;
+      }
+
+      .command-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 12px;
+        padding: 16px;
+      }
+
+      .cmd {
+        min-height: 116px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        padding: 15px;
+        border: 1px solid var(--line);
+        background: rgba(255, 255, 255, 0.035);
+      }
+
+      .cmd strong {
+        font-size: 18px;
+        letter-spacing: 0.03em;
+      }
+
+      .cmd small {
+        color: var(--muted);
+        font-family: Consolas, monospace;
+        text-transform: uppercase;
+      }
+
+      .cmd.primary {
+        border-color: rgba(249, 115, 22, 0.5);
+        background: rgba(249, 115, 22, 0.1);
+      }
+
+      .timeline {
+        position: relative;
+        height: 114px;
+        margin: 22px;
+        border: 1px solid var(--line);
+        background: rgba(255, 255, 255, 0.03);
+      }
+
+      .timeline i {
+        position: absolute;
+        top: 20px;
+        bottom: 20px;
+        width: 2px;
+        background: rgba(255, 255, 255, 0.18);
+      }
+
+      .timeline b {
+        position: absolute;
+        top: 34px;
+        height: 46px;
+        border: 1px solid rgba(249, 115, 22, 0.42);
+        background: rgba(249, 115, 22, 0.12);
+      }
+
+      .log {
+        padding: 14px 18px;
+        font-family: Consolas, monospace;
+        font-size: 13px;
+        line-height: 1.85;
+      }
+
+      .log div {
+        display: flex;
+        justify-content: space-between;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+        padding: 7px 0;
+      }
+
+      .footer-note {
+        position: absolute;
+        right: 38px;
+        bottom: 12px;
+        color: rgba(255, 255, 255, 0.34);
+        font-family: Consolas, monospace;
+        font-size: 11px;
+        letter-spacing: 0.08em;
+      }
+    </style>
+  </head>
+  <body>
+    <section class="screen" id="screen-main">
+      <div class="topbar">
+        <div class="brand"><span class="mark"></span>ASCALON GCS</div>
+        <div class="nav"><span class="active">Operasyon</span><span>CBS</span><span>Video</span><span>Sensörler</span><span>Komutlar</span></div>
+        <div class="top-status"><span class="chip good"><span class="dot"></span>Link aktif</span><span class="chip">UTC+03 21:42:18</span></div>
+      </div>
+      <div class="content layout-main">
+        <div class="panel tall">
+          <div class="panel-head"><h2 class="panel-title">CBS Operasyon Haritası</h2><span class="panel-kicker">Katman: İHA / ekip / rota</span></div>
+          <div class="map">
+            <svg viewBox="0 0 1000 690" preserveAspectRatio="none">
+              <defs>
+                <pattern id="grid" width="50" height="50" patternUnits="userSpaceOnUse"><path d="M50 0H0V50" fill="none" stroke="rgba(255,255,255,.05)" /></pattern>
+              </defs>
+              <rect width="1000" height="690" fill="url(#grid)" />
+              <path d="M0 500 C160 430 210 610 360 525 C520 435 580 220 742 260 C860 288 900 188 1000 130" fill="none" stroke="rgba(103,215,255,.32)" stroke-width="8" />
+              <path d="M88 620 C240 520 310 485 410 420 C550 325 705 355 870 250" fill="none" stroke="rgba(255,255,255,.14)" stroke-width="18" />
+              <path d="M155 120 C275 210 355 165 455 230 C585 315 690 300 812 360" fill="none" stroke="rgba(255,255,255,.11)" stroke-width="12" />
+              <path d="M226 560 L330 410 L476 354 L624 284 L795 332" fill="none" stroke="rgba(249,115,22,.88)" stroke-width="4" stroke-dasharray="14 10" />
+              <circle cx="226" cy="560" r="13" fill="#65d98b" />
+              <circle cx="476" cy="354" r="16" fill="#f97316" />
+              <circle cx="795" cy="332" r="11" fill="#67d7ff" />
+              <path d="M420 280 L590 230 L705 345 L602 470 L430 438 Z" fill="rgba(249,115,22,.08)" stroke="rgba(249,115,22,.55)" stroke-width="2" />
+              <path d="M105 250 C190 190 298 210 350 284 C268 316 182 348 105 250Z" fill="rgba(101,217,139,.08)" stroke="rgba(101,217,139,.44)" />
+            </svg>
+            <span class="map-label m1">EKİP-A / 1.4 KM</span><span class="map-label m2">UMY-02 / 142 M</span><span class="map-label m3">GCS-01</span>
+            <div class="layer-list"><span>Topo</span><span>Geofence</span><span>Video pin</span><span>Telemetri</span></div>
+            <div class="map-tools"><span>+ Zoom</span><span>Ölç</span><span>Rota</span><span>Alan</span></div>
+          </div>
+        </div>
+        <div class="panel">
+          <div class="panel-head"><h2 class="panel-title">Video Yönetim Ekranı</h2><span class="panel-kicker">4 aktif yayın</span></div>
+          <div class="video-grid">
+            <div class="video-tile large"><div class="horizon"></div><span class="reticle"></span><div class="caption"><span>UMY-02 EO 30x</span><span class="ok">REC 00:12:44</span></div></div>
+            <div class="video-tile"><div class="horizon"></div><div class="caption"><span>TERMAL</span><span>WHOT</span></div></div>
+            <div class="video-tile"><div class="horizon"></div><div class="caption"><span>GCS CAM</span><span class="warn">LOW LIGHT</span></div></div>
+          </div>
+        </div>
+        <div class="panel">
+          <div class="panel-head"><h2 class="panel-title">Platform Durumu</h2><span class="panel-kicker">UMY-02</span></div>
+          <div class="metrics">
+            <div class="metric"><small>İrtifa</small><b>142 m</b><div class="bar"><i style="width:58%"></i></div></div>
+            <div class="metric"><small>Batarya</small><b class="ok">76%</b><div class="bar"><i style="width:76%"></i></div></div>
+            <div class="metric"><small>Bağlantı</small><b>91%</b><div class="bar"><i style="width:91%"></i></div></div>
+            <div class="metric"><small>Rüzgar</small><b>11 kt</b><div class="bar"><i style="width:36%"></i></div></div>
+          </div>
+          <table class="table"><tr><th>Modül</th><th>Durum</th></tr><tr><td>EO/IR Kamera</td><td class="ok">Aktif</td></tr><tr><td>GNSS/INS</td><td class="ok">Nominal</td></tr><tr><td>Güvenli Bölge</td><td class="warn">Sınır 220 m</td></tr></table>
+        </div>
+        <div class="panel span2">
+          <div class="panel-head"><h2 class="panel-title">Görev Akışı</h2><span class="panel-kicker">Planlanan rota / canlı olaylar</span></div>
+          <div class="timeline"><i style="left:10%"></i><i style="left:32%"></i><i style="left:54%"></i><i style="left:76%"></i><b style="left:14%;width:24%"></b><b style="left:45%;width:18%"></b><b style="left:72%;width:16%"></b></div>
+        </div>
+        <div class="panel">
+          <div class="panel-head"><h2 class="panel-title">Olay Günlüğü</h2><span class="panel-kicker">Son 5 kayıt</span></div>
+          <div class="log"><div><span>21:42:18 Rota güncellendi</span><b class="cyan">CBS</b></div><div><span>21:41:50 Video kaydı başladı</span><b class="ok">VMS</b></div><div><span>21:40:22 Termal kalibrasyon</span><b class="warn">SENS</b></div><div><span>21:39:06 Link kalite testi</span><b class="ok">NET</b></div></div>
+        </div>
+      </div>
+      <div class="footer-note">CONCEPT UI MOCKUP / NON-OPERATIONAL DISPLAY</div>
+    </section>
+
+    <section class="screen" id="screen-cbs-video">
+      <div class="topbar">
+        <div class="brand"><span class="mark"></span>ASCALON GCS</div>
+        <div class="nav"><span>Operasyon</span><span class="active">CBS + Video</span><span>Sensörler</span><span>Komutlar</span></div>
+        <div class="top-status"><span class="chip good"><span class="dot"></span>4 yayın</span><span class="chip">Harita EPSG:3857</span></div>
+      </div>
+      <div class="content layout-cbs">
+        <div class="panel">
+          <div class="panel-head"><h2 class="panel-title">CBS Katman Yönetimi</h2><span class="panel-kicker">Canlı konum / görev sınırı</span></div>
+          <div class="map">
+            <svg viewBox="0 0 900 880" preserveAspectRatio="none">
+              <rect width="900" height="880" fill="rgba(255,255,255,.018)" />
+              <path d="M0 600 C170 535 228 630 358 560 C475 496 522 335 650 375 C766 410 810 300 900 245" fill="none" stroke="rgba(103,215,255,.3)" stroke-width="9" />
+              <path d="M80 760 C250 660 310 570 438 540 C590 505 668 445 830 350" fill="none" stroke="rgba(255,255,255,.12)" stroke-width="18" />
+              <path d="M180 175 C320 260 412 216 532 292 C664 375 725 350 850 442" fill="none" stroke="rgba(255,255,255,.1)" stroke-width="13" />
+              <path d="M128 620 L272 472 L455 436 L640 346 L796 392" fill="none" stroke="#f97316" stroke-width="4" stroke-dasharray="12 12" />
+              <path d="M358 310 L540 258 L712 388 L592 582 L365 526Z" fill="rgba(249,115,22,.08)" stroke="rgba(249,115,22,.58)" stroke-width="2" />
+              <circle cx="455" cy="436" r="16" fill="#f97316" /><circle cx="796" cy="392" r="12" fill="#67d7ff" /><circle cx="128" cy="620" r="13" fill="#65d98b" />
+              <text x="470" y="418" fill="#ffb15f" font-family="Consolas" font-size="18">UMY-02</text>
+              <text x="143" y="644" fill="#65d98b" font-family="Consolas" font-size="18">GCS-01</text>
+            </svg>
+            <div class="layer-list"><span>Uydu: açık</span><span>Yol: açık</span><span>Yükseklik: açık</span><span>Uçuş koridoru</span><span>Video pinleri</span></div>
+          </div>
+        </div>
+        <div class="panel">
+          <div class="panel-head"><h2 class="panel-title">Video Yönetimi</h2><span class="panel-kicker">EO / IR / kayıt / snapshot</span></div>
+          <div class="video-grid">
+            <div class="video-tile large"><div class="horizon"></div><span class="reticle"></span><div class="caption"><span>EO WIDE / GRID 38S</span><span class="ok">LIVE</span></div></div>
+            <div class="video-tile"><div class="horizon"></div><div class="caption"><span>IR WHITE HOT</span><span>12 FPS</span></div></div>
+            <div class="video-tile"><div class="horizon"></div><div class="caption"><span>PAYLOAD VIEW</span><span class="cyan">SYNC</span></div></div>
+          </div>
+        </div>
+        <div class="panel">
+          <div class="panel-head"><h2 class="panel-title">Kayıt ve İşaretler</h2><span class="panel-kicker">VMS</span></div>
+          <table class="table"><tr><th>Kanal</th><th>Durum</th></tr><tr><td>EO-01</td><td class="ok">Kayıtta</td></tr><tr><td>IR-01</td><td class="ok">Kayıtta</td></tr><tr><td>GCS-EXT</td><td class="warn">Beklemede</td></tr><tr><td>Snapshot</td><td>23 adet</td></tr><tr><td>Etiket</td><td>6 olay</td></tr></table>
+          <div class="log"><div><span>Video pin CBS ile eşleşti</span><b class="ok">OK</b></div><div><span>IR kontrast otomatik</span><b class="cyan">AUTO</b></div><div><span>Harita ölçeği 1:12K</span><b>CBS</b></div></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="screen" id="screen-sensors">
+      <div class="topbar">
+        <div class="brand"><span class="mark"></span>ASCALON GCS</div>
+        <div class="nav"><span>Operasyon</span><span>CBS</span><span>Video</span><span class="active">Sensörler</span><span>Komutlar</span></div>
+        <div class="top-status"><span class="chip good"><span class="dot"></span>Sensör paketi nominal</span><span class="chip">UMY-02</span></div>
+      </div>
+      <div class="content layout-sensors">
+        <div class="panel tall">
+          <div class="panel-head"><h2 class="panel-title">Sensör Sağlığı</h2><span class="panel-kicker">Genel skor</span></div>
+          <div class="sensor-ring"></div>
+          <table class="table"><tr><th>Sensör</th><th>Durum</th></tr><tr><td>EO Kamera</td><td class="ok">Aktif</td></tr><tr><td>Termal Kamera</td><td class="ok">Aktif</td></tr><tr><td>Lazer Mesafe</td><td class="warn">Kalibrasyon gerekli</td></tr><tr><td>GNSS</td><td class="ok">18 uydu</td></tr><tr><td>IMU</td><td class="ok">Drift düşük</td></tr></table>
+        </div>
+        <div class="panel">
+          <div class="panel-head"><h2 class="panel-title">Sinyal ve Telemetri</h2><span class="panel-kicker">Son 60 sn</span></div>
+          <div class="wave"><svg viewBox="0 0 800 210" preserveAspectRatio="none"><path d="M0 140 C80 70 120 135 180 92 C260 35 320 160 390 90 C460 20 530 142 590 84 C650 36 720 96 800 58" fill="none" stroke="#67d7ff" stroke-width="4" /><path d="M0 150 C80 130 135 170 210 128 C292 80 355 166 430 130 C510 92 570 138 640 116 C700 96 742 125 800 104" fill="none" stroke="#f97316" stroke-width="4" /></svg></div>
+        </div>
+        <div class="panel">
+          <div class="panel-head"><h2 class="panel-title">Payload Değerleri</h2><span class="panel-kicker">EO / IR</span></div>
+          <div class="metrics"><div class="metric"><small>Zoom</small><b>18x</b><div class="bar"><i style="width:60%"></i></div></div><div class="metric"><small>Termal gain</small><b>42%</b><div class="bar"><i style="width:42%"></i></div></div><div class="metric"><small>Gimbal tilt</small><b>-24°</b><div class="bar"><i style="width:44%"></i></div></div><div class="metric"><small>Stabilizasyon</small><b class="ok">Açık</b><div class="bar"><i style="width:88%"></i></div></div></div>
+        </div>
+        <div class="panel">
+          <div class="panel-head"><h2 class="panel-title">Kalibrasyon Kuyruğu</h2><span class="panel-kicker">Bakım</span></div>
+          <table class="table"><tr><th>İşlem</th><th>Öncelik</th></tr><tr><td>Termal NUC</td><td class="ok">Tamam</td></tr><tr><td>Lazer hizalama</td><td class="warn">Orta</td></tr><tr><td>Manyetik pusula</td><td>Planlı</td></tr><tr><td>Batarya sensörü</td><td class="ok">Tamam</td></tr></table>
+        </div>
+        <div class="panel span2">
+          <div class="panel-head"><h2 class="panel-title">Sensör Füzyonu</h2><span class="panel-kicker">EO + IR + GNSS + IMU</span></div>
+          <div class="metrics"><div class="metric"><small>Konum güveni</small><b class="ok">94%</b><div class="bar"><i style="width:94%"></i></div></div><div class="metric"><small>Görüntü eşleşme</small><b>87%</b><div class="bar"><i style="width:87%"></i></div></div><div class="metric"><small>Harita eşleşme</small><b>79%</b><div class="bar"><i style="width:79%"></i></div></div><div class="metric"><small>Veri gecikmesi</small><b>118 ms</b><div class="bar"><i style="width:28%"></i></div></div></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="screen" id="screen-commands">
+      <div class="topbar">
+        <div class="brand"><span class="mark"></span>ASCALON GCS</div>
+        <div class="nav"><span>Operasyon</span><span>CBS</span><span>Video</span><span>Sensörler</span><span class="active">Komutlar</span></div>
+        <div class="top-status"><span class="chip good"><span class="dot"></span>Yetki doğrulandı</span><span class="chip">Operatör: AD-GCS-01</span></div>
+      </div>
+      <div class="content layout-commands">
+        <div class="panel tall">
+          <div class="panel-head"><h2 class="panel-title">Komut Kütüphanesi</h2><span class="panel-kicker">Güvenli komut seti</span></div>
+          <div class="command-grid">
+            <div class="cmd primary"><strong>Rota Güncelle</strong><small>CBS waypoint aktar</small></div>
+            <div class="cmd"><strong>Orbit</strong><small>Seçili nokta çevresi</small></div>
+            <div class="cmd"><strong>Hold</strong><small>Mevcut konumu koru</small></div>
+            <div class="cmd"><strong>Tara</strong><small>Sektör taraması</small></div>
+            <div class="cmd"><strong>Video Pin</strong><small>Görüntüyü haritaya işle</small></div>
+            <div class="cmd"><strong>RTL</strong><small>GCS noktasına dönüş</small></div>
+            <div class="cmd"><strong>Payload Safe</strong><small>Gimbal güvenli mod</small></div>
+            <div class="cmd"><strong>Link Test</strong><small>Komuta kanal testi</small></div>
+            <div class="cmd"><strong>Görev Duraklat</strong><small>Planı beklemeye al</small></div>
+          </div>
+        </div>
+        <div class="panel">
+          <div class="panel-head"><h2 class="panel-title">Komut Önizleme</h2><span class="panel-kicker">Rota Güncelle / beklemede</span></div>
+          <div class="map">
+            <svg viewBox="0 0 900 560" preserveAspectRatio="none">
+              <path d="M80 430 L210 350 L345 390 L506 260 L725 300" fill="none" stroke="#f97316" stroke-width="5" stroke-dasharray="12 10" />
+              <circle cx="80" cy="430" r="14" fill="#65d98b" /><circle cx="210" cy="350" r="11" fill="#ffb15f" /><circle cx="345" cy="390" r="11" fill="#ffb15f" /><circle cx="506" cy="260" r="11" fill="#ffb15f" /><circle cx="725" cy="300" r="14" fill="#67d7ff" />
+              <path d="M250 155 L612 120 L780 365 L390 470Z" fill="rgba(249,115,22,.08)" stroke="rgba(249,115,22,.48)" />
+            </svg>
+            <span class="map-label m1">Başlangıç</span><span class="map-label m2">Gözetleme sektörü</span><span class="map-label m3">GCS</span>
+          </div>
+        </div>
+        <div class="panel">
+          <div class="panel-head"><h2 class="panel-title">Güvenlik Kontrolü</h2><span class="panel-kicker">Ön koşullar</span></div>
+          <table class="table"><tr><th>Kontrol</th><th>Sonuç</th></tr><tr><td>Geofence içinde</td><td class="ok">Onaylı</td></tr><tr><td>Batarya yeterli</td><td class="ok">76%</td></tr><tr><td>Link kararlı</td><td class="ok">91%</td></tr><tr><td>Çakışan görev</td><td class="warn">1 uyarı</td></tr><tr><td>Operatör yetkisi</td><td class="ok">Doğrulandı</td></tr></table>
+        </div>
+        <div class="panel span2">
+          <div class="panel-head"><h2 class="panel-title">Komut Kuyruğu</h2><span class="panel-kicker">Gönderim öncesi</span></div>
+          <table class="table"><tr><th>Sıra</th><th>Komut</th><th>Parametre</th><th>Durum</th></tr><tr><td>01</td><td>Rota Güncelle</td><td>WP-01 → WP-04</td><td class="warn">Onay bekliyor</td></tr><tr><td>02</td><td>Orbit</td><td>250 m / saat yönü</td><td>Hazır</td></tr><tr><td>03</td><td>Video Pin</td><td>EO-01 / CBS katmanı</td><td>Hazır</td></tr></table>
+        </div>
+        <div class="panel">
+          <div class="panel-head"><h2 class="panel-title">Canlı Geri Bildirim</h2><span class="panel-kicker">ACK / NACK</span></div>
+          <div class="log"><div><span>21:42:18 Komut hazırlandı</span><b class="warn">PENDING</b></div><div><span>21:42:11 Geofence doğrulandı</span><b class="ok">PASS</b></div><div><span>21:41:56 Link latency 118 ms</span><b class="ok">PASS</b></div><div><span>21:41:32 Video pin eşleşti</span><b class="cyan">SYNC</b></div></div>
+        </div>
+      </div>
+      <div class="footer-note">CONCEPT UI MOCKUP / NON-OPERATIONAL DISPLAY</div>
+    </section>
+  </body>
+</html>

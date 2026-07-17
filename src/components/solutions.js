@@ -40,7 +40,7 @@ export function renderSolutions(container) {
               </div>
               <span class="mission-card-kicker">UAV · VTOL · SUAS</span>
               <h3 class="mission-card-title">İNSANSIZ ARAÇLAR</h3>
-              <p class="mission-card-text">Sabit kanat ve VTOL insansız hava araçları — saha görevleri için modüler, uzun menzilli platformlar.</p>
+              <p class="mission-card-text">Keşif, gözetleme ve saha desteği için göreve göre yapılandırılabilir modüler İHA platformları.</p>
               <span class="mission-card-cta">İncele <span aria-hidden="true">→</span></span>
             </div>
           </a>
@@ -68,7 +68,7 @@ export function renderSolutions(container) {
               </div>
               <span class="mission-card-kicker">AR-HUD · SENSÖR FÜZYONU</span>
               <h3 class="mission-card-title">UMAY</h3>
-              <p class="mission-card-text">Taktik AR muharebe sistemi — kask üstü gerçek zamanlı sensör füzyonu ve hedef tespiti.</p>
+              <p class="mission-card-text">Kask üstü AR sistemi; termal, optik ve İHA beslemelerini tek görüş alanında birleştirir.</p>
               <span class="mission-card-cta">Simülasyonu Başlat <span aria-hidden="true">→</span></span>
             </div>
           </a>

@@ -74,8 +74,8 @@ function initContactForm(container) {
       return;
     }
 
-    const subject = `Web Sitesi İletişim Formu — ${name}`;
-    const body = `${message}\n\n—\n${name}`;
+    const subject = `Web Sitesi İletişim Formu: ${name}`;
+    const body = `${message}\n\n${name}`;
     const mailtoUrl = `mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
 
     window.location.href = mailtoUrl;

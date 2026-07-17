@@ -18,7 +18,7 @@ export function renderHeader(container) {
   container.innerHTML = `
     <header class="site-header">
       <a href="/" class="brand">
-        <img src="/images/logo.png" alt="Ascalon Dynamics logosu" class="brand-logo" />
+        <img src="/images/logo1-transparent.png" alt="Ascalon Dynamics logosu" class="brand-logo" />
         <span class="brand-name">ASCALON DYNAMICS</span>
       </a>
 
