@@ -1,3 +1,4 @@
+import '../style.css';
 import { renderHeader } from '../components/header.js';
 import { renderFooter } from '../components/footer.js';
 import { renderAiSoftwarePage } from '../components/ai-software-page.js';
