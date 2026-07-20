@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "generate:en": "node scripts/generate-english-pages.mjs",
     "build": "vite build",
     "preview": "vite preview"
   },

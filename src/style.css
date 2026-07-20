@@ -186,6 +186,27 @@ ul {
   width: 100%;
 }
 
+.language-switch {
+  flex: 0 0 auto;
+  margin-left: clamp(16px, 2vw, 28px);
+  padding: 7px 9px;
+  border: 1px solid rgba(255, 255, 255, 0.55);
+  color: var(--text-white);
+  font-family: var(--font-body);
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  line-height: 1;
+  text-decoration: none;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.language-switch:hover,
+.language-switch:focus-visible {
+  background: var(--text-white);
+  color: var(--header-bg);
+}
+
 /* Hamburger toggle (mobile) */
 .hamburger {
   display: none;
@@ -452,6 +473,11 @@ ul {
 
   .hamburger {
     display: flex;
+  }
+
+  .language-switch {
+    margin-left: auto;
+    margin-right: 20px;
   }
 }
 
