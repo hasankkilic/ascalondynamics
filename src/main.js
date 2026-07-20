@@ -10,6 +10,7 @@ import { renderEvidence } from './components/evidence.js';
 import { renderVision } from './components/vision.js';
 import { renderFinalCta } from './components/final-cta.js';
 import { initScrollReveal } from './utils/reveal.js';
+import { initI18n } from './i18n.js';
 
 renderHeader(document.getElementById('header-root'));
 renderFooter(document.getElementById('footer-root'));
@@ -23,4 +24,5 @@ renderEvidence(document.getElementById('evidence-root'));
 renderVision(document.getElementById('vision-root'));
 renderFinalCta(document.getElementById('final-cta-root'));
 
+initI18n();
 initScrollReveal(document);
