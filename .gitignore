@@ -1,4 +1,6 @@
 node_modules
+node_modules_old
 dist
 public
 .DS_Store
+images/*.mov

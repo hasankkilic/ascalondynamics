@@ -23,7 +23,10 @@ function syncImagesToPublic() {
     /* ignore */
   }
   fs.mkdirSync(dest, { recursive: true });
-  fs.cpSync(src, dest, { recursive: true });
+  fs.cpSync(src, dest, {
+    recursive: true,
+    filter: (sourcePath) => path.extname(sourcePath).toLowerCase() !== '.mov',
+  });
 }
 
 export const englishMeta = {
