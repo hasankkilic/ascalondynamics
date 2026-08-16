@@ -10,7 +10,7 @@ export function renderFeaturedUmay(container) {
         <div class="featured-umay-media">
           <video
             class="featured-umay-video"
-            src="/images/umay-arhud.mp4"
+            src="/images/umay-live-2.mp4"
             poster="/images/umay-scenario-urban.jpg"
             autoplay
             muted
@@ -18,7 +18,6 @@ export function renderFeaturedUmay(container) {
             playsinline
             preload="metadata"
           ></video>
-          <img class="featured-umay-badge" src="/images/orijinal_logo2.png" alt="Ascalon Dynamics logosu" />
         </div>
 
         <div class="featured-umay-body">

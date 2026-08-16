@@ -26,3 +26,7 @@ renderFinalCta(document.getElementById('final-cta-root'));
 
 initI18n();
 initScrollReveal(document);
+
+document.querySelectorAll('.hero-video').forEach((video) => {
+  video.playbackRate = 1.5;
+});

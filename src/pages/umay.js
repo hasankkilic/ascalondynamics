@@ -9,95 +9,76 @@ initI18n();
 initScrollReveal(document);
 
 /**
- * Tanıtım videosuna (showcase) tıklayınca tam ekran açılır/kapanır.
- * Tam ekrandayken ses açılır ve native video kontrolleri görünür;
- * çıkınca sessiz/kontrolsüz haline geri döner.
+ * UMAY canlı kayıt kartları — imleç ile hafif 3B eğim, ekrana girince
+ * oynat / çıkınca durdur, ve genişlet düğmesiyle tam ekran (sesli) izleme.
  */
-const showcaseVideo = document.querySelector('.umay-showcase-video');
-if (showcaseVideo) {
-  showcaseVideo.addEventListener('click', () => {
+const liveCards = [...document.querySelectorAll('[data-live-card]')];
+const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+liveCards.forEach((card) => {
+  const frame = card.querySelector('[data-live-frame]');
+  const video = card.querySelector('[data-live-video]');
+  const expandBtn = card.querySelector('[data-live-expand]');
+  if (!frame || !video) return;
+
+  if (!reduceMotion) {
+    frame.addEventListener('pointermove', (event) => {
+      if (event.pointerType === 'touch') return;
+      const rect = frame.getBoundingClientRect();
+      const px = (event.clientX - rect.left) / rect.width - 0.5;
+      const py = (event.clientY - rect.top) / rect.height - 0.5;
+      card.style.setProperty('--rx', `${px * 6}deg`);
+      card.style.setProperty('--ry', `${py * -6}deg`);
+    });
+
+    frame.addEventListener('pointerleave', () => {
+      card.style.setProperty('--rx', '0deg');
+      card.style.setProperty('--ry', '0deg');
+    });
+  }
+
+  function syncFullscreenState() {
+    const isFullscreen = document.fullscreenElement === card || document.webkitFullscreenElement === card;
+    video.muted = !isFullscreen;
+    video.controls = isFullscreen;
+  }
+
+  function toggleFullscreen() {
     const isFullscreen = document.fullscreenElement || document.webkitFullscreenElement;
     if (isFullscreen) {
       (document.exitFullscreen || document.webkitExitFullscreen)?.call(document);
       return;
     }
-    const request =
-      showcaseVideo.requestFullscreen ||
-      showcaseVideo.webkitRequestFullscreen ||
-      showcaseVideo.webkitEnterFullscreen;
-    request?.call(showcaseVideo);
-  });
-
-  function syncFullscreenState() {
-    const isFullscreen =
-      document.fullscreenElement === showcaseVideo || document.webkitFullscreenElement === showcaseVideo;
-    showcaseVideo.muted = !isFullscreen;
-    showcaseVideo.controls = isFullscreen;
+    const request = card.requestFullscreen || card.webkitRequestFullscreen;
+    request?.call(card);
   }
 
-document.addEventListener('fullscreenchange', syncFullscreenState);
+  expandBtn?.addEventListener('click', (event) => {
+    event.stopPropagation();
+    toggleFullscreen();
+  });
+  frame.addEventListener('click', toggleFullscreen);
+
+  document.addEventListener('fullscreenchange', syncFullscreenState);
   document.addEventListener('webkitfullscreenchange', syncFullscreenState);
-}
-
-/**
- * Saha senaryoları aynı oynatıcı içinde değişir. Böylece yalnızca aktif
- * videonun kaynağı yüklenir; asset yolları sayfadan bağımsız /images kökünde
- * kalır ve yerel dosya sistemine bağlı olmaz.
- */
-const scenarioTabs = [...document.querySelectorAll('.umay-scenario-tab')];
-const scenarioPanel = document.getElementById('umay-scenario-panel');
-const scenarioVideo = scenarioPanel?.querySelector('.umay-scenario-video');
-const scenarioLabel = scenarioPanel?.querySelector('[data-scenario-label]');
-const scenarioTitle = scenarioPanel?.querySelector('[data-scenario-title]');
-const scenarioDescription = scenarioPanel?.querySelector('[data-scenario-description]');
-
-function activateScenario(nextTab, shouldPlay = true) {
-  if (!nextTab || !scenarioPanel || !scenarioVideo) return;
-
-  scenarioTabs.forEach((tab) => {
-    const isActive = tab === nextTab;
-    tab.setAttribute('aria-selected', String(isActive));
-    tab.tabIndex = isActive ? 0 : -1;
-  });
-
-  scenarioPanel.setAttribute('aria-labelledby', nextTab.id);
-  scenarioLabel.textContent = nextTab.dataset.label;
-  scenarioTitle.textContent = nextTab.dataset.title;
-  scenarioDescription.textContent = nextTab.dataset.description;
-  scenarioVideo.pause();
-  scenarioVideo.src = nextTab.dataset.video;
-  scenarioVideo.poster = nextTab.dataset.poster;
-  scenarioVideo.setAttribute(
-    'aria-label',
-    `${nextTab.dataset.label}: ${nextTab.dataset.title}`
-  );
-  scenarioVideo.load();
-
-  if (shouldPlay) {
-    scenarioVideo.play().catch(() => {
-      // Tarayıcı otomatik oynatmayı engellerse native oynatma kontrolü görünür kalır.
-    });
-  }
-}
-
-scenarioTabs.forEach((tab, tabIndex) => {
-  tab.addEventListener('click', () => activateScenario(tab));
-  tab.addEventListener('keydown', (event) => {
-    if (!['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'Home', 'End'].includes(event.key)) {
-      return;
-    }
-
-    event.preventDefault();
-    let nextIndex = tabIndex;
-    if (event.key === 'Home') nextIndex = 0;
-    else if (event.key === 'End') nextIndex = scenarioTabs.length - 1;
-    else if (event.key === 'ArrowLeft' || event.key === 'ArrowUp') {
-      nextIndex = (tabIndex - 1 + scenarioTabs.length) % scenarioTabs.length;
-    } else {
-      nextIndex = (tabIndex + 1) % scenarioTabs.length;
-    }
-
-    scenarioTabs[nextIndex].focus();
-    activateScenario(scenarioTabs[nextIndex]);
-  });
 });
+
+if (!reduceMotion && 'IntersectionObserver' in window) {
+  const videoObserver = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        const video = entry.target;
+        if (entry.isIntersecting) {
+          video.play().catch(() => {});
+        } else {
+          video.pause();
+        }
+      });
+    },
+    { threshold: 0.2 }
+  );
+  liveCards.forEach((card) => {
+    const video = card.querySelector('[data-live-video]');
+    if (video) videoObserver.observe(video);
+  });
+}

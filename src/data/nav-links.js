@@ -3,7 +3,7 @@
 // yönlendirilir.
 export const navLinks = [
   { label: 'Ana Sayfa', href: '/' },
-  { label: 'İnsansız Araçlar', href: '/insansiz-araclar.html' },
+  { label: 'Çevre Birimleri', href: '/insansiz-araclar.html' },
   { label: 'UMAY', href: '/umay.html' },
   { label: 'Kontrol Arayüzü', href: '/gcs.html' },
   { label: 'Yapay Zeka', href: '/yapay-zeka-yazilim.html' },

@@ -12,7 +12,7 @@ export const vehicles = [
     model: 'VTOL',
     mission: 'Keşif, gözetleme ve görev tipine göre yapılandırılabilir saha desteği.',
     features: ['Modüler Faydalı Yük', 'VTOL Görev Profili', 'Ekosistem Entegrasyonu'],
-    image: '/images/air-vtol.jpg',
+    image: '/images/atmaca.png',
     status: null,
   },
   {
@@ -30,7 +30,7 @@ export const vehicles = [
     model: 'Sabit Kanat',
     mission: 'Geniş alan keşfi, tespit ve uzun süreli gözetleme görevleri.',
     features: ['Detaylı Görüntüleme', 'Uzun Uçuş Süresi', 'Göreve Göre Yapılandırma'],
-    image: '/images/sahin.png',
+    image: '/images/şahin.png',
     status: null,
   },
 ];

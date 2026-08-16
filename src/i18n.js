@@ -1,6 +1,7 @@
 const english = {
   'Ana Sayfa': 'Home',
   'İnsansız Araçlar': 'Unmanned Systems',
+  'Çevre Birimleri': 'Unmanned Systems',
   'Kontrol Arayüzü': 'GCS',
   'Yapay Zeka': 'AI',
   'Kariyer': 'Careers',
@@ -51,6 +52,7 @@ const english = {
   'AKTİF': 'ACTIVE',
   'MODÜL 01': 'MODULE 01',
   'İNSANSIZ ARAÇLAR': 'UNMANNED SYSTEMS',
+  'ÇEVRE BİRİMLERİ': 'UNMANNED SYSTEMS',
   'Keşif, gözetleme ve saha desteği için göreve göre yapılandırılabilir modüler İHA platformları.':
     'Mission-configurable modular UAV platforms for reconnaissance, surveillance, and field support.',
   'İncele': 'Explore',

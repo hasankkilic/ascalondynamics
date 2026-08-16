@@ -45,11 +45,4 @@ export const productPillars = [
     label: 'Training',
     text: 'Gerçek görev senaryolarını yansıtan interaktif simülasyonlar ve operatör eğitim akışları. UMAY demosu bu başlığın ilk konsept deneyimi olarak konumlanır.',
   },
-  {
-    id: 'modernization',
-    kind: 'Modernizasyon',
-    title: 'Modernizasyon & Entegrasyon',
-    label: 'Upgrade',
-    text: 'Mevcut ve eski donanımın yazılım tabanlı modernizasyonu; yeni kabiliyetlerin sahada güncelleme ile eklenmesine odaklanır.',
-  },
 ];

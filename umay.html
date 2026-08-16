@@ -243,60 +243,67 @@
     text-transform:uppercase;letter-spacing:.08em;font-size:clamp(1.4rem,3.2vw,2.2rem);}
   .umay-showcase-lead{margin:0 0 40px;max-width:640px;color:var(--text-soft,#c7cbd0);
     font-size:1rem;line-height:1.8;}
-  .umay-showcase-frame{position:relative;overflow:hidden;
-    border:1px solid rgba(249,115,22,.25);background:#05070a;}
-  .umay-showcase-video{display:block;width:100%;height:auto;max-height:640px;object-fit:cover;cursor:pointer;}
-  .umay-showcase-badge{position:absolute;right:44px;bottom:59px;z-index:2;
-    display:flex;align-items:center;justify-content:center;padding:20px 28px;
-    background:rgba(8,10,13,.88);border:1px solid rgba(249,115,22,.25);
-    backdrop-filter:blur(2px);}
-  .umay-showcase-badge img{display:block;height:56px;width:auto;}
   .umay-showcase-features{display:flex;flex-wrap:wrap;gap:8px;margin:28px 0 0;}
-  .umay-scenarios{margin-top:clamp(56px,8vw,88px);padding-top:clamp(40px,6vw,64px);
-    border-top:1px solid rgba(255,255,255,.1);}
-  .umay-scenarios-heading{display:grid;grid-template-columns:minmax(0,1fr) minmax(280px,480px);
-    gap:32px;align-items:end;margin-bottom:28px;}
-  .umay-scenarios-kicker{display:block;margin-bottom:12px;color:#f97316;
-    font-size:.72rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;}
-  .umay-scenarios-title{margin:0;color:#f5f5f5;font-family:var(--font-display),'Orbitron',sans-serif;
-    font-size:clamp(1.35rem,3vw,2rem);line-height:1.2;letter-spacing:.06em;text-transform:uppercase;}
-  .umay-scenarios-lead{margin:0;color:#aeb3ba;font-family:var(--font-body),'Inter',sans-serif;
-    font-size:.95rem;line-height:1.75;}
-  .umay-scenario-switcher{display:grid;grid-template-columns:minmax(250px,320px) minmax(0,1fr);
-    gap:18px;padding:18px;border:1px solid rgba(249,115,22,.24);
-    background:linear-gradient(145deg,rgba(255,255,255,.045),rgba(255,255,255,.012));}
-  .umay-scenario-tabs{display:grid;gap:10px;align-content:start;}
-  .umay-scenario-tab{display:grid;grid-template-columns:104px minmax(0,1fr);gap:14px;
-    align-items:center;width:100%;padding:10px;border:1px solid rgba(255,255,255,.1);
-    background:rgba(5,7,10,.7);color:#f5f5f5;text-align:left;cursor:pointer;
-    transition:border-color .2s ease,background .2s ease,transform .2s ease;}
-  .umay-scenario-tab:hover{border-color:rgba(249,115,22,.55);transform:translateX(3px);}
-  .umay-scenario-tab[aria-selected="true"]{border-color:#f97316;
-    background:linear-gradient(120deg,rgba(249,115,22,.18),rgba(249,115,22,.04));
-    box-shadow:inset 3px 0 0 #f97316;}
-  .umay-scenario-tab:focus-visible{outline:2px solid #ff9b45;outline-offset:3px;}
-  .umay-scenario-thumb{display:block;width:104px;aspect-ratio:16/9;object-fit:cover;
-    filter:saturate(.85) contrast(1.06);}
-  .umay-scenario-tab[aria-selected="true"] .umay-scenario-thumb{filter:saturate(1.1) contrast(1.06);}
-  .umay-scenario-tab-index{display:block;margin-bottom:6px;color:#f97316;
-    font-family:var(--font-display),'Orbitron',sans-serif;font-size:.65rem;letter-spacing:.16em;}
-  .umay-scenario-tab-title{display:block;font-family:var(--font-body),'Inter',sans-serif;
-    font-size:.96rem;font-weight:600;line-height:1.35;}
-  .umay-scenario-player{min-width:0;border:1px solid rgba(255,255,255,.1);background:#030507;}
-  .umay-scenario-visual{position:relative;aspect-ratio:16/9;overflow:hidden;background:#030507;}
-  .umay-scenario-video{display:block;width:100%;height:100%;object-fit:contain;background:#030507;}
-  .umay-scenario-status{position:absolute;top:16px;left:16px;z-index:1;display:inline-flex;
-    align-items:center;gap:8px;padding:7px 10px;background:rgba(3,5,7,.78);
-    border:1px solid rgba(249,115,22,.4);backdrop-filter:blur(8px);
-    color:#e8eaed;font-size:.65rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;
-    pointer-events:none;}
-  .umay-scenario-status::before{content:'';width:7px;height:7px;border-radius:50%;
-    background:#f97316;box-shadow:0 0 10px rgba(249,115,22,.8);}
-  .umay-scenario-copy{padding:20px 22px 22px;}
-  .umay-scenario-current{margin:0 0 8px;color:#f5f5f5;
-    font-family:var(--font-display),'Orbitron',sans-serif;font-size:1rem;letter-spacing:.06em;}
-  .umay-scenario-description{margin:0;color:#aeb3ba;font-family:var(--font-body),'Inter',sans-serif;
-    font-size:.9rem;line-height:1.7;}
+
+  /* ===== UMAY canlı kayıt galerisi ===== */
+  .umay-live-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:22px;}
+  .umay-live-card{--rx:0deg;--ry:0deg;position:relative;padding:16px;
+    border:1px solid rgba(249,115,22,.22);perspective:900px;
+    background:linear-gradient(150deg,rgba(255,255,255,.04),rgba(255,255,255,.008));
+    transition:border-color .25s ease,transform .25s ease;}
+  .umay-live-card:hover{border-color:rgba(249,115,22,.55);transform:translateY(-4px);}
+  .umay-live-frame{position:relative;aspect-ratio:16/9;overflow:hidden;background:#05070a;
+    border:1px solid rgba(255,255,255,.08);cursor:pointer;
+    transform:rotateX(var(--ry)) rotateY(var(--rx));transition:transform .15s ease-out;}
+  .umay-live-video{display:block;width:100%;height:100%;object-fit:cover;
+    transition:transform .5s ease,filter .5s ease;}
+  .umay-live-card:hover .umay-live-video{transform:scale(1.045);filter:saturate(1.12) contrast(1.05);}
+  .umay-live-scan{position:absolute;inset:0;pointer-events:none;z-index:1;
+    background:linear-gradient(180deg,transparent 0%,rgba(249,115,22,.16) 50%,transparent 100%);
+    transform:translateY(-100%);opacity:0;transition:opacity .3s ease;}
+  .umay-live-card:hover .umay-live-scan{opacity:1;animation:umay-live-sweep 1.6s ease-in-out infinite;}
+  @keyframes umay-live-sweep{
+    0%{transform:translateY(-100%);}
+    100%{transform:translateY(100%);}
+  }
+  .umay-live-expand{position:absolute;right:10px;top:10px;z-index:2;display:flex;
+    align-items:center;justify-content:center;width:34px;height:34px;padding:0;
+    border:1px solid rgba(249,115,22,.4);background:rgba(3,5,7,.78);color:#f5f5f5;
+    font-size:1rem;line-height:1;cursor:pointer;backdrop-filter:blur(6px);
+    opacity:0;transform:translateY(-4px);transition:opacity .2s ease,transform .2s ease,border-color .2s ease;}
+  .umay-live-card:hover .umay-live-expand,.umay-live-expand:focus-visible{opacity:1;transform:translateY(0);}
+  .umay-live-expand:hover{border-color:#ff9b45;}
+  .umay-live-meta{display:flex;align-items:center;justify-content:space-between;
+    margin-top:14px;}
+  .umay-live-status{display:inline-flex;align-items:center;gap:7px;color:#e8eaed;
+    font-size:.65rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;}
+  .umay-live-status-dot{width:7px;height:7px;border-radius:50%;background:#f97316;
+    box-shadow:0 0 10px rgba(249,115,22,.8);animation:umay-live-pulse 1.8s ease-in-out infinite;}
+  @keyframes umay-live-pulse{
+    0%,100%{opacity:1;}
+    50%{opacity:.35;}
+  }
+  .umay-live-tag{color:#f97316;font-family:var(--font-display),'Orbitron',sans-serif;
+    font-size:.65rem;letter-spacing:.16em;text-transform:uppercase;}
+  .umay-live-title{margin:14px 0 6px;color:#f5f5f5;
+    font-family:var(--font-display),'Orbitron',sans-serif;font-weight:700;
+    font-size:1rem;letter-spacing:.04em;text-transform:uppercase;}
+  .umay-live-text{margin:0;color:#aeb3ba;font-family:var(--font-body),'Inter',sans-serif;
+    font-size:.88rem;line-height:1.7;}
+  .umay-live-card:fullscreen{display:flex;align-items:center;justify-content:center;
+    padding:0;background:#000;}
+  .umay-live-card:fullscreen .umay-live-frame{width:100%;height:100%;aspect-ratio:auto;}
+  .umay-live-card:fullscreen .umay-live-meta,
+  .umay-live-card:fullscreen .umay-live-title,
+  .umay-live-card:fullscreen .umay-live-text,
+  .umay-live-card:fullscreen .hud-corner{display:none;}
+  @media (max-width:820px){
+    .umay-live-grid{grid-template-columns:1fr;}
+  }
+  @media (prefers-reduced-motion:reduce){
+    .umay-live-card,.umay-live-video,.umay-live-expand{transition:none;}
+    .umay-live-scan,.umay-live-status-dot{animation:none;}
+  }
   .umay-showcase-links{display:flex;flex-wrap:wrap;gap:28px;margin:40px 0 0;}
   .umay-showcase-link{display:inline-flex;align-items:center;gap:8px;
     color:var(--accent-cyan,#f97316);text-decoration:none;
@@ -305,24 +312,6 @@
   .umay-showcase-link:hover{opacity:.75;}
   .umay-showcase-link span{transition:transform .25s ease;}
   .umay-showcase-link:hover span{transform:translateX(6px);}
-  @media (max-width:820px){
-    .umay-scenarios-heading,.umay-scenario-switcher{grid-template-columns:1fr;}
-    .umay-scenario-tabs{grid-template-columns:repeat(2,minmax(0,1fr));}
-    .umay-scenario-tab{grid-template-columns:82px minmax(0,1fr);}
-    .umay-scenario-thumb{width:82px;}
-  }
-  @media (max-width:640px){
-    .umay-showcase-badge img{height:40px;}
-    .umay-scenario-switcher{padding:10px;}
-    .umay-scenario-tabs{grid-template-columns:1fr;}
-    .umay-scenario-tab{grid-template-columns:96px minmax(0,1fr);}
-    .umay-scenario-thumb{width:96px;}
-    .umay-scenario-status{top:10px;left:10px;}
-    .umay-scenario-copy{padding:17px 16px 19px;}
-  }
-  @media (prefers-reduced-motion:reduce){
-    .umay-scenario-tab{transition:none;}
-  }
 
   /* ===== UMAY anlatı bölümleri (arka plan videolu) ===== */
   .umay-story{position:relative;min-height:70vh;display:flex;align-items:center;
@@ -392,26 +381,67 @@
       <span class="eyebrow-tag-dot" aria-hidden="true"></span>
       SİSTEM TANITIMI
     </div>
-    <h2 class="umay-showcase-title" id="umay-showcase-title">UMAY SAHA GÖRÜNTÜSÜ</h2>
-    <p class="umay-showcase-lead">Kask üstü artırılmış gerçeklik arayüzü; termal, optik ve İHA beslemelerini operatörün görüş alanında birleştiren konsept sistem tanıtımı.</p>
+    <h2 class="umay-showcase-title" id="umay-showcase-title">UMAY CANLI KAYIT ARŞİVİ</h2>
+    <p class="umay-showcase-lead">Kask üstü artırılmış gerçeklik arayüzünden alınmış iki canlı kayıt; termal, optik ve İHA beslemelerinin operatör görüş alanında nasıl birleştiğini gösterir.</p>
 
-    <div class="umay-showcase-frame">
-      <span class="hud-corner hud-corner--tl" aria-hidden="true"></span>
-      <span class="hud-corner hud-corner--tr" aria-hidden="true"></span>
-      <span class="hud-corner hud-corner--bl" aria-hidden="true"></span>
-      <span class="hud-corner hud-corner--br" aria-hidden="true"></span>
-      <video
-        class="umay-showcase-video"
-        src="/images/showcase.mp4"
-        autoplay
-        muted
-        loop
-        playsinline
-        preload="metadata"
-      ></video>
-      <div class="umay-showcase-badge" aria-hidden="true">
-        <img src="/images/logo.png" alt="" />
-      </div>
+    <div class="umay-live-grid">
+      <article class="umay-live-card" data-live-card>
+        <span class="hud-corner hud-corner--tl" aria-hidden="true"></span>
+        <span class="hud-corner hud-corner--tr" aria-hidden="true"></span>
+        <span class="hud-corner hud-corner--bl" aria-hidden="true"></span>
+        <span class="hud-corner hud-corner--br" aria-hidden="true"></span>
+        <div class="umay-live-frame" data-live-frame>
+          <video
+            class="umay-live-video"
+            data-live-video
+            src="/images/umay-live-1.mp4"
+            autoplay
+            muted
+            loop
+            playsinline
+            preload="metadata"
+          ></video>
+          <div class="umay-live-scan" aria-hidden="true"></div>
+          <button class="umay-live-expand" type="button" data-live-expand aria-label="Kaydı tam ekran aç">
+            <span aria-hidden="true">⤢</span>
+          </button>
+        </div>
+        <div class="umay-live-meta">
+          <span class="umay-live-status"><span class="umay-live-status-dot" aria-hidden="true"></span>CANLI KAYIT</span>
+          <span class="umay-live-tag">KAYIT 01</span>
+        </div>
+        <h3 class="umay-live-title">Saha Operasyonu — Görüş Hattı</h3>
+        <p class="umay-live-text">Operatör kaskından alınan birincil görüş akışı; termal ve optik katmanların gerçek zamanlı birleşimi.</p>
+      </article>
+
+      <article class="umay-live-card" data-live-card>
+        <span class="hud-corner hud-corner--tl" aria-hidden="true"></span>
+        <span class="hud-corner hud-corner--tr" aria-hidden="true"></span>
+        <span class="hud-corner hud-corner--bl" aria-hidden="true"></span>
+        <span class="hud-corner hud-corner--br" aria-hidden="true"></span>
+        <div class="umay-live-frame" data-live-frame>
+          <video
+            class="umay-live-video"
+            data-live-video
+            src="/images/umay-live-2.mp4"
+            autoplay
+            muted
+            loop
+            playsinline
+            preload="metadata"
+          ></video>
+          <div class="umay-live-scan" aria-hidden="true"></div>
+          <button class="umay-live-expand" type="button" data-live-expand aria-label="Kaydı tam ekran aç">
+            <span aria-hidden="true">⤢</span>
+          </button>
+        </div>
+        <div class="umay-live-meta">
+          <span class="umay-live-status"><span class="umay-live-status-dot" aria-hidden="true"></span>CANLI KAYIT</span>
+          <span class="umay-live-tag">KAYIT 02</span>
+        </div>
+        <h3 class="umay-live-title">Saha Operasyonu — İkincil Açı</h3>
+        <p class="umay-live-text">Aynı operasyondan ikinci bir kayıt; İHA beslemesi ve sensör füzyonu katmanının saha koşullarındaki davranışı.</p>
+      </article>
     </div>
 
     <div class="umay-showcase-features">
@@ -419,85 +449,6 @@
       <span class="uav-feature-tag">Hedef Tespit Desteği</span>
       <span class="uav-feature-tag">İHA Beslemesi</span>
       <span class="uav-feature-tag">Sensör Füzyonu</span>
-    </div>
-
-    <div class="umay-scenarios" aria-labelledby="umay-scenarios-title">
-      <div class="umay-scenarios-heading">
-        <div>
-          <span class="umay-scenarios-kicker">Gerçek Zamanlı Sistem Gösterimi</span>
-          <h3 class="umay-scenarios-title" id="umay-scenarios-title">Saha Senaryoları</h3>
-        </div>
-        <p class="umay-scenarios-lead">UMAY görüntü işleme katmanının farklı saha koşullarında araç ve personel tespiti ile hareket takibini nasıl görselleştirdiğini inceleyin.</p>
-      </div>
-
-      <div class="umay-scenario-switcher">
-        <div class="umay-scenario-tabs" role="tablist" aria-label="UMAY saha senaryoları">
-          <button
-            class="umay-scenario-tab"
-            id="umay-scenario-tab-1"
-            type="button"
-            role="tab"
-            aria-selected="true"
-            aria-controls="umay-scenario-panel"
-            tabindex="0"
-            data-video="/images/umay-senaryo-1.mp4"
-            data-poster="/images/umay-senaryo-1-poster.jpg"
-            data-label="Senaryo 1"
-            data-title="Araç ve Personel Algılama"
-            data-description="Dost birimin duvar arkasında tespit ettiği hedefleri kendi kamera görüntümüze aktararak düşman unsurlarının konumunu net biçimde görebiliyoruz."
-          >
-            <img class="umay-scenario-thumb" src="/images/umay-senaryo-1-poster.jpg" alt="" />
-            <span>
-              <span class="umay-scenario-tab-index">01 · 00:32</span>
-              <span class="umay-scenario-tab-title">Senaryo 1</span>
-            </span>
-          </button>
-          <button
-            class="umay-scenario-tab"
-            id="umay-scenario-tab-2"
-            type="button"
-            role="tab"
-            aria-selected="false"
-            aria-controls="umay-scenario-panel"
-            tabindex="-1"
-            data-video="/images/umay-senaryo-2.mp4"
-            data-poster="/images/umay-senaryo-2-poster.jpg"
-            data-label="Senaryo 2"
-            data-title="Hareketli Personel Takibi"
-            data-description="Operasyon sırasında dost askerin gördüğü görüntüyü anlık olarak izleyebiliyor, onun tespit ettiği unsurları kendi kamera görüntümüze aktarabiliyoruz."
-          >
-            <img class="umay-scenario-thumb" src="/images/umay-senaryo-2-poster.jpg" alt="" />
-            <span>
-              <span class="umay-scenario-tab-index">02 · 00:49</span>
-              <span class="umay-scenario-tab-title">Senaryo 2</span>
-            </span>
-          </button>
-        </div>
-
-        <div
-          class="umay-scenario-player"
-          id="umay-scenario-panel"
-          role="tabpanel"
-          aria-labelledby="umay-scenario-tab-1"
-        >
-          <div class="umay-scenario-visual">
-            <span class="umay-scenario-status" data-scenario-label>Senaryo 1</span>
-            <video
-              class="umay-scenario-video"
-              src="/images/umay-senaryo-1.mp4"
-              poster="/images/umay-senaryo-1-poster.jpg"
-              controls
-              playsinline
-              preload="metadata"
-              aria-label="Senaryo 1: Araç ve Personel Algılama"
-            ></video>
-          </div>
-          <div class="umay-scenario-copy" aria-live="polite">
-            <h4 class="umay-scenario-current" data-scenario-title>Araç ve Personel Algılama</h4>
-            <p class="umay-scenario-description" data-scenario-description>Dost birimin duvar arkasında tespit ettiği hedefleri kendi kamera görüntümüze aktararak düşman unsurlarının konumunu net biçimde görebiliyoruz.</p>
-          </div>
-        </div>
-      </div>
     </div>
 
     <div class="umay-showcase-links">
