@@ -2,7 +2,7 @@ export const gcsVisuals = [
   {
     id: 'station-delivery',
     title: 'Mobil GCS İstasyonu',
-    image: '/images/gcs-station-delivery.jpg',
+    image: '/images/gcs/gcs-station-delivery.jpg',
     alt: 'Sahada kurulan mobil yer kontrol istasyonu dış görünümü',
     usage: 'Hero veya ürün giriş görseli',
     source: 'DVIDS Photo ID 7847658',
@@ -12,7 +12,7 @@ export const gcsVisuals = [
   {
     id: 'mq9-control-station',
     title: 'GCS Kurulum Lojistiği',
-    image: '/images/gcs-mq9-control-station.jpg',
+    image: '/images/gcs/gcs-mq9-control-station.jpg',
     alt: 'Yer kontrol istasyonu ekipmanlarının saha kurulum süreci',
     usage: 'Kurulum, entegrasyon veya operasyonel hazırlık bölümü',
     source: 'DVIDS Photo ID 7847682',
@@ -22,7 +22,7 @@ export const gcsVisuals = [
   {
     id: 'operator-planning',
     title: 'Operatör Konsolu',
-    image: '/images/gcs-operator-planning.jpg',
+    image: '/images/gcs/gcs-operator-planning.jpg',
     alt: 'Yer kontrol istasyonunda ekranlar üzerinden görev planlayan iki operatör',
     usage: 'Canlı telemetri, görev planlama ve arayüz anlatımı',
     source: 'DVIDS Photo ID 6657948',
@@ -32,7 +32,7 @@ export const gcsVisuals = [
   {
     id: 'field-vehicle',
     title: 'Araç Üstü Saha Kontrolü',
-    image: '/images/gcs-field-vehicle.jpg',
+    image: '/images/gcs/gcs-field-vehicle.jpg',
     alt: 'Anten ve haberleşme ekipmanlarıyla donatılmış araç üstü saha kontrol istasyonu',
     usage: 'Çok platformlu koordinasyon veya saha konuşlanması bölümü',
     source: 'DVIDS Photo ID 1871629',
@@ -42,7 +42,7 @@ export const gcsVisuals = [
   {
     id: 'reaper-crew',
     title: 'Çok Ekranlı Komuta Kontrol',
-    image: '/images/gcs-reaper-crew.jpg',
+    image: '/images/gcs/gcs-reaper-crew.jpg',
     alt: 'Çok ekranlı yer kontrol istasyonunda görev yapan operatör ekibi',
     usage: 'Telemetri, harita, video ve görev verisi füzyonu anlatımı',
     source: 'DVIDS Photo ID 6029624',
@@ -52,7 +52,7 @@ export const gcsVisuals = [
   {
     id: 'small-uas-kit',
     title: 'Taşınabilir UAS Kurulumu',
-    image: '/images/gcs-small-uas-kit.jpg',
+    image: '/images/gcs/gcs-small-uas-kit.jpg',
     alt: 'Sahada taşınabilir drone sisteminin kurulumunu yapan ekip',
     usage: 'Modüler İHA entegrasyonu veya saha destek görseli',
     source: 'DVIDS Photo ID 9707804',

@@ -18,7 +18,7 @@ export function renderFooter(container) {
       <div class="footer-inner">
         <div class="footer-col footer-brand">
           <a href="/" class="footer-brand-row">
-            <img src="/images/logo.png" alt="Ascalon Dynamics logosu" class="footer-logo" />
+            <img src="/images/brand/logo.png" alt="Ascalon Dynamics logosu" class="footer-logo" />
             <span class="footer-brand-name">ASCALON DYNAMICS</span>
           </a>
           <p class="footer-tagline">Saha için otonom teknolojiler.</p>

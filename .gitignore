@@ -2,5 +2,7 @@ node_modules
 node_modules_old
 dist
 public
+assets
+vite.config.js.timestamp-*.mjs
 .DS_Store
 images/*.mov

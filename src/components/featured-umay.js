@@ -10,8 +10,8 @@ export function renderFeaturedUmay(container) {
         <div class="featured-umay-media">
           <video
             class="featured-umay-video"
-            src="/images/umay-live-2.mp4"
-            poster="/images/umay-scenario-urban.jpg"
+            src="/images/umay/umay-live-2.mp4"
+            poster="/images/umay/umay-scenario-urban.jpg"
             autoplay
             muted
             loop

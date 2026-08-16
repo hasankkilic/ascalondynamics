@@ -3,7 +3,7 @@ const gcsCapabilities = [
     title: 'CBS Harita Katmanı',
     text: 'Uçuş koridoru, görev sınırı, platform konumu ve video pinlerini tek coğrafi görünümde birleştirir.',
     status: 'Harita senkronize',
-    image: '/images/gcs-ui-overview.png',
+    image: '/images/gcs/gcs-ui-overview.png',
     alt: 'CBS haritası, platform konumları ve operasyon durumunu gösteren kontrol arayüzü',
     points: ['Canlı platform konumu', 'Görev alanı ve rota katmanları', 'Video ve olay işaretleri'],
   },
@@ -11,7 +11,7 @@ const gcsCapabilities = [
     title: 'Video Yönetim Ekranı',
     text: 'EO/IR yayınları, kayıt durumu, snapshot ve olay etiketlerini operatörün aynı ekranda takip etmesini sağlar.',
     status: 'Akışlar hazır',
-    image: '/images/gcs-ui-cbs-video.png',
+    image: '/images/gcs/gcs-ui-cbs-video.png',
     alt: 'CBS haritası ile EO ve IR video akışlarını birleştiren kontrol arayüzü',
     points: ['EO/IR yayın seçimi', 'Kayıt ve anlık görüntü', 'Olay bazlı etiketleme'],
   },
@@ -19,7 +19,7 @@ const gcsCapabilities = [
     title: 'Sensör ve Telemetri',
     text: 'GNSS, IMU, payload, bağlantı kalitesi ve sensör füzyonu skorlarını canlı durum panellerine dönüştürür.',
     status: 'Telemetri aktif',
-    image: '/images/gcs-ui-sensors.png',
+    image: '/images/gcs/gcs-ui-sensors.png',
     alt: 'Sensör sağlığı ve telemetri değerlerini gösteren kontrol arayüzü',
     points: ['Bağlantı ve sensör sağlığı', 'Canlı payload değerleri', 'Füzyon güven skorları'],
   },
@@ -27,7 +27,7 @@ const gcsCapabilities = [
     title: 'Komut ve Görev Kontrolü',
     text: 'Rota güncelleme, orbit, hold, video pin ve güvenli dönüş gibi komutları onay akışıyla yönetir.',
     status: 'Komut hattı açık',
-    image: '/images/gcs-ui-commands.png',
+    image: '/images/gcs/gcs-ui-commands.png',
     alt: 'Komut akışı, rota önizleme ve görev kontrolünü gösteren kontrol arayüzü',
     points: ['Güvenli komut onayı', 'Görev ve rota güncelleme', 'ACK/NACK durum takibi'],
   },
@@ -38,7 +38,7 @@ export function renderGcsPage(container) {
 
   container.innerHTML = `
     <section class="gcs-hero" aria-labelledby="gcs-hero-title">
-      <img class="gcs-hero-bg" src="/images/gcs-ui-overview.png" alt="" aria-hidden="true" />
+      <img class="gcs-hero-bg" src="/images/gcs/gcs-ui-overview.png" alt="" aria-hidden="true" />
       <div class="gcs-hero-inner">
         <div class="gcs-hero-copy reveal">
           <div class="eyebrow-tag">

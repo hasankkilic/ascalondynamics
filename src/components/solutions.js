@@ -20,8 +20,8 @@ export function renderSolutions(container) {
           <a class="mission-card" href="/umay.html" data-mission-card>
             <video
               class="mission-card-media"
-              src="/images/umay-cinematic.mp4"
-              poster="/images/umay-scenario-urban.jpg"
+              src="/images/umay/umay-cinematic.mp4"
+              poster="/images/umay/umay-scenario-urban.jpg"
               autoplay
               muted
               loop
@@ -48,8 +48,8 @@ export function renderSolutions(container) {
           <a class="mission-card" href="/insansiz-araclar.html" data-mission-card>
             <video
               class="mission-card-media"
-              src="/images/air-hero.mp4"
-              poster="/images/air-vtol.jpg"
+              src="/images/uav/air-hero.mp4"
+              poster="/images/uav/air-vtol.jpg"
               autoplay
               muted
               loop

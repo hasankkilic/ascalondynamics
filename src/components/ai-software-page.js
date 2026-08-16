@@ -3,7 +3,7 @@ const aiStages = [
     code: 'INPUT / 01',
     title: 'Algılama',
     text: 'EO/IR video, radar, telemetri ve görev verisini platform üzerinde gerçek zamanlı olarak işler.',
-    image: '/images/ai-stage-detection.png',
+    image: '/images/ai-software/ai-stage-detection.png',
     alt: 'İnsansız hava aracından gelen optik ve termal görüntülerin edge bilgisayarında işlenmesi',
     metric: '24 FPS',
     metricLabel: 'Edge görüntü akışı',
@@ -13,7 +13,7 @@ const aiStages = [
     code: 'FUSION / 02',
     title: 'Sensör Füzyonu',
     text: 'Farklı zaman ve güven seviyelerindeki sensör verilerini tek, tutarlı operasyonel resimde birleştirir.',
-    image: '/images/ai-stage-fusion.png',
+    image: '/images/ai-software/ai-stage-fusion.png',
     alt: 'Optik, termal, radar ve navigasyon sensörlerinin tek operasyonel modelde birleştirilmesi',
     metric: '0.91',
     metricLabel: 'Füzyon güven skoru',
@@ -23,7 +23,7 @@ const aiStages = [
     code: 'DECISION / 03',
     title: 'Karar Desteği',
     text: 'Operatöre tehdit, rota ve görev önceliğine göre açıklanabilir öneriler sunar; nihai kontrol operatörde kalır.',
-    image: '/images/ai-stage-decision.png',
+    image: '/images/ai-software/ai-stage-decision.png',
     alt: 'Operatörün rota riski ve öncelikli olayları değerlendirdiği karar destek arayüzü',
     metric: '38 ms',
     metricLabel: 'Karar destek yanıtı',
@@ -33,7 +33,7 @@ const aiStages = [
     code: 'DEPLOY / 04',
     title: 'Dağıtım & Güncelleme',
     text: 'Modelleri ve görev kurallarını donanımı değiştirmeden, kontrollü sürümleme ve geri dönüş desteğiyle sahaya taşır.',
-    image: '/images/ai-stage-deployment.png',
+    image: '/images/ai-software/ai-stage-deployment.png',
     alt: 'Mevcut insansız platformdaki edge bilgisayarına güvenli yazılım paketi aktarılması',
     metric: '12 / 12',
     metricLabel: 'Doğrulanan modül',
@@ -63,7 +63,7 @@ export function renderAiSoftwarePage(container) {
 
   container.innerHTML = `
     <section class="ai-hero" aria-labelledby="ai-hero-title">
-      <img class="ai-hero-bg" src="/images/ai-software-hero.png" alt="" aria-hidden="true" />
+      <img class="ai-hero-bg" src="/images/ai-software/ai-software-hero.png" alt="" aria-hidden="true" />
       <div class="ai-hero-inner">
         <div class="ai-hero-copy reveal">
           <div class="eyebrow-tag"><span class="eyebrow-tag-dot" aria-hidden="true"></span>AI CORE / YAZILIM KATMANI</div>
@@ -154,7 +154,7 @@ export function renderAiSoftwarePage(container) {
     <section class="ai-field" aria-labelledby="ai-field-title">
       <div class="ai-section-inner ai-field-grid reveal">
         <figure class="ai-field-visual">
-          <img src="/images/ai-software-field-update.png" alt="Bir mühendisin mevcut hava platformundaki edge bilgisayarını sahada güncellemesi" loading="lazy" />
+          <img src="/images/ai-software/ai-software-field-update.png" alt="Bir mühendisin mevcut hava platformundaki edge bilgisayarını sahada güncellemesi" loading="lazy" />
           <figcaption>MEVCUT PLATFORM / YAZILIMLA YENİ KABİLİYET</figcaption>
         </figure>
         <div class="ai-field-copy">

@@ -579,7 +579,7 @@ ul {
   position: absolute;
   inset: 0;
   z-index: 0;
-  background-image: url('/images/umay-scenario-perimeter.jpg');
+  background-image: url('/images/umay/umay-scenario-perimeter.jpg');
   background-size: cover;
   background-position: center;
   background-attachment: fixed;
