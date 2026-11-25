@@ -361,8 +361,8 @@ const english = {
   'Telefon': 'Phone',
   'Mesajınız': 'Your Message',
   'Gönder': 'Send',
-  "Gönder'e bastığınızda kendi mail uygulamanız açılır, mesajınız hasankilic@ascalondynamics.com adresine önceden doldurulmuş halde gelir.":
-    'When you click Send, your email application will open with a message addressed to hasankilic@ascalondynamics.com.',
+  "Gönder'e bastığınızda kendi mail uygulamanız açılır, mesajınız applications@ascalondynamics.com adresine önceden doldurulmuş halde gelir.":
+    'When you click Send, your email application will open with a message addressed to applications@ascalondynamics.com.',
 
   'SİSTEM TANITIMI': 'SYSTEM OVERVIEW',
   'UMAY SAHA GÖRÜNTÜSÜ': 'UMAY FIELD VIEW',

@@ -1,10 +1,10 @@
 import { jobs } from '../data/jobs.js';
 
 // TODO: web3forms.com'dan alınan gerçek access key ile değiştirilmeli.
-// Kurulum: https://web3forms.com adresine hasankilic@ascalondynamics.com ile
+// Kurulum: https://web3forms.com adresine applications@ascalondynamics.com ile
 // girilir, saniyeler içinde bir access key gelir (hesap açmaya gerek yok).
 // Gelen key'i aşağıya yapıştırmak yeterli — form o andan itibaren CV'yi
-// gerçek bir mail eki olarak hasankilic@ascalondynamics.com adresine yollar.
+// gerçek bir mail eki olarak applications@ascalondynamics.com adresine yollar.
 const WEB3FORMS_ACCESS_KEY = 'REPLACE_WITH_WEB3FORMS_ACCESS_KEY';
 
 export function renderCvForm(container) {

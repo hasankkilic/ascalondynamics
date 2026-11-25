@@ -1,10 +1,10 @@
-const CONTACT_EMAIL = 'hasankilic@ascalondynamics.com';
+const CONTACT_EMAIL = 'applications@ascalondynamics.com';
 
 /**
  * İletişim sayfası — solda iletişim bilgileri, sağda form.
  * Site statik olduğu için (backend yok) form gönderimi mailto: ile
  * çözülür: "Gönder"e basınca ziyaretçinin kendi mail uygulaması
- * hasankilic@ascalondynamics.com adresine önceden doldurulmuş halde açılır.
+ * applications@ascalondynamics.com adresine önceden doldurulmuş halde açılır.
  */
 export function renderContactPanel(container) {
   container.innerHTML = `
